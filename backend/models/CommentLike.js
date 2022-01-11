@@ -4,8 +4,8 @@ const Schema = mongoose.Schema;
 
 const commentLikeSchema = new Schema({
 
-    commentId: {type: mongoose.Types.ObjectId, required: true, ref:'Comment'},
-    userId: {type: mongoose.Types.ObjectId, required: true, ref:'User'},
+    // commentId: {type: mongoose.Types.ObjectId, required: true, ref:'Comment'},
+    // userId: {type: mongoose.Types.ObjectId, required: true, ref:'User'},
     like: { type: Boolean, required: true}
 });
 
