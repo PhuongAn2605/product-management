@@ -4,8 +4,7 @@ const Schema = mongoose.Schema;
 
 const replyLikeSchema = new Schema({
 
-    replyId: {type: mongoose.Types.ObjectId, required: true, ref:'Reply'},
-    userId: {type: mongoose.Types.ObjectId, required: true, ref:'User'},
+    replyId: {type: mongoose.Types.ObjectId, required: true, ref:'Replies'},
     like: { type: Boolean, required: true}
 });
 

@@ -2,6 +2,7 @@ const { validationResult } = require("express-validator");
 const HttpError = require("../models/http-error");
 const isEmpty = require("is-empty");
 const Product = require("../models/Product");
+const House = require("../models/House");
 
 const getProductById = async (req, res, next) => {
   const productId = req.params.pid;
@@ -23,6 +24,7 @@ const getProductById = async (req, res, next) => {
 const createProduct = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log(errors);
     return next(
       new HttpError("Invalid data passed, please check your data", 422)
     );
@@ -58,6 +60,7 @@ const createProduct = async (req, res, next) => {
 
   let existingProduct;
   let saveProduct;
+  let house;
 
   try {
     // existingProduct = await Product.find({ commentId: commentId, houseId:houseId });
@@ -65,10 +68,22 @@ const createProduct = async (req, res, next) => {
     //     return next(new HttpError('Product exists already!'));
     // }
 
+    house = await House.findById(houseId);
+    if(isEmpty(house)){
+      return next(new HttpError('Could not find the house', 404));
+    }
+
     saveProduct = await createdProduct.save();
-    if (!isEmpty(saveProduct)) {
+    if (isEmpty(saveProduct)) {
       return next(new HttpError("Could not save the product", 500));
     }
+
+    house.products.push(createdProduct);
+    const saveHouse = await house.save();
+    if(isEmpty(saveHouse)){
+      return next(new HttpError('Could not save the house', 500));
+    }
+
   } catch (err) {
     console.log(err);
 

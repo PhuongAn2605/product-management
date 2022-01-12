@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const HttpError = require('./models/http-error');
 
 const userRouter = require('./routes/user.routes');
+const houseRouter = require('./routes/house.routes');
 const productRouter = require('./routes/product.routes');
 const commentRouter = require('./routes/comment.routes');
 const commentLikeRouter = require('./routes/commentLike.routes');
@@ -24,6 +25,7 @@ app.use('/api/product', productRouter);
 app.use('/api/comment', commentRouter);
 app.use('/api/comment-like', commentLikeRouter);
 app.use('/api/reply', replyRouter);
+app.use('/api/house', houseRouter);
 
 app.use((req, res, next) => {
     const error = new HttpError('Could not find the route', 404);

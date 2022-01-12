@@ -25,23 +25,25 @@ const createReply = async (req, res, next ) => {
         return next(new HttpError('Invalid data passed', 422));
     }
 
+    const commentId = req.params.cid;
     const { content } = req.body;
 
     const createdReply = new Reply({
-        content: content
+        content,
+        commentId
     })
 
     try{
         const saveReply = await createdReply.save();
-        // if(!isEmpty(saveComment)){
-        //     return next(new HttpError('Could not save the product', 500));
-        // }
+        if(isEmpty(saveReply)){
+            return next(new HttpError('Could not save the product', 500));
+        }
     }catch(err){
         console.log(err);
         return next(new HttpError('Something went wrong, could not reply', 500));
     }
 
-    res.status(201).json({ comment: createdReply.content });
+    res.status(201).json({ reply: createdReply.content });
 
 }
 

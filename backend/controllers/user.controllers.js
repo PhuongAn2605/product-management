@@ -1,4 +1,5 @@
 const { validationResult } = require("express-validator");
+const isEmpty = require("is-empty");
 
 const HttpError = require("../models/http-error");
 const User = require("../models/User");
@@ -20,7 +21,7 @@ const signup = async (req, res, next) => {
 
   try {
     existingUser = await User.findOne({ userName: userName });
-    if (existingUser) {
+    if (!isEmpty(existingUser)) {
       const error = new HttpError(
         "User exists already, please login instead",
         422
@@ -38,7 +39,7 @@ const signup = async (req, res, next) => {
       saveUser = await newUser.save();
     }
 
-    if (!saveUser) {
+    if (isEmpty(saveUser)) {
       return next(new HttpError("Can not save the user", 500));
     }
   } catch (err) {

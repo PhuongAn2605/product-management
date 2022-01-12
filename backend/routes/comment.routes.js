@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/', commentController.getComment);
 
-router.post('/create', [
+router.post('/create/:pid', [
     check('content').not().isEmpty()
 ], commentController.createComment);
 

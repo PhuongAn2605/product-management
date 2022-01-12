@@ -11,12 +11,12 @@ router.post('/create', [
     check('productName').not().isEmpty(),
     check('shortName').not().isEmpty(),
     check('image').not().isEmpty(),
-    check('price').not().isInt(),
-    check('payedPrice').not().isInt(),
+    check('price').isInt(),
+    check('payedPrice').isInt(),
     check('expiration').not().isEmpty(),
     check('location').not().isEmpty(),
     check('description').not().isEmpty(),
-    check('commentId').not().isEmpty(),
+    // check('commentId').not().isEmpty(),
     check('houseId').not().isEmpty(),
 ] , productControllers.createProduct);
 
