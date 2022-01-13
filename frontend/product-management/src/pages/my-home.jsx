@@ -5,6 +5,7 @@ import DatePicker from "../components/date-picker/DatePicker";
 import SearchBarForm from "../components/search-bar/SearchBar";
 import SideBar from "../components/side-bar/SideBar";
 import Item from "../components/item/Item";
+import UserMenu from "../components/UserMenu/UserMenu";
 
 const MyHomeStyle = styled.div`
   display: flex;
@@ -79,7 +80,8 @@ const MyHome = () => {
             </SearchFormStyle>
             <UserNameStyle>
               <PermIdentityOutlinedIcon />
-              <span>Username</span>
+              {/* <span>Username</span> */}
+              <UserMenu />
             </UserNameStyle>
           </HeaderStyle>
           <DisplayItemsStyle>

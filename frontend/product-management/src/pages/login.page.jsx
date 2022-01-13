@@ -1,57 +1,39 @@
 import React, { useState } from "react";
 import InputForm from "../components/input/Input.component";
 import ButtonForm from "../components/button/Button.comonent";
-import { loginAction, setEmailAction } from "../redux/auth/auth.actions";
 import { connect } from "react-redux";
-import { login } from "../redux/auth/auth.utils";
 import { useNavigate } from "react-router-dom";
+import { fetchLoginStart } from "../redux/auth/auth.actions";
+import Header from '../components/header/Header.component';
 
 const Login = ({ login }) => {
-  const [emailValue, setEmailValue] = useState("");
+  const [userNameValue, setUserNameValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
 
   const navigate = useNavigate();
 
   const changeEmailInputHandler = (e) => {
     // console.log(e.currentTarget.value)
-    setEmailValue(e.currentTarget.value);
+    setUserNameValue(e.currentTarget.value);
   };
   const changePasswordInputHandler = (e) => {
     setPasswordValue(e.currentTarget.value);
   };
 
-  const loginSubmitHandler = async (event) => {
-    event.preventDefault();
-
-    try{
-      const response = await fetch("http://localhost:5000/api/login", {
-      method: "POST",
-      headers:{
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: emailValue,
-        password: passwordValue,
-      })
-    });
-
-    const data = await response.json();
-    const { userId, token, email } = data;
-
-    login(userId, token, email);
+  const loginHandler = (userName, password) => {
+    login(userName, password);
     navigate('/');
-    }catch(err){
-      console.log(err);
-    }
-  };
+  }
 
   return (
-    <form onSubmit={loginSubmitHandler}>
+    <React.Fragment>
+      <Header />
+      <form >
       <InputForm
-        id="email"
-        name="Email"
-        type="email"
-        value={emailValue}
+        id="userName"
+        name="User Name"
+        type="text"
+        value={userNameValue}
         onChange={(e) => changeEmailInputHandler(e)}
       />
       <InputForm
@@ -62,13 +44,14 @@ const Login = ({ login }) => {
         onChange={(e) => changePasswordInputHandler(e)}
       />
 
-      <ButtonForm title="Login" type="submit" />
+      <ButtonForm title="Login" type="submit" action={() => loginHandler(userNameValue, passwordValue)}/>
     </form>
+    </React.Fragment>
   );
 };
 
 const mapDispatchToProps = dispatch => ({
-  login: (userId, token, email) => dispatch(loginAction(userId, token, null, email)),
+  login: (userNameValue, passwordValue ) => dispatch(fetchLoginStart(userNameValue, passwordValue)),
 })
 
 export default connect(null, mapDispatchToProps)(Login);

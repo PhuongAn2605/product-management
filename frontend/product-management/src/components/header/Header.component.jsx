@@ -3,12 +3,12 @@ import React from "react";
 import { connect } from "react-redux";
 
 import { NavLink } from "react-router-dom";
-import { logoutAction } from "../../redux/auth/auth.actions";
 import UserMenu from "../UserMenu/UserMenu";
 
 import { HeaderStyle, LeftHeaderItem, RightHeaderItem } from "./Header.styles";
 
 const Header = ({ logout, isLoggedIn }) => {
+  console.log(isLoggedIn);
   let activeStyle = {
     textDecoration: "underline",
   };

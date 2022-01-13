@@ -1,33 +1,56 @@
 import AuthTypes from "./auth.types";
 import { login } from "./auth.utils";
+import { useNavigate } from "react-router-dom";
+
 
 const INITIAL_STATE = {
   isLoggedIn: false,
-  userId: null,
+  userName: null,
   token: null,
-  email: null,
-  avatar: null,
+  tokenExpirationDate: null,
+  error: null
 };
 
 const authReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case AuthTypes.SET_EMAIL:
-      return {
-        ...state,
-        email: action.payload,
-      };
 
-    case AuthTypes.LOGIN:
-      const { userId, token, expirationDate, email } = action.payload;
+    case AuthTypes.SIGN_UP_SUCCESS:
+      const { userName, token } = action.payload;
+      
       return {
         ...state,
         isLoggedIn: true,
-        token: token,
-        userId: userId,
-        tokenExpirationDate: login(userId, token, expirationDate, email),
+        userName: action.payload.userName,
+        token: action.payload.token,
+        tokenExpirationDate: login(userName, token),
+        error: null
+      }
+
+    case  AuthTypes.SIGN_UP_FAILURE:
+      return {
+        ...state,
+        isLoggedIn: false,
+        error: action.payload
+      }
+
+    case AuthTypes.LOGIN_SUCCESS:
+      // const { userName, token, expirationDate } = action.payload;
+      return {
+        ...state,
+        isLoggedIn: true,
+        token: action.payload.token,
+        userName: action.payload.userName,
+        tokenExpirationDate: login(userName, token, action.payload.expirationDate),
       };
 
-    case AuthTypes.LOGOUT:
+    case AuthTypes.LOGIN_FAILURE:
+      return {
+        ...state,
+        isLoggedIn: false,
+        error: action.payload
+      }
+
+    case AuthTypes.LOGOUT_SUCCESS:
       return {
         ...state,
         isLoggedIn: false,
@@ -36,12 +59,10 @@ const authReducer = (state = INITIAL_STATE, action) => {
         userId: null,
       };
 
-    case AuthTypes.SET_AVATAR:
-      console.log(action.payload);
+    case AuthTypes.LOGOUT_FAILURE:
       return {
-        ...state,
-        avatar: action.payload,
-      };
+        ...state
+      }
 
     default:
       return state;

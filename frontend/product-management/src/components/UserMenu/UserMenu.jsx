@@ -3,26 +3,31 @@ import isEmpty from "is-empty";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { logoutAction } from "../../redux/auth/auth.actions";
+import { fetchLoginStart } from "../../redux/auth/auth.actions";
 import { connect } from "react-redux";
+import { useNavigate } from "react-router";
 
-const UserMenu = ({ email, logout }) => {
+const UserMenu = ({ userName, logout, isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const navigate = useNavigate();
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  if(isEmpty(email)){
-    email = JSON.parse(localStorage.getItem('userData')).email
+  console.log(isLoggedIn);
+  if(isEmpty(userName) && isLoggedIn){
+    userName = JSON.parse(localStorage.getItem('userData')).userName
   }
 
   const logoutHandler = () => {
     logout();
     localStorage.removeItem("userData");
+    navigate('/login');
+
   };
 
 
@@ -34,9 +39,9 @@ const UserMenu = ({ email, logout }) => {
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
-        style={{ color: "#eee"}}
+        style={{ color: "#aaa"}}
       >
-        {email}
+        {userName}
         {/* USER */}
       </Button>
       <Menu
@@ -48,8 +53,8 @@ const UserMenu = ({ email, logout }) => {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
+        {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem onClick={handleClose}>My account</MenuItem> */}
         <MenuItem onClick={logoutHandler}>Logout</MenuItem>
       </Menu>
     </React.Fragment>
@@ -57,11 +62,12 @@ const UserMenu = ({ email, logout }) => {
 };
 
 const mapStateToProps = (state) => ({
-  email: state.auth.email,
+  userName: state.auth.userName,
+  isLoggedIn: state.auth.isLoggedIn
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  logout: () => dispatch(logoutAction()),
+  logout: () => dispatch(fetchLoginStart()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserMenu);

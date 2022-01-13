@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { connect } from "react-redux";
-import { setAvatar } from "../../redux/auth/auth.actions";
 import ButtonForm from '../button/Button.comonent';
 import './ImageUpload.styles.css';
 
@@ -66,7 +65,6 @@ const ImageUpload = props => {
 }
 
 const mapDispatchToProps = dispatch => ({
-    setAvatar: (avatar) => dispatch(setAvatar(avatar))
   });
 
 export default connect(null, mapDispatchToProps)(ImageUpload);
