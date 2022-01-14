@@ -7,39 +7,43 @@ import { useEffect } from "react";
 import { connect } from "react-redux";
 import { fetchLoginStart, fetchLogoutStart } from "./redux/auth/auth.actions";
 import MyHome from "./pages/my-home";
+import { useNavigate } from 'react-router-dom';
 
 let logoutTimer;
-const App = ({ login, logout, token, tokenExpirationDate }) => {
-  useEffect(() => {
-    if (token && tokenExpirationDate) {
-      const remainingTime =
-        tokenExpirationDate.getTime() - new Date().getTime();
-      logoutTimer = setTimeout(logout, remainingTime);
-    } else {
-      clearTimeout(logoutTimer);
-    }
-  }, [token, logout, tokenExpirationDate]);
+const App = ({ login, logout, token, tokenExpirationDate, isLoggedIn }) => {
+  const navigate = useNavigate();
+  // useEffect(() => {
+  //   console.log(token);
+  //   if (token && tokenExpirationDate) {
+  //     const remainingTime =
+  //       tokenExpirationDate.getTime() - new Date().getTime();
+  //     logoutTimer = setTimeout(logout, remainingTime);
+  //   } else {
+  //     clearTimeout(logoutTimer);
+  //   }
+  // }, [token, logout, tokenExpirationDate]);
 
-  useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("userData"));
-    if (
-      storedData &&
-      storedData.token &&
-      new Date(storedData.expiration) > new Date()
-    ) {
-      login(
-        storedData.userName,
-        storedData.token,
-        new Date(storedData.expiration)
-      );
-    }
-  }, [login]);
+  // useEffect(() => {
+  //   const storedData = JSON.parse(localStorage.getItem("userData"));
+  //   console.log(storedData)
+  //   if (
+  //     storedData &&
+  //     storedData.token &&
+  //     new Date(storedData.expiration) > new Date()
+  //   ) {
+  //     login(
+  //       storedData.userName,
+  //       storedData.token,
+  //       new Date(storedData.expiration)
+  //     );
+  //   }
+  // }, [login]);
 
   return (
     <div className="App">
       {/* <Header /> */}
       <Routes>
-        <Route path="/" element={<MyHome />} />
+        <Route path="/" element={ isLoggedIn ? <MyHome /> : <Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>
@@ -56,5 +60,6 @@ const mapDispatchToProps = (dispatch) => ({
 const mapStateToProps = (state) => ({
   token: state.auth.token,
   tokenExpirationDate: state.auth.tokenExpirationDate,
+  isLoggedIn: state.auth.isLoggedIn
 });
 export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -44,7 +44,7 @@ const signup = async (req, res, next) => {
 
     if (
       password.match(
-        /^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$/
+        /^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,15}$/
       )
     ) {
       // hashedPassword = await bcrypt.hash(password, 12);
@@ -100,7 +100,7 @@ const login = async (req, res, next) => {
 
   try {
     existingUser = await User.findOne({ userName: userName, password: password });
-    console.log(existingUser)
+    // console.log(existingUser)
     if (isEmpty(existingUser)) {
       return next(new HttpError("Could not find the user", 404));
     }
@@ -139,6 +139,31 @@ const logout = async (req, res, next) => {
     .json({ message: "Successfully logged out!" });
 };
 
+const checkPasswordUnique = async (req, res, next) => {
+   const errors = validationResult(req);
+   if(!errors.isEmpty()) {
+     return next(new HttpError('Invalid data passed', 422));
+   }
+
+   const { password } = req.body;
+   if(isEmpty(password)){
+     return next(new HttpError('Empty password', 422));
+   }
+
+   try{
+
+    const existingPassword = User.findOne({ password: password });
+    if(!isEmpty(existingPassword)){
+      return next(new HttpError('Password is taken', 422));
+    }
+
+   }catch(err){
+     return next(new HttpError('Something went wrong', 500));
+   }
+   res.status(200).json({ password });
+}
+
 exports.signup = signup;
 exports.login = login;
 exports.logout = logout;
+exports.checkPasswordUnique = checkPasswordUnique;

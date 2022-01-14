@@ -5,6 +5,7 @@ import InputLabel from "@mui/material/InputLabel";
 
 import { InputStyle } from "./Input.styles";
 import { useHttpCLient } from "../../hooks/http-hook";
+import { InputAdornment } from "@mui/material";
 
 const InputForm = (props, ref) => {
 
@@ -20,6 +21,12 @@ const InputForm = (props, ref) => {
           style={props.style}
           onChange={props.onChange}
           value={props.value}
+          startAdornment={
+            <InputAdornment position="start">
+              {props.icon}
+            </InputAdornment>
+          }
+          required
         />
       </FormControl>
     </InputStyle>

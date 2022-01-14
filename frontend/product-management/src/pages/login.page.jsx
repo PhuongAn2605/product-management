@@ -5,6 +5,9 @@ import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { fetchLoginStart } from "../redux/auth/auth.actions";
 import Header from '../components/header/Header.component';
+import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
+
 
 const Login = ({ login }) => {
   const [userNameValue, setUserNameValue] = useState("");
@@ -35,6 +38,8 @@ const Login = ({ login }) => {
         type="text"
         value={userNameValue}
         onChange={(e) => changeEmailInputHandler(e)}
+        icon={<PermIdentityOutlinedIcon />}
+
       />
       <InputForm
         id="password"
@@ -42,6 +47,7 @@ const Login = ({ login }) => {
         type="password"
         value={passwordValue}
         onChange={(e) => changePasswordInputHandler(e)}
+        icon={<VpnKeyIcon />}
       />
 
       <ButtonForm title="Login" type="submit" action={() => loginHandler(userNameValue, passwordValue)}/>

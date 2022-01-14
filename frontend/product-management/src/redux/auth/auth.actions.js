@@ -23,11 +23,12 @@ export const fetchSignupFailure = error => ({
     payload: error
 });
 
-export const fetchLoginStart = (userName, password) => ({
+export const fetchLoginStart = (userName, password, expirationDate) => ({
     type: AuthTypes.LOGIN_START,
     payload: {
         userName,
-        password
+        password,
+        expirationDate
     }
 });
 
@@ -53,6 +54,28 @@ export const fetchLogoutFailure = () => ({
     type: AuthTypes.LOGOUT_FAILURE
 });
 
+export const setLogInMode = () => ({
+    type: AuthTypes.SET_LOGIN_MODE
+})
+
+export const setSignupMode =() => ({
+    type: AuthTypes.SET_SIGNUP_MODE
+});
+
+export const fetchCheckPasswordStart = (password) => ({
+    type: AuthTypes.CHECK_PASSWORD,
+    payload: password
+});
+
+export const fetchCheckPasswordFailure = (error) => ({
+    type: AuthTypes.CHECK_PASSWORD_FAILURE,
+    payload: error
+});
+
+export const fetchCheckPasswordSuccess = (data) => ({
+    type: AuthTypes.CHECK_PASSWORD_SUCCESS,
+    payload: data
+})
 
 
 

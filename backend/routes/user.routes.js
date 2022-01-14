@@ -29,4 +29,6 @@ router.post(
 
 router.get("/logout", userControllers.logout);
 
+router.post('/check-password', userControllers.checkPasswordUnique);
+
 module.exports = router;
