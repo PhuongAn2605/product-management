@@ -43,17 +43,14 @@ export function* fetchLogin(payload) {
     });
 
     const data = result.data;
-    // console.log(data);
 
     const expirationDate = payload.payload.expirationDate;
-    // console.log(expirationDate)
     if (!isEmpty(data)) {
       data.exprirationDate = expirationDate;
       yield put(fetchLoginSuccess(data));
     } else {
       yield put(fetchLoginFailure("error"));
     }
-    console.log(data);
   } catch (error) {
     console.log("error: ", error);
     yield put(fetchLoginFailure(error));
@@ -79,7 +76,8 @@ export function* fetchLogoutWatcher() {
 }
 
 export function* fetchCheckPassword(payload) {
-    const { password } = payload;
+    const password = payload.payload;
+    console.log(password)
   try {
       const result = yield Http.post('/user/check-password', {
           password

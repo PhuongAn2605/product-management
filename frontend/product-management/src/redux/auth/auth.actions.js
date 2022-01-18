@@ -63,7 +63,7 @@ export const setSignupMode =() => ({
 });
 
 export const fetchCheckPasswordStart = (password) => ({
-    type: AuthTypes.CHECK_PASSWORD,
+    type: AuthTypes.CHECK_PASSWORD_START,
     payload: password
 });
 
@@ -75,7 +75,12 @@ export const fetchCheckPasswordFailure = (error) => ({
 export const fetchCheckPasswordSuccess = (data) => ({
     type: AuthTypes.CHECK_PASSWORD_SUCCESS,
     payload: data
-})
+});
+
+export const setErrorConfirmPassword = (error) => ({
+    type: AuthTypes.CHECK_ERROR_CONFIRM_PASSWORD,
+    payload: error
+});
 
 
 

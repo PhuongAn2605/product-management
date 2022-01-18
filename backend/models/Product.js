@@ -7,8 +7,8 @@ const productSchema = new Schema(
     productName: { type: String, required: true },
     shortName: { type: String, required: true },
     image: { type: String, required: true },
-    price: { type: Number, required: true },
-    payedPrice: { type: Number },
+    // price: { type: Number, required: true },
+    // payedPrice: { type: Number },
     expiration: { type: Date, required: true },
     functions: { type: String, required: true },
     location: { type: String, required: true },
@@ -17,7 +17,7 @@ const productSchema = new Schema(
       type: mongoose.Types.ObjectId,
       ref: "Comment",
     },
-    houseId: { type: mongoose.Types.ObjectId, required: true, ref: "House" },
+    houseId: { type: mongoose.Types.ObjectId, ref: "House" },
   },
   { timestamp: true }
 );

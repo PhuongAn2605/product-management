@@ -1,4 +1,5 @@
-import SendaImage from "../../images/senda.jpg";
+import SendaImage from "../../images/cach-trong-sen-da-0.jpg";
+import DotMenu from "../dot-menu/DotMenu";
 import {
   ItemStyle,
   NameStyle,
@@ -7,15 +8,28 @@ import {
   ImageStyle
 } from "./Item.styles";
 
-const Item = () => {
+const Item = (props) => {
+  console.log(props);
+  alert();
   return (
+    // <ItemStyle>
+    //   <DotMenu />
+    //   <ImageStyle>
+    //     <img src={SendaImage} alt="Sen da" style={{ width: "200px", height: "200px"}} />
+    //   </ImageStyle>
+    //   <NameStyle>Sen đá</NameStyle>
+    //   <FunctionStyle>Trang trí</FunctionStyle>
+    //   <DescriptionStyle>Đồ vật có thể dùng trang trí</DescriptionStyle>
+    // </ItemStyle>
+
     <ItemStyle>
+      <DotMenu />
       <ImageStyle>
-        <img src={SendaImage} alt="Sen da" style={{ width: "200px", height: "200px"}} />
+        <img src={props.imageUrl} alt={props.productName} style={{ width: "200px", height: "200px"}} />
       </ImageStyle>
-      <NameStyle>Sen đá</NameStyle>
-      <FunctionStyle>Trang trí</FunctionStyle>
-      <DescriptionStyle>Đồ vật có thể dùng trang trí</DescriptionStyle>
+      <NameStyle>{props.productName}</NameStyle>
+      <FunctionStyle>{props.functions}</FunctionStyle>
+      <DescriptionStyle>{props.description}</DescriptionStyle>
     </ItemStyle>
   );
 };

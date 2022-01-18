@@ -3,6 +3,21 @@ const HttpError = require("../models/http-error");
 const isEmpty = require("is-empty");
 const Product = require("../models/Product");
 const House = require("../models/House");
+const User = require("../models/User");
+
+const getProducts = async (req, res, next) => {
+  let products;
+
+  try{
+    products = await Product.find({});
+
+  }catch(err){
+    const error = new HttpError('Fetching users failed', 500);
+    return next(error);
+  }
+
+  res.json({ products: products.map(product => product.toObject({ getters: true }))});
+}
 
 const getProductById = async (req, res, next) => {
   const productId = req.params.pid;
@@ -22,6 +37,8 @@ const getProductById = async (req, res, next) => {
 };
 
 const createProduct = async (req, res, next) => {
+  // console.log(req.body);
+  // console.log(req.params);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors);
@@ -30,31 +47,38 @@ const createProduct = async (req, res, next) => {
     );
   }
 
+  const userName = req.params.userName;
+  const productOfUser = await User.findOne({ userName: userName });
+  // console.log("user: ", productOfUser._id);
+  const userId = productOfUser._id;
+
+  const houseOfUser = await House.findOne({ userId: userId });
+  const houseId = houseOfUser._id;
+  // console.log("house: ", houseOfUser)
+  
   const {
     productName,
     shortName,
     image,
-    price,
-    payedPrice,
     expiration,
     functions,
     location,
     description,
-    commentId,
-    houseId,
+    // commentId,
   } = req.body;
+
+  // console.log(req.file.path);
 
   const createdProduct = new Product({
     productName,
     shortName,
     image,
-    price,
-    payedPrice,
     expiration,
     functions,
     location,
     description,
-    commentId,
+    image: req.file.path,
+    // commentId,
     houseId,
   });
 
@@ -68,29 +92,28 @@ const createProduct = async (req, res, next) => {
     //     return next(new HttpError('Product exists already!'));
     // }
 
-    house = await House.findById(houseId);
-    if(isEmpty(house)){
-      return next(new HttpError('Could not find the house', 404));
-    }
+    // house = await House.findById(houseId);
+    // if(isEmpty(house)){
+    //   return next(new HttpError('Could not find the house', 404));
+    // }
 
     saveProduct = await createdProduct.save();
     if (isEmpty(saveProduct)) {
       return next(new HttpError("Could not save the product", 500));
     }
 
-    house.products.push(createdProduct);
-    const saveHouse = await house.save();
-    if(isEmpty(saveHouse)){
-      return next(new HttpError('Could not save the house', 500));
-    }
+    // house.products.push(createdProduct);
+    // const saveHouse = await house.save();
+    // if(isEmpty(saveHouse)){
+    //   return next(new HttpError('Could not save the house', 500));
+    // }
 
   } catch (err) {
     console.log(err);
-
     return next(new HttpError("Creating product failed!", 500));
   }
 
-  res.status(201).json({ productName: createdProduct.productName });
+  res.status(201).json({ product: createdProduct });
 };
 
 const editProduct = async (req, res, next) => {
@@ -145,6 +168,7 @@ const deleteProduct = async (req, res, next) => {
   res.status(201).send('Deleted');
 };
 
+exports.getProducts = getProducts;
 exports.createProduct = createProduct;
 exports.getProductById = getProductById;
 exports.editProduct = editProduct;

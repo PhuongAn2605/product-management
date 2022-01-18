@@ -30,6 +30,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
       }
 
     case  AuthTypes.SIGN_UP_FAILURE:
+      console.log(action.payload);
       return {
         ...state,
         isLoggedIn: false,
@@ -45,12 +46,11 @@ const authReducer = (state = INITIAL_STATE, action) => {
         isLoggedIn: true,
         token: action.payload.token,
         userName: action.payload.userName,
-        // isLoggedInMode: false,
+        error: null,
         tokenExpirationDate: login(action.payload.userName, action.payload.token, action.payload.expirationDate),
       };
 
     case AuthTypes.LOGIN_FAILURE:
-      console.log('Failure')
 
       return {
         ...state,
@@ -64,6 +64,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
         ...state,
         isLoggedIn: false,
         // isLoggedInMode: true,
+        error: null,
         token: null,
         tokenExpirationDate: null,
         userId: null,
@@ -91,9 +92,16 @@ const authReducer = (state = INITIAL_STATE, action) => {
     case AuthTypes.CHECK_PASSWORD_SUCCESS:
       return {
         ...state,
-        password: action.payload
+        password: action.payload,
+        error: null
       }
     case AuthTypes.CHECK_PASSWORD_FAILURE:
+      return {
+        ...state,
+        error: action.payload
+      }
+
+    case AuthTypes.SET_ERROR_CONFIRM_PASSWORD:
       return {
         ...state,
         error: action.payload

@@ -1,70 +1,82 @@
 import { useState, useRef, useEffect } from "react";
 import { connect } from "react-redux";
-import ButtonForm from '../button/Button.comonent';
-import './ImageUpload.styles.css';
+import { addProductImage } from "../../redux/product/product.actions";
+import ButtonForm from "../button/Button.component";
+import "./ImageUpload.styles.css";
 
-const ImageUpload = props => {
-    // console.log(props.setAvatar);
-    const [file, setFile] = useState();
-    const [previewUrl, setPreviewUrl] = useState();
-    const [isValid, setIsValid] = useState();
+const ImageUpload = ({ id, center, onInput, productImage, addProductImage }) => {
+  const [file, setFile] = useState();
+  const [previewUrl, setPreviewUrl] = useState();
+  const [isValid, setIsValid] = useState();
 
-    const filePickerRef = useRef();
+  const filePickerRef = useRef();
 
-    useEffect(() => {
-        if(!file){
-            return;
-        }
-        const fileReader = new FileReader();
-        fileReader.onload = () => {
-            setPreviewUrl(fileReader.result);
-        };
-        fileReader.readAsDataURL(file);
-    },[file]);
-
-    const pickedHandler = event => {
-        let pickedFile;
-        let fileIsValid = isValid;
-        if(event.target.files && event.target.files.length === 1){
-            pickedFile = event.target.files[0];
-            setFile(pickedFile);
-            setIsValid(true);
-            fileIsValid = true;
-        }else{
-            setIsValid(false);
-            fileIsValid = false;
-        }
-
-        // props.onInput(props.id, pickedFile, fileIsValid);
+  useEffect(() => {
+    if (!file) {
+      return;
+    }
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setPreviewUrl(fileReader.result);
     };
+    fileReader.readAsDataURL(file);
+  }, [file]);
 
-    const pickImageHandler = () => {
-        filePickerRef.current.click();
-        props.setAvatar(filePickerRef.current.value);
+  const pickedHandler = (event) => {
+    let pickedFile;
+    let fileIsValid = isValid;
+    if (event.target.files && event.target.files.length === 1) {
+      pickedFile = event.target.files[0];
+      setFile(pickedFile);
+      setIsValid(true);
+      fileIsValid = true;
+    } else {
+      setIsValid(false);
+      fileIsValid = false;
     }
 
-    return (
-        <div className="form-control">
-            <input 
-                id={props.id}
-                ref={filePickerRef}
-                style={{ display: 'none'}}
-                type="file"
-                accept=".jpg,.png,.jpeg"
-                onChange={pickedHandler}
-            />
-            <div className={`image-upload ${props.center && 'center'}`}>
-                <div className="image-upload__preview">
-                    {previewUrl && <img src={previewUrl} alt="Preview" />}
-                    {!previewUrl && <p>Please pick an image.</p>}
-                </div>
-                <ButtonForm type="button" title="PICK IMAGE" onClick={pickImageHandler} color="success"/>
-            </div>
+    addProductImage({pickedFile});
+
+    onInput(pickedFile);
+  };
+
+  const pickImageHandler = () => {
+    filePickerRef.current.click();
+  };
+
+  return (
+    <div className="form-control">
+      <input
+        id={id}
+        ref={filePickerRef}
+        style={{ display: "none" }}
+        type="file"
+        accept=".jpg,.png,.jpeg"
+        onChange={pickedHandler}
+      />
+      <div className={`image-upload ${center && "center"}`}>
+        <div className="image-upload__preview">
+          {previewUrl && <img src={previewUrl} alt="Preview" />}
+          {!previewUrl && <p>Please pick an image.</p>}
         </div>
-    )
-}
+        <ButtonForm
+          variant="contained"
+          type="button"
+          title="PICK IMAGE"
+          action={() => pickImageHandler()}
+          color="primary"
+        />
+      </div>
+    </div>
+  );
+};
 
-const mapDispatchToProps = dispatch => ({
-  });
+const mapStateToProps = (state) => ({
+  productImage: state.product.productImage,
+});
 
-export default connect(null, mapDispatchToProps)(ImageUpload);
+const mapDispatchToProps = (dispatch) => ({
+  addProductImage: (url) => dispatch(addProductImage(url)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ImageUpload);

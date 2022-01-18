@@ -1,22 +1,31 @@
 import React, { useState } from "react";
 import InputForm from "../components/input/Input.component";
-import ButtonForm from "../components/button/Button.comonent";
+import ButtonForm from "../components/button/Button.component";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { fetchLoginStart } from "../redux/auth/auth.actions";
-import Header from '../components/header/Header.component';
-import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
-import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
+import VpnKeyIcon from "@mui/icons-material/VpnKey";
+import { ThemeProvider } from "@mui/material/styles";
 
+import isEmpty from "is-empty";
 
-const Login = ({ login }) => {
+import {
+  theme,
+  ErrorTextStyle,
+  PasswordButtonStyle,
+  TextHeaderStyle,
+  AuthPageStyle,
+} from "./utils.styles";
+
+const Login = ({ login, isLoggedIn, error }) => {
   const [userNameValue, setUserNameValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
+  const [errors, setErrors] = useState(error);
 
   const navigate = useNavigate();
 
   const changeEmailInputHandler = (e) => {
-    // console.log(e.currentTarget.value)
     setUserNameValue(e.currentTarget.value);
   };
   const changePasswordInputHandler = (e) => {
@@ -25,39 +34,69 @@ const Login = ({ login }) => {
 
   const loginHandler = (userName, password) => {
     login(userName, password);
-    navigate('/');
-  }
+
+    if (!isEmpty(error)) {
+      setErrors(error);
+      return;
+    }else{
+      navigate("/");
+    }
+  };
 
   return (
-    <React.Fragment>
-      <Header />
-      <form >
-      <InputForm
-        id="userName"
-        name="User Name"
-        type="text"
-        value={userNameValue}
-        onChange={(e) => changeEmailInputHandler(e)}
-        icon={<PermIdentityOutlinedIcon />}
+    <AuthPageStyle>
+      <TextHeaderStyle>Login</TextHeaderStyle>
+      <form className="login">
+        <InputForm
+          id="userName"
+          name="User Name"
+          type="text"
+          value={userNameValue}
+          onChange={(e) => changeEmailInputHandler(e)}
+          icon={<PermIdentityOutlinedIcon />}
+        />
+        <InputForm
+          id="password"
+          name="Password"
+          type="password"
+          value={passwordValue}
+          onChange={(e) => changePasswordInputHandler(e)}
+          icon={<VpnKeyIcon />}
+        />
 
-      />
-      <InputForm
-        id="password"
-        name="Password"
-        type="password"
-        value={passwordValue}
-        onChange={(e) => changePasswordInputHandler(e)}
-        icon={<VpnKeyIcon />}
-      />
+        {!isEmpty(errors) && (
+          <ErrorTextStyle>{errors.toString()}</ErrorTextStyle>
+        )}
 
-      <ButtonForm title="Login" type="submit" action={() => loginHandler(userNameValue, passwordValue)}/>
-    </form>
-    </React.Fragment>
+        <PasswordButtonStyle>
+          <ThemeProvider theme={theme}>
+            <ButtonForm
+              title="Login"
+              variant="contained"
+              action={() => loginHandler(userNameValue, passwordValue)}
+            />
+          </ThemeProvider>
+          <ButtonForm
+            title="Sign Up"
+            type="button"
+            variant="outlined"
+            action={() => navigate("/signup")}
+          />
+        </PasswordButtonStyle>
+        {/* <ButtonForm title="Login" type="submit" action={() => loginHandler(userNameValue, passwordValue)}/> */}
+      </form>
+    </AuthPageStyle>
   );
 };
 
-const mapDispatchToProps = dispatch => ({
-  login: (userNameValue, passwordValue ) => dispatch(fetchLoginStart(userNameValue, passwordValue)),
-})
+const mapDispatchToProps = (dispatch) => ({
+  login: (userNameValue, passwordValue) =>
+    dispatch(fetchLoginStart(userNameValue, passwordValue)),
+});
 
-export default connect(null, mapDispatchToProps)(Login);
+const mapStateToProps = (state) => ({
+  isLoggedIn: state.auth.isLoggedIn,
+  error: state.auth.error,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

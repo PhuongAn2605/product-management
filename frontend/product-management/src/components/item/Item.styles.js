@@ -7,7 +7,7 @@ export const ItemStyle = styled.div`
   text-align: start;
 
   width: 200px;
-  height: 280px;
+  height: 320px;
 
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 `;

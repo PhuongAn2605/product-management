@@ -3,12 +3,16 @@ import isEmpty from "is-empty";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { fetchLoginStart } from "../../redux/auth/auth.actions";
+import {
+  fetchLoginStart,
+  fetchLogoutStart,
+} from "../../redux/auth/auth.actions";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router";
 
-const UserMenu = ({ userName, logout, isLoggedIn }) => {
+const UserMenu = ({ userName, logout, isLoggedIn, error }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [errors, setErrors] = React.useState(error);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -19,17 +23,21 @@ const UserMenu = ({ userName, logout, isLoggedIn }) => {
   };
 
   console.log(isLoggedIn);
-  if(isEmpty(userName) && isLoggedIn){
-    userName = JSON.parse(localStorage.getItem('userData')).userName
+  if (isEmpty(userName) && isLoggedIn) {
+    userName = JSON.parse(localStorage.getItem("userData")).userName;
   }
 
   const logoutHandler = () => {
     logout();
     localStorage.removeItem("userData");
-    navigate('/login');
 
+    if (isEmpty(errors)) {
+      navigate("/login");
+    } else {
+      setErrors(error);
+      console.log(errors);
+    }
   };
-
 
   return (
     <React.Fragment>
@@ -39,10 +47,9 @@ const UserMenu = ({ userName, logout, isLoggedIn }) => {
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
-        style={{ color: "#aaa"}}
+        style={{ color: "#aaa" }}
       >
         {userName}
-        {/* USER */}
       </Button>
       <Menu
         id="basic-menu"
@@ -63,11 +70,12 @@ const UserMenu = ({ userName, logout, isLoggedIn }) => {
 
 const mapStateToProps = (state) => ({
   userName: state.auth.userName,
-  isLoggedIn: state.auth.isLoggedIn
+  isLoggedIn: state.auth.isLoggedIn,
+  error: state.auth.error,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  logout: () => dispatch(fetchLoginStart()),
+  logout: () => dispatch(fetchLogoutStart()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserMenu);

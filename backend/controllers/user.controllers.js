@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 
 const HttpError = require("../models/http-error");
 const User = require("../models/User");
+const House = require("../models/House");
 
 const signup = async (req, res, next) => {
   console.log(req.body);
@@ -33,6 +34,8 @@ const signup = async (req, res, next) => {
         422
       );
       return next(error);
+      // const error = "User exists already, please login instead";
+      // res.status(422).json(error);
     }
 
     const existingPassword = await User.findOne({ password: password });
@@ -51,12 +54,18 @@ const signup = async (req, res, next) => {
       // if (isEmpty(hashedPassword)) {
       //   return next(new HttpError("Could not encrypt the password", 422));
       // }
+
+      
+
       newUser = new User({
         userName,
         // password: hashedPassword,
         password: password
       });
       saveUser = await newUser.save();
+      // console.log(saveUser._id);
+
+      
     } else {
       return next(new HttpError("Wrong password!", 422));
     }
@@ -64,6 +73,19 @@ const signup = async (req, res, next) => {
     if (isEmpty(saveUser)) {
       return next(new HttpError("Can not save the user", 500));
     }
+
+    const newHouse = new House({
+      name: userName + "'s house",
+      userId: saveUser._id,
+      products: []
+    });
+
+    const saveHouse = newHouse.save();
+    if(isEmpty(saveHouse)){
+      return next(new HttpError("Can not create a house for the user!", 500));
+    }
+
+
     token = jwt.sign(
       {
         userName: newUser.userName,

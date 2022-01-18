@@ -5,6 +5,7 @@ import { fetchSignup } from "../../redux/auth/auth.actions";
 
 const ButtonStyle = styled.div`
     margin: auto;
+    padding: 0.5rem;
 `
 
 const ButtonForm = (props) => {
@@ -13,8 +14,7 @@ const ButtonForm = (props) => {
   return (
     <ButtonStyle>
       <Button
-        variant="contained"
-        // type={props.type}
+        variant={props.variant}
         disabled={props.disabled}
         color={props.color ? props.color : "primary"}
         onClick={props.action}
