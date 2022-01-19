@@ -13,10 +13,6 @@ export const addProductSuccess = (result) => ({
     payload: result
 });
 
-export const addProductFailure = (error) => ({
-    type: ProductTypes.ADD_PRODUCT_FAILURE,
-    payload: error
-});
 
 export const addProductImage = (url) => ({
     type: ProductTypes.ADD_PRODUCT_IMAGE,
@@ -29,10 +25,31 @@ export const fetchProductStart = () => ({
 
 export const fetchProductSuccess = (result) => ({
     type: ProductTypes.FETCH_PRODUCTS_SUCCESS,
-    payload: [...result]
+    payload: result
 });
 
-export const fetchProductFailure = (error) => ({
-    type: ProductTypes.FETCH_PRODUCTS_FAILURE,
+
+export const editProductStart = (product) => ({
+    type: ProductTypes.EDIT_PRODUCT_START,
+    payload: product
+});
+
+export const editProductSuccess = (data) => ({
+    type: ProductTypes.EDIT_PRODUCT_SUCCESS,
+    payload: data
+});
+
+export const deleteProductStart = (id) => ({
+    type: ProductTypes.DELETE_PRODUCT_START,
+    payload: id
+});
+
+export const deleteProductSuccess = (data) => ({
+    type: ProductTypes.DELETE_PRODUCT_SUCCESS,
+    payload: data
+});
+
+export const fetchFailure = (error) => ({
+    type: ProductTypes.FETCH_FAILURE,
     payload: error
 });

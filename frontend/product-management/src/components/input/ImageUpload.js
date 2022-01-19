@@ -4,12 +4,16 @@ import { addProductImage } from "../../redux/product/product.actions";
 import ButtonForm from "../button/Button.component";
 import "./ImageUpload.styles.css";
 
-const ImageUpload = ({ id, center, onInput, productImage, addProductImage }) => {
+const ImageUpload = ({ id, center, onInput, productImage, addProductImage, imageUrl }) => {
   const [file, setFile] = useState();
-  const [previewUrl, setPreviewUrl] = useState();
+  const [previewUrl, setPreviewUrl] = useState(imageUrl);
   const [isValid, setIsValid] = useState();
 
   const filePickerRef = useRef();
+
+  // useEffect(() => {
+
+  // }, [])
 
   useEffect(() => {
     if (!file) {

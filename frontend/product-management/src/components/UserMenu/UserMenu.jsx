@@ -22,7 +22,6 @@ const UserMenu = ({ userName, logout, isLoggedIn, error }) => {
     setAnchorEl(null);
   };
 
-  console.log(isLoggedIn);
   if (isEmpty(userName) && isLoggedIn) {
     userName = JSON.parse(localStorage.getItem("userData")).userName;
   }

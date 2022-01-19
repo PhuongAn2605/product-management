@@ -9,8 +9,7 @@ import {
 } from "./Item.styles";
 
 const Item = (props) => {
-  console.log(props);
-  alert();
+  // console.log(props);
   return (
     // <ItemStyle>
     //   <DotMenu />
@@ -23,7 +22,7 @@ const Item = (props) => {
     // </ItemStyle>
 
     <ItemStyle>
-      <DotMenu />
+      <DotMenu id={props.id} />
       <ImageStyle>
         <img src={props.imageUrl} alt={props.productName} style={{ width: "200px", height: "200px"}} />
       </ImageStyle>

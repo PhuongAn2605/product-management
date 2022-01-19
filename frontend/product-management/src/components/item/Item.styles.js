@@ -7,7 +7,7 @@ export const ItemStyle = styled.div`
   text-align: start;
 
   width: 200px;
-  height: 320px;
+  height: 350px;
 
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 `;
@@ -18,7 +18,7 @@ export const FunctionStyle = styled.div`
   display: inline-block;
   border: 2px solid #bbb;
   border-radius: 10px;
-  padding: 0.1rem;
+  padding: 0.3rem;
   margin: 0.2rem 0;
 `;
 

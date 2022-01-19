@@ -26,7 +26,11 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Box from "@mui/material/Box";
-import { addProductStart } from "../../redux/product/product.actions.js";
+import {
+  addProductStart,
+  editProductStart,
+  fetchProductStart,
+} from "../../redux/product/product.actions.js";
 import isEmpty from "is-empty";
 import { useNavigate } from "react-router";
 import { closeDialog, openDialog } from "../../redux/dialog/dialog-actions.js";
@@ -70,72 +74,100 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-const DialogFormEdit = ({ addProduct, userName, productImage }) => {
-  const [open, setOpen] = useState(false);
-  const [errors, setErrors] = useState(null);
-  const [proName, setProName] = useState("");
-  const [shortName, setShortName] = useState("");
-  const [location, setLocation] = useState("");
-  const [expiration, setExpiration] = useState("");
-  const [functions, setFunctions] = useState("");
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState(productImage);
+const DialogFormEdit = ({
+  addProduct,
+  userName,
+  productImage,
+  id,
+  products,
+  editProduct,
+  fetchProduct
+}) => {
+  // console.log(products)
+  let productToEdit;
+  if (!isEmpty(products)) {
+    productToEdit = products.filter((p) => p._id === id);
+  // console.log(productToEdit);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-    console.log("OPEN: ");
+  }
+
+  const {
+    productName,
+    shortName,
+    location,
+    image,
+    houseId,
+    functions,
+    expiration,
+    description,
+  } = productToEdit[0];
+  const formatedExpiration = new Date(expiration)
+    .toISOString()
+    .substring(0, 10);
+
+  // console.log(productName);
+
+  const [open, setOpenDialogEdit] = useState(false);
+  const [errors, setErrors] = useState(null);
+  const [proNameValue, setProName] = useState(productName);
+  const [shortNameValue, setShortName] = useState(shortName);
+  const [locationValue, setLocation] = useState(location);
+  const [expirationValue, setExpiration] = useState(formatedExpiration);
+  const [functionsValue, setFunctions] = useState(functions);
+  const [descriptionValue, setDescription] = useState(description);
+  const [imageValue, setImage] = useState(image);
+
+  // console.log(new Date(expirationValue).toISOString().substring(0, 10));
+  // console.log(functions);
+
+  const handleDialogOpen = () => {
+    setOpenDialogEdit(true);
   };
-  const handleClose = () => {
-    setOpen(false);
-    console.log("CLOSE: ");
+  const handleDialogClose = () => {
+    setOpenDialogEdit(false);
   };
 
   const inputHandler = (pickedFile) => {
     setImage(pickedFile);
   };
 
-  const addProductHandler = (e) => {
+  const editProductHander = (e) => {
     e.preventDefault();
 
     const product = {
-      proName,
-      shortName,
-      location,
-      expiration,
-      functions,
-      description,
-      image,
-    };
-    const data = {
-      product,
-      userName,
+      proNameValue,
+      shortNameValue,
+      locationValue,
+      expirationValue,
+      functionsValue,
+      descriptionValue,
+      imageValue,
+      id,
     };
 
-    console.log(data);
+    // console.log(product);
 
-    addProduct(data);
-    handleClose();
+    editProduct(product);
+    handleDialogClose();
 
-    // if(isEmpty(error)){
-    //   closeDialog();
-    // }else{
-    //   return;
-    // }
+    // fetchProduct();
+
+    
   };
 
   return (
     <DialogStyle>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        <Link to='/product/edit/'>Edit</Link>
+      <Button variant="outlined" onClick={handleDialogOpen}>
+        <span>Edit</span>
       </Button>
       <BootstrapDialog
-        onClose={handleClose}
+        onClose={handleDialogClose}
         aria-labelledby="customized-dialog-title"
         open={open}
       >
         <BootstrapDialogTitle
           id="customized-dialog-title"
-          onClose={handleClose}
+          onClose={handleDialogClose}
           style={{ display: "flex", alignItems: "center" }}
         >
           <AddTextStyle>Sửa thông tin sản phẩm</AddTextStyle>
@@ -157,7 +189,7 @@ const DialogFormEdit = ({ addProduct, userName, productImage }) => {
                 id="productName"
                 name="Tên sản phẩm"
                 type="text"
-                value={proName}
+                value={proNameValue}
                 onChange={(e) => setProName(e.currentTarget.value)}
               />
             </Typography>
@@ -166,7 +198,7 @@ const DialogFormEdit = ({ addProduct, userName, productImage }) => {
                 id="shortName"
                 name="Tên viết tắt"
                 type="text"
-                value={shortName}
+                value={shortNameValue}
                 onChange={(e) => setShortName(e.currentTarget.value)}
               />
             </Typography>
@@ -175,7 +207,7 @@ const DialogFormEdit = ({ addProduct, userName, productImage }) => {
                 id="location"
                 name="Vị trí đặt sản phẩm"
                 type="text"
-                value={location}
+                value={locationValue}
                 onChange={(e) => setLocation(e.currentTarget.value)}
               />
             </Typography>
@@ -184,7 +216,7 @@ const DialogFormEdit = ({ addProduct, userName, productImage }) => {
                 id="expiration"
                 name="Hạn sử dụng sản phẩm"
                 type="date"
-                value={expiration}
+                value={expirationValue}
                 onChange={(e) => setExpiration(e.currentTarget.value)}
               />
             </Typography>
@@ -197,7 +229,7 @@ const DialogFormEdit = ({ addProduct, userName, productImage }) => {
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    value={functions}
+                    value={functionsValue}
                     label="Chọn chức năng"
                     onChange={(e) => setFunctions(e.target.value)}
                     style={{
@@ -206,15 +238,31 @@ const DialogFormEdit = ({ addProduct, userName, productImage }) => {
                       justifyContent: "flex-start",
                     }}
                   >
-                    <MenuItem value="Đồ vật có thể dùng để trang trí">
-                      Đồ vật có thể dùng để trang trí
-                    </MenuItem>
-                    <MenuItem value="Đồ vật có thể dùng để ngồi">
-                      Đồ vật có thể dùng để ngồi
-                    </MenuItem>
-                    <MenuItem value="Đồ vật có thể dùng để đựng đồ">
-                      Đồ vật có thể dùng để đựng đồ
-                    </MenuItem>
+                    {functionsValue == "Trang trí" ? (
+                      <MenuItem value={"Trang trí"} selected>
+                        Trang trí
+                      </MenuItem>
+                    ) : (
+                      <MenuItem value={"Trang trí"}>Trang trí</MenuItem>
+                    )}
+                    {functionsValue == "Ngồi" ? (
+                      <MenuItem value={"Ngồi"} selected>
+                        Ngồi
+                      </MenuItem>
+                    ) : (
+                      <MenuItem value={"Ngồi"}>Ngồi</MenuItem>
+                    )}
+                    {functionsValue == "Đựng đồ" ? (
+                      <MenuItem value={"Đựng đồ"} selected>
+                        Đựng đồ
+                      </MenuItem>
+                    ) : (
+                      <MenuItem value={"Đựng đồ"}>Đựng đồ</MenuItem>
+                    )}
+
+                    {/* <MenuItem value={"Trang trí"} selected={false} >Trang trí</MenuItem>
+                    <MenuItem value="Ngồi">Ngồi</MenuItem>
+                    <MenuItem value="Đựng đồ">Đựng đồ</MenuItem> */}
                   </Select>
                 </FormControl>
               </Box>
@@ -225,21 +273,26 @@ const DialogFormEdit = ({ addProduct, userName, productImage }) => {
                 id="description"
                 name="Mô tả đồ vật"
                 type="textarea"
-                value={description}
+                value={descriptionValue}
                 onChange={(e) => setDescription(e.currentTarget.value)}
               />
             </Typography>
           </div>
           <Typography gutterBottom>
-            <ImageUpload id="image" center="center" onInput={inputHandler} />
+            <ImageUpload
+              id="image"
+              center="center"
+              onInput={inputHandler}
+              imageUrl={`http://localhost:5000/${imageValue}`}
+            />
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleClose}>
+          <Button autoFocus onClick={handleDialogClose}>
             Cancel
           </Button>
-          <Button autoFocus onClick={(e) => addProductHandler(e)}>
-            Add Product
+          <Button autoFocus onClick={(e) => editProductHander(e)}>
+            Save
           </Button>
         </DialogActions>
       </BootstrapDialog>
@@ -252,6 +305,7 @@ const mapStateToProps = (state) => ({
   userName: state.auth.userName,
   productImage: state.product.productImage,
   openDialog: state.dialog.openDialog,
+  products: state.product.products,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -259,6 +313,8 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(addProductStart(product, userName)),
   closeDialogAction: () => dispatch(closeDialog()),
   openDialogAction: () => dispatch(openDialog()),
+  editProduct: (product) => dispatch(editProductStart(product)),
+  fetchProduct: () => dispatch(fetchProductStart())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DialogFormEdit);

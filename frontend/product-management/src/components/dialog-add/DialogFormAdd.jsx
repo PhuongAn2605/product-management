@@ -89,8 +89,9 @@ const DialogFormAdd = ({
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(productImage);
 
-  const navigate = useNavigate();
 
+
+  const navigate = useNavigate();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -217,15 +218,9 @@ const DialogFormAdd = ({
                       justifyContent: "flex-start",
                     }}
                   >
-                    <MenuItem value="Đồ vật có thể dùng để trang trí">
-                      Đồ vật có thể dùng để trang trí
-                    </MenuItem>
-                    <MenuItem value="Đồ vật có thể dùng để ngồi">
-                      Đồ vật có thể dùng để ngồi
-                    </MenuItem>
-                    <MenuItem value="Đồ vật có thể dùng để đựng đồ">
-                      Đồ vật có thể dùng để đựng đồ
-                    </MenuItem>
+                    <MenuItem value="Trang trí">Trang trí</MenuItem>
+                    <MenuItem value="Ngồi">Ngồi</MenuItem>
+                    <MenuItem value="Đựng đồ">Đựng đồ</MenuItem>
                   </Select>
                 </FormControl>
               </Box>

@@ -91,9 +91,27 @@ const AddDialogStyle = styled.div`
   }
 `;
 
-const MyHome = ({ openDialog, fetchProductStart, products }) => {
+const MessageTextStyle = styled.div`
+  color: green;
+  font-weight: 600;
+  text-align: center;
+  font-size: 20px;
+  margin: auto;
+`
 
-  console.log(...products);
+const MyHome = ({ openDialog, fetchProducts, products, product, message }) => {
+
+  useEffect(() => {
+    fetchProducts();
+    // console.log(products);
+  }, [products]);
+
+  // useEffect(() => {
+  //   message = null;
+  // }, []);
+
+  // console.log(products);
+
 
   return (
     <div>
@@ -112,6 +130,7 @@ const MyHome = ({ openDialog, fetchProductStart, products }) => {
               <UserMenu />
             </UserNameStyle>
           </HeaderStyle>
+          {/* {!isEmpty(message) && <MessageTextStyle>{message}</MessageTextStyle>} */}
           {/* <AddDialogStyle onClick={() => openDialog()}>
             <AddCircleOutlineOutlinedIcon sx={{ color: red[50] }}  />
             <span>Thêm mới đồ vật</span>
@@ -123,7 +142,8 @@ const MyHome = ({ openDialog, fetchProductStart, products }) => {
                 products.map((p) => (
                   <Item
                     key={p._id}
-                    imageUrl={p.image}
+                    id={p._id}
+                    imageUrl={`http://localhost:5000/${p.image}`}
                     productName={p.productName}
                     functions={p.functions}
                     description={p.description}
@@ -142,10 +162,13 @@ const MyHome = ({ openDialog, fetchProductStart, products }) => {
 
 const mapDispatchToProps = (dispatch) => ({
   openDialog: () => dispatch(openDialog()),
+  fetchProducts: () => dispatch(fetchProductStart())
 });
 
 const mapStateToProps = (state) => ({
   products: state.product.products,
+  product: state.product.product,
+  message: state.product.message
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyHome);

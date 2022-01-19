@@ -8,7 +8,7 @@ import './DotMenu.css';
 import styled from "styled-components";
 // import DialogFormEdit from "../dialog-edit/DialogFormEdit.jsx";
 import DialogFormEdit from "../dialog-edit/DialogFormEdit.jsx";
-
+import { deleteProductStart } from "../../redux/product/product.actions";
 
 const DotMenuStyle = styled.div`
   display: flex;
@@ -17,7 +17,7 @@ const DotMenuStyle = styled.div`
   margin: 0;
 `
 
-const DotMenu = () => {
+const DotMenu = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -30,8 +30,8 @@ const DotMenu = () => {
   return (
     <DotMenuStyle>
       <div
-        id="demo-positioned-button"
-        aria-controls={open ? "demo-positioned-menu" : undefined}
+        id={props.id}
+        aria-controls={open ? "demo-positioned-menu" + props.id : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
@@ -39,8 +39,8 @@ const DotMenu = () => {
         <MoreHorizIcon />
       </div>
       <Menu
-        id="demo-positioned-menu"
-        aria-labelledby="demo-positioned-button"
+        id={"demo-positioned-menu" + props.id}
+        aria-labelledby={props.id}
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
@@ -53,11 +53,15 @@ const DotMenu = () => {
           horizontal: "left",
         }}
       >
-        <MenuItem onClick={handleClose}><DialogFormEdit /></MenuItem>
-        <MenuItem onClick={handleClose}>Delete</MenuItem>
+        <MenuItem ><DialogFormEdit id={props.id} /></MenuItem>
+        <MenuItem onClick={() => props.deleteProduct(props.id)}>Delete</MenuItem>
       </Menu>
     </DotMenuStyle>
   );
 };
 
-export default DotMenu;
+const mapDispatchToProps = dispatch => ({
+  deleteProduct: (id) => dispatch(deleteProductStart())
+})
+
+export default (null, mapDispatchToProps)(DotMenu);

@@ -39,8 +39,6 @@ const authReducer = (state = INITIAL_STATE, action) => {
       }
 
     case AuthTypes.LOGIN_SUCCESS:
-      console.log(action.payload)
-      console.log('Success')
       return {
         ...state,
         isLoggedIn: true,
