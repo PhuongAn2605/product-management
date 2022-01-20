@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const HttpError = require("../models/http-error");
 const User = require("../models/User");
 const House = require("../models/House");
+const Product = require("../models/Product");
 
 const signup = async (req, res, next) => {
   console.log(req.body);
@@ -55,17 +56,13 @@ const signup = async (req, res, next) => {
       //   return next(new HttpError("Could not encrypt the password", 422));
       // }
 
-      
-
       newUser = new User({
         userName,
         // password: hashedPassword,
-        password: password
+        password: password,
       });
       saveUser = await newUser.save();
       // console.log(saveUser._id);
-
-      
     } else {
       return next(new HttpError("Wrong password!", 422));
     }
@@ -77,14 +74,13 @@ const signup = async (req, res, next) => {
     const newHouse = new House({
       name: userName + "'s house",
       userId: saveUser._id,
-      products: []
+      products: [],
     });
 
     const saveHouse = newHouse.save();
-    if(isEmpty(saveHouse)){
+    if (isEmpty(saveHouse)) {
       return next(new HttpError("Can not create a house for the user!", 500));
     }
-
 
     token = jwt.sign(
       {
@@ -111,34 +107,47 @@ const login = async (req, res, next) => {
   let token;
 
   if (!errors.isEmpty()) {
+    // console.log(errors)
     return next(
       new HttpError("Invalid inputs passed, please check your data!", 422)
     );
   }
 
   const { userName, password } = req.body;
+  // console.log(userName, password);
 
   let existingUser;
+  let houseOfUser;
+  let productsOfHouse = [];
 
   try {
-    existingUser = await User.findOne({ userName: userName, password: password });
+    existingUser = await User.findOne({
+      userName: userName,
+      password: password,
+    });
     // console.log(existingUser)
     if (isEmpty(existingUser)) {
       return next(new HttpError("Could not find the user", 404));
     }
-    // isValidadPassword = await bcrypt.compare(password, existingUser.password);
 
-    // if (!isValidadPassword) {
-    //   return next(
-    //     new HttpError("Invalid credentials, could not log you in!", 403)
-    //   );
-    // }
+    const userId = existingUser._id;
+    // console.log(existingUser._id);
+    houseOfUser = await House.findOne({ userId: userId });
+    // console.log(houseOfUser.products);
+    const productOfHouseIds = houseOfUser.products;
+    for (p of productOfHouseIds) {
+      const product = await Product.findById(p);
+      productsOfHouse.push(product);
+      // console.log(productsOfHouse);
+    }
+    // console.log(productsOfHouse);
     token = jwt.sign(
       { userName: existingUser.userName },
       "supersecret_dont_share",
       { expiresIn: "1h" }
     );
   } catch (err) {
+    console.log(err);
     return next(new HttpError("Logging in failed, please try again", 500));
   }
 
@@ -150,7 +159,10 @@ const login = async (req, res, next) => {
     .status(200)
     .json({
       userName: existingUser.userName,
+      password: existingUser.password,
       token: token,
+      houseId: houseOfUser._id,
+      products: productsOfHouse,
     });
 };
 
@@ -162,28 +174,26 @@ const logout = async (req, res, next) => {
 };
 
 const checkPasswordUnique = async (req, res, next) => {
-   const errors = validationResult(req);
-   if(!errors.isEmpty()) {
-     return next(new HttpError('Invalid data passed', 422));
-   }
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(new HttpError("Invalid data passed", 422));
+  }
 
-   const { password } = req.body;
-   if(isEmpty(password)){
-     return next(new HttpError('Empty password', 422));
-   }
+  const { password } = req.body;
+  if (isEmpty(password)) {
+    return next(new HttpError("Empty password", 422));
+  }
 
-   try{
-
+  try {
     const existingPassword = User.findOne({ password: password });
-    if(!isEmpty(existingPassword)){
-      return next(new HttpError('Password is taken', 422));
+    if (!isEmpty(existingPassword)) {
+      return next(new HttpError("Password is taken", 422));
     }
-
-   }catch(err){
-     return next(new HttpError('Something went wrong', 500));
-   }
-   res.status(200).json({ password });
-}
+  } catch (err) {
+    return next(new HttpError("Something went wrong", 500));
+  }
+  res.status(200).json({ password });
+};
 
 exports.signup = signup;
 exports.login = login;

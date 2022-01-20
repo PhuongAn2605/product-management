@@ -1,5 +1,6 @@
 import React from "react";
-import Button from "@mui/material/Button";
+import { connect } from "react-redux";
+
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -9,6 +10,7 @@ import styled from "styled-components";
 // import DialogFormEdit from "../dialog-edit/DialogFormEdit.jsx";
 import DialogFormEdit from "../dialog-edit/DialogFormEdit.jsx";
 import { deleteProductStart } from "../../redux/product/product.actions";
+import DialogFormDelete from "../dialog-delete/DialogFormDelete.jsx";
 
 const DotMenuStyle = styled.div`
   display: flex;
@@ -18,6 +20,7 @@ const DotMenuStyle = styled.div`
 `
 
 const DotMenu = (props) => {
+  console.log(props.id);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -54,14 +57,14 @@ const DotMenu = (props) => {
         }}
       >
         <MenuItem ><DialogFormEdit id={props.id} /></MenuItem>
-        <MenuItem onClick={() => props.deleteProduct(props.id)}>Delete</MenuItem>
+        <MenuItem><DialogFormDelete id={props.id} /></MenuItem>
       </Menu>
     </DotMenuStyle>
   );
 };
 
 const mapDispatchToProps = dispatch => ({
-  deleteProduct: (id) => dispatch(deleteProductStart())
+  deleteProduct: (id) => dispatch(deleteProductStart(id))
 })
 
-export default (null, mapDispatchToProps)(DotMenu);
+export default connect(null, mapDispatchToProps)(DotMenu);

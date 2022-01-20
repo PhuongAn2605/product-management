@@ -5,6 +5,8 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import StaticDatePicker from "@mui/lab/StaticDatePicker";
 
+import './DatePicker.css';
+
 export default function StaticDatePickerLandscape() {
   const [value, setValue] = React.useState(new Date());
 

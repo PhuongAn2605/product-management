@@ -76,7 +76,7 @@ const SignUp = ({
       return;
     }
 
-    navigate("/");
+    navigate("/login");
   };
 
   const onChangePasswordHandler = (e) => {

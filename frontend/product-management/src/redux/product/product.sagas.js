@@ -7,8 +7,11 @@ import {
   editProductSuccess,
   fetchFailure,
   fetchProductSuccess,
+  searchProductByLocationSuccess,
+  searchProductByNameSuccess,
 } from "./product.actions";
 import axios from "axios";
+import isEmpty from "is-empty";
 
 export function* addProduct(payload) {
   const { product, userName } = payload.payload;
@@ -22,7 +25,6 @@ export function* addProduct(payload) {
     image,
   } = product;
 
-  // console.log(image);
   try {
     const formData = new FormData();
     formData.append("productName", proName);
@@ -60,6 +62,7 @@ export function* fetchProduct() {
     const data = result.data;
     yield put(fetchProductSuccess(data.products));
   } catch (err) {
+    console.log(err);
     yield put(fetchFailure(err));
   }
 }
@@ -69,9 +72,9 @@ export function* fetchProductWatcher() {
 }
 
 export function* editProduct(payload) {
-  // console.log('payload', payload)
+  // console.log('payload', payload.payload)
   const product = payload.payload;
-  console.log(product);
+  // console.log(product)
   const {
     proNameValue,
     shortNameValue,
@@ -95,6 +98,8 @@ export function* editProduct(payload) {
     formData.append("image", imageValue);
     formData.append("houseId", null);
 
+    // console.log(...formData);
+
     const result = yield axios({
       method: "patch",
       url: "http://localhost:5000/api/product/edit/" + id,
@@ -102,9 +107,15 @@ export function* editProduct(payload) {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
-    const data = result.data;
-    console.log(data);
-    yield put(editProductSuccess(data));
+    if(!isEmpty(result)){
+      const data = result.data;
+      console.log(data);
+      yield put(editProductSuccess(data));
+    }else{
+      console.log('error')
+    }
+
+    
   } catch (error) {
     yield put(fetchFailure(error));
   }
@@ -117,20 +128,58 @@ export function* editProductWatcher() {
 export function* deleteProduct(payload) {
   // console.log('payload', payload)
   const id = payload.payload;
-  console.log(id);
   try {
     const result = Http.delete("/product/delete/" + id);
 
     const data = result.data;
-    console.log(data);
-    yield put(deleteProductSuccess(data));
+    yield put(deleteProductSuccess(id));
   } catch (error) {
     yield put(fetchFailure(error));
   }
 }
 
 export function* deleteProductWatcher() {
-  yield takeLatest(ProductTypes.EDIT_PRODUCT_START, deleteProduct);
+  yield takeLatest(ProductTypes.DELETE_PRODUCT_START, deleteProduct);
+}
+
+
+export function* searchProductByName (payload) {
+  // console.log(payload.payload);
+  const productName = payload.payload;
+  try{
+    const result = yield Http.post('/product/search-name', {
+    productName
+    });
+
+    const data = result.data;
+    console.log(data);
+    yield put(searchProductByNameSuccess(data));
+  }catch(error){
+    yield put(fetchFailure(error));
+  }
+}
+
+export function* searchProductByNameWatcher() {
+  yield takeLatest(ProductTypes.SEARCH_PRODUCT_BY_NAME_START, searchProductByName);
+}
+
+export function* searchProductByLocation(payload) {
+  console.log(payload.payload);
+  const location = payload.payload;
+  try{
+    const result = yield Http.post('/product/search-location', {
+    location
+    });
+
+    const data = result.data;
+    yield put(searchProductByLocationSuccess(data));
+  }catch(error){
+    yield put(fetchFailure(error));
+  }
+}
+
+export function* searchProductByLocationWatcher() {
+  yield takeLatest(ProductTypes.SEARCH_PRODUCT_BY_LOCATION_START, searchProductByLocation);
 }
 
 export function* productSaga() {
@@ -138,6 +187,8 @@ export function* productSaga() {
     call(addProductWatcher),
     call(fetchProductWatcher),
     call(editProductWatcher),
-    call(deleteProductWatcher)
+    call(deleteProductWatcher),
+    call(searchProductByNameWatcher),
+    call(searchProductByLocationWatcher)
   ]);
 }

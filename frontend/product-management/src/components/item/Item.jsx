@@ -11,16 +11,6 @@ import {
 const Item = (props) => {
   // console.log(props);
   return (
-    // <ItemStyle>
-    //   <DotMenu />
-    //   <ImageStyle>
-    //     <img src={SendaImage} alt="Sen da" style={{ width: "200px", height: "200px"}} />
-    //   </ImageStyle>
-    //   <NameStyle>Sen đá</NameStyle>
-    //   <FunctionStyle>Trang trí</FunctionStyle>
-    //   <DescriptionStyle>Đồ vật có thể dùng trang trí</DescriptionStyle>
-    // </ItemStyle>
-
     <ItemStyle>
       <DotMenu id={props.id} />
       <ImageStyle>

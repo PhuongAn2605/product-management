@@ -1,14 +1,42 @@
 import SearchBar from "material-ui-search-bar";
+import { useState } from "react";
+import { connect } from 'react-redux';
+import { searchProductByLocationStart, searchProductByNameStart } from "../../redux/product/product.actions";
 
-const SearchBarForm = () => {
+const SearchBarForm = ({ isSearchByName, isSearchByLocation, searchProductByName, searchProductByLocation }) => {
+  const [searchValue, setSearchValue] = useState('');
+
+  console.log(isSearchByName, isSearchByLocation);
+
+  const searchHandler = (e) => {
+    // e.preventDefault();
+
+    console.log(searchValue);
+    if(isSearchByName && !isSearchByLocation){
+      searchProductByName(searchValue);
+    }else if(!isSearchByName && isSearchByLocation){
+      searchProductByLocation(searchValue);
+    }
+  }
+
     return (
         <SearchBar
-        //   value={this.state.value}
-        //   onChange={(newValue) => this.setState({ value: newValue })}
-        //   onRequestSearch={() => {}}
+          value={searchValue}
+          onChange={(value) => setSearchValue(value) }
+          onRequestSearch={(e) => searchHandler(e)}
         style={{ width: "120%" }}
         />
       );
 }
 
-export default SearchBarForm;
+const mapDispatchToProps = dispatch => ({
+  searchProductByName: (productName) => dispatch(searchProductByNameStart(productName)),
+  searchProductByLocation: (location) => dispatch(searchProductByLocationStart(location))
+})
+
+const mapStateToProps = state => ({
+  isSearchByName: state.product.isSearchByName,
+  isSearchByLocation: state.product.isSearchByLocation
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchBarForm);

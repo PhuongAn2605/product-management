@@ -5,69 +5,83 @@ import Login from "./pages/login.page";
 import Signup from "./pages/signup.page";
 import { useEffect } from "react";
 import { connect } from "react-redux";
-import { fetchLoginStart, fetchLogoutStart } from "./redux/auth/auth.actions";
+import { fetchLoginStart, fetchLoginSuccess, fetchLogoutStart } from "./redux/auth/auth.actions";
 import MyHome from "./pages/my-home";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import EditProductPage from "./pages/product/EditProduct";
 import { fetchProductStart } from "./redux/product/product.actions";
+import OtherHousePage from "./pages/other-houses";
+import isEmpty from "is-empty";
 
 let logoutTimer;
-const App = ({ login, logout, token, tokenExpirationDate, isLoggedIn, fetchProducts }) => {
-
+const App = ({
+  login,
+  logout,
+  token,
+  tokenExpirationDate,
+  isLoggedIn,
+  fetchProducts,
+  products,
+}) => {
+  // const navigate = useNavigate();
   // useEffect(() => {
   //   fetchProducts();
   // }, []);
 
-  // const navigate = useNavigate();
-  // useEffect(() => {
-  //   if (token && tokenExpirationDate) {
-  //     const remainingTime =
-  //       tokenExpirationDate.getTime() - new Date().getTime();
-  //     logoutTimer = setTimeout(logout, remainingTime);
-  //   } else {
-  //     clearTimeout(logoutTimer);
-  //   }
-  // }, [token, logout, tokenExpirationDate]);
+  console.log(products);
 
-  // useEffect(() => {
-  //   const storedData = JSON.parse(localStorage.getItem("userData"));
-  //   if (
-  //     storedData &&
-  //     storedData.token &&
-  //     new Date(storedData.expiration) > new Date()
-  //   ) {
-  //     login(
-  //       storedData.userName,
-  //       storedData.token,
-  //       new Date(storedData.expiration)
-  //     );
-  //   }
-  // }, [login]);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (token && tokenExpirationDate) {
+      const remainingTime =
+        tokenExpirationDate.getTime() - new Date().getTime();
+      logoutTimer = setTimeout(logout, remainingTime);
+    } else {
+      clearTimeout(logoutTimer);
+    }
+  }, [token, logout, tokenExpirationDate]);
+
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem("userData"));
+    console.log(storedData)
+    if (
+      storedData &&
+      storedData.token &&
+      new Date(storedData.expiration) > new Date()
+    ) {
+      login(
+        storedData.userName,
+        storedData.password,
+        storedData.token,
+        new Date(storedData.expiration)
+      );
+    }
+  }, [login]);
 
   return (
     <div className="App">
       {/* <Header /> */}
       <Routes>
-        <Route path="/" element={ isLoggedIn ? <MyHome /> : <Login />} />
+        <Route path="/" element={isLoggedIn ? <MyHome /> : <Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/product/edit/:pid" element={<EditProductPage />} />
-
+        <Route path="/other-houses" element={<OtherHousePage />} />
       </Routes>
     </div>
   );
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  login: (userName, token, expirationDate) =>
-    dispatch(fetchLoginStart(userName, token, expirationDate)),
+  login: (userName, password, token, expirationDate) =>
+    dispatch(fetchLoginSuccess(userName,password, token, expirationDate)),
   logout: () => dispatch(fetchLogoutStart()),
-  fetchProducts: () => dispatch(fetchProductStart())
+  fetchProducts: () => dispatch(fetchProductStart()),
 });
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
   tokenExpirationDate: state.auth.tokenExpirationDate,
-  isLoggedIn: state.auth.isLoggedIn
+  isLoggedIn: state.auth.isLoggedIn,
+  products: state.product.products,
 });
 export default connect(mapStateToProps, mapDispatchToProps)(App);

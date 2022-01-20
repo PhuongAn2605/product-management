@@ -79,6 +79,7 @@ const DialogFormAdd = ({
   closeDialogAction,
   openDialogAction,
 }) => {
+  
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState(null);
   const [proName, setProName] = useState("");
@@ -123,6 +124,16 @@ const DialogFormAdd = ({
     console.log(data);
 
     addProduct(data);
+
+    setProName("");
+    setShortName("");
+    setLocation("");
+    setExpiration("");
+    setFunctions("");
+    setDescription("");
+    setImage(null);
+
+
     handleClose();
 
     // if(isEmpty(error)){

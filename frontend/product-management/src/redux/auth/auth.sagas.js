@@ -1,6 +1,7 @@
 import { put, all, takeLatest, call } from "@redux-saga/core/effects";
 import isEmpty from "is-empty";
 import Http from "../../utils/http";
+import { fetchProductSuccess } from "../product/product.actions";
 import {
   fetchLoginFailure,
   fetchLoginSuccess,
@@ -33,7 +34,7 @@ export function* fetchSignupWatcher() {
 }
 
 export function* fetchLogin(payload) {
-  // console.log(payload.payload.expirationDate);
+  console.log(payload.payload);
   const { userName, password } = payload.payload;
 
   try {
@@ -43,11 +44,14 @@ export function* fetchLogin(payload) {
     });
 
     const data = result.data;
+    console.log(data);
 
-    const expirationDate = payload.payload.expirationDate;
+    // const expirationDate = payload.payload.expirationDate;
     if (!isEmpty(data)) {
-      data.exprirationDate = expirationDate;
+      // data.exprirationDate = expirationDate;
       yield put(fetchLoginSuccess(data));
+      yield put(fetchProductSuccess(data.products));
+      console.log(data);
     } else {
       yield put(fetchLoginFailure("error"));
     }
@@ -76,14 +80,14 @@ export function* fetchLogoutWatcher() {
 }
 
 export function* fetchCheckPassword(payload) {
-    const password = payload.payload;
-    console.log(password)
+  const password = payload.payload;
+  console.log(password);
   try {
-      const result = yield Http.post('/user/check-password', {
-          password
-      });
-      console.log(result.data);
-      yield put(fetchCheckPasswordSuccess(result))
+    const result = yield Http.post("/user/check-password", {
+      password,
+    });
+    console.log(result.data);
+    yield put(fetchCheckPasswordSuccess(result));
   } catch (error) {
     yield put(fetchCheckPasswordFailure(error));
   }

@@ -5,6 +5,13 @@ const Product = require("../models/Product");
 const House = require("../models/House");
 const User = require("../models/User");
 
+const escapeRegExp = (string = "") =>
+  String(string).replace(/[.*+?^${}()|[]\]/g, "$&");
+const regExpSearch = (string = "") => {
+  const regex = new RegExp(escapeRegExp(string), "i");
+  return regex;
+};
+
 const getProducts = async (req, res, next) => {
   let products;
 
@@ -19,6 +26,10 @@ const getProducts = async (req, res, next) => {
     products: products.map((product) => product.toObject({ getters: true })),
   });
 };
+
+const getProductsByUserName = async (req, res, next) => {
+
+}
 
 const getProductById = async (req, res, next) => {
   const productId = req.params.pid;
@@ -38,8 +49,6 @@ const getProductById = async (req, res, next) => {
 };
 
 const createProduct = async (req, res, next) => {
-  // console.log(req.body);
-  // console.log(req.params);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors);
@@ -50,7 +59,10 @@ const createProduct = async (req, res, next) => {
 
   const userName = req.params.userName;
   const productOfUser = await User.findOne({ userName: userName });
-  // console.log("user: ", productOfUser._id);
+  // console.log("user_id: ", productOfUser._id);
+  console.log("user: ", productOfUser);
+
+
   const userId = productOfUser._id;
 
   const houseOfUser = await House.findOne({ userId: userId });
@@ -68,6 +80,7 @@ const createProduct = async (req, res, next) => {
     // commentId,
   } = req.body;
 
+
   // console.log(req.file.path);
 
   const createdProduct = new Product({
@@ -83,31 +96,19 @@ const createProduct = async (req, res, next) => {
     houseId,
   });
 
+  houseOfUser.products.push(createdProduct);
+  await houseOfUser.save();
+
+
   let existingProduct;
   let saveProduct;
   let house;
 
   try {
-    // existingProduct = await Product.find({ commentId: commentId, houseId:houseId });
-    // if(existingProduct){
-    //     return next(new HttpError('Product exists already!'));
-    // }
-
-    // house = await House.findById(houseId);
-    // if(isEmpty(house)){
-    //   return next(new HttpError('Could not find the house', 404));
-    // }
-
     saveProduct = await createdProduct.save();
     if (isEmpty(saveProduct)) {
       return next(new HttpError("Could not save the product", 500));
     }
-
-    // house.products.push(createdProduct);
-    // const saveHouse = await house.save();
-    // if(isEmpty(saveHouse)){
-    //   return next(new HttpError('Could not save the house', 500));
-    // }
   } catch (err) {
     console.log(err);
     return next(new HttpError("Creating product failed!", 500));
@@ -124,7 +125,15 @@ const editProduct = async (req, res, next) => {
     );
   }
 
-  const { productName, shortName, location, expiration, functions, description, image } = req.body;
+  const {
+    productName,
+    shortName,
+    location,
+    expiration,
+    functions,
+    description,
+    // image,
+  } = req.body;
   // const { productName } = req.body;
   const productId = req.params.pid;
 
@@ -142,14 +151,14 @@ const editProduct = async (req, res, next) => {
     product.expiration = expiration;
     product.functions = functions;
     product.description = description;
-    product.image = image;
-
+    product.image = req.file.path;
 
     const saveProduct = await product.save();
     if (isEmpty(saveProduct)) {
       return next(new HttpError("Could not save updated product", 500));
-    }else{
-      res.status(200).json({ product: product });
+    // } else {
+    //   res.status(200).json({ product: product });
+    // }
     }
   } catch (err) {
     const error = new HttpError(
@@ -157,6 +166,8 @@ const editProduct = async (req, res, next) => {
       500
     );
   }
+  res.status(200).json({ product: product });
+
 };
 
 const deleteProduct = async (req, res, next) => {
@@ -181,8 +192,70 @@ const deleteProduct = async (req, res, next) => {
   res.status(201).send("Deleted");
 };
 
+const searchProductByName = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    console.log(errors);
+    return next(
+      new HttpError("Invalid data passed, please check your data", 422)
+    );
+  }
+
+  let targetProduct;
+  const { productName } = req.body;
+  // const normalizeProductName = productName.trim().toLowerCase();
+  try {
+    targetProduct = await Product.find({ productName: regExpSearch(productName) });
+    if (isEmpty(targetProduct)) {
+      return next(
+        new HttpError("Can not find the product with provided name", 404)
+      );
+    }
+  } catch (err) {
+    return next(new HttpError("Something went wrong, please try again!", 500));
+  }
+
+  res.status(200).json(targetProduct);
+};
+
+const searchProductByLocation = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    console.log(errors);
+    return next(
+      new HttpError("Invalid data passed, please check your data", 422)
+    );
+  }
+
+  let targetProduct;
+  const { location } = req.body;
+  // console.log(location)
+  // const normalizeProductLocation = location.trim().toLowerCase();
+  // console.log(normalizeProductLocation)
+
+  try {
+    // targetProduct = await Product.findOne({ location: location.toLowerCase()  });
+    targetProduct = await Product.find({ location: regExpSearch(location) });
+
+    // console.log(targetProduct);
+    if (isEmpty(targetProduct)) {
+      return next(
+        new HttpError("Can not find the product with provided location", 404)
+      );
+    }
+  } catch (err) {
+    return next(new HttpError("Something went wrong, please try again!", 500));
+  }
+
+  res.status(200).json(targetProduct);
+};
+
 exports.getProducts = getProducts;
 exports.createProduct = createProduct;
 exports.getProductById = getProductById;
 exports.editProduct = editProduct;
 exports.deleteProduct = deleteProduct;
+exports.searchProductByName = searchProductByName;
+exports.searchProductByLocation = searchProductByLocation;

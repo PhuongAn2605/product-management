@@ -9,6 +9,7 @@ import {
 } from "../../redux/auth/auth.actions";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 
 const UserMenu = ({ userName, logout, isLoggedIn, error }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -59,8 +60,8 @@ const UserMenu = ({ userName, logout, isLoggedIn, error }) => {
           "aria-labelledby": "basic-button",
         }}
       >
-        {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem> */}
+        {/* {/* <MenuItem onClick={handleClose}>Profile</MenuItem> */}
+        <MenuItem><Link to="/other-houses">Other houses</Link></MenuItem>
         <MenuItem onClick={logoutHandler}>Logout</MenuItem>
       </Menu>
     </React.Fragment>

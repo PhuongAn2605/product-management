@@ -1,0 +1,8 @@
+const HouseTypes = {
+    FETCH_ALL_HOUSE_START: 'FETCH_ALL_HOUSE_START',
+    FETCH_ALL_HOUSE_SUCCESS: 'FETCH_ALL_HOUSE_SUCCESS',
+
+    FETCH_FAILURE: 'FETCH_FAILURE'
+}
+
+export default HouseTypes;

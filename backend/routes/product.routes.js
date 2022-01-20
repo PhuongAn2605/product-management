@@ -43,6 +43,22 @@ router.patch(
   productControllers.editProduct
 );
 
-router.delete("/delete/:pid", productControllers.deleteProduct);
+router.delete(
+  "/delete/:pid",
+
+  productControllers.deleteProduct
+);
+
+router.post(
+  "/search-name/",
+  // [check("productName").not().isEmpty()],
+  productControllers.searchProductByName
+);
+
+router.post(
+  "/search-location/",
+  // [check("location").not().isEmpty()],
+  productControllers.searchProductByLocation
+);
 
 module.exports = router;

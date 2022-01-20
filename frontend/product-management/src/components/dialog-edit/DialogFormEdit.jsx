@@ -9,18 +9,14 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import { red } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
 
 import InputForm from "../input/Input.component.jsx";
-import { AddDialogStyle, DialogStyle, AddTextStyle } from "./DialogFormEdit.js";
+import { DialogStyle, AddTextStyle } from "./DialogFormEdit.js";
 import { Typography } from "@mui/material";
 import ImageUpload from "../input/ImageUpload.js";
 import "./DialogFormEdit.css";
 
-import { useTheme } from "@mui/material/styles";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -29,12 +25,9 @@ import Box from "@mui/material/Box";
 import {
   addProductStart,
   editProductStart,
-  fetchProductStart,
 } from "../../redux/product/product.actions.js";
 import isEmpty from "is-empty";
-import { useNavigate } from "react-router";
 import { closeDialog, openDialog } from "../../redux/dialog/dialog-actions.js";
-import { Link } from "react-router-dom";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -81,14 +74,12 @@ const DialogFormEdit = ({
   id,
   products,
   editProduct,
-  fetchProduct
 }) => {
   // console.log(products)
   let productToEdit;
   if (!isEmpty(products)) {
     productToEdit = products.filter((p) => p._id === id);
-  // console.log(productToEdit);
-
+    console.log(productToEdit);
   }
 
   const {
@@ -149,10 +140,6 @@ const DialogFormEdit = ({
 
     editProduct(product);
     handleDialogClose();
-
-    // fetchProduct();
-
-    
   };
 
   return (
@@ -272,7 +259,7 @@ const DialogFormEdit = ({
               <InputForm
                 id="description"
                 name="Mô tả đồ vật"
-                type="textarea"
+                type="text"
                 value={descriptionValue}
                 onChange={(e) => setDescription(e.currentTarget.value)}
               />
@@ -314,7 +301,6 @@ const mapDispatchToProps = (dispatch) => ({
   closeDialogAction: () => dispatch(closeDialog()),
   openDialogAction: () => dispatch(openDialog()),
   editProduct: (product) => dispatch(editProductStart(product)),
-  fetchProduct: () => dispatch(fetchProductStart())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DialogFormEdit);

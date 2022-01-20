@@ -53,3 +53,36 @@ export const fetchFailure = (error) => ({
     type: ProductTypes.FETCH_FAILURE,
     payload: error
 });
+
+export const setSearchByName = () => ({
+    type: ProductTypes.SET_SEARCH_BY_NAME
+});
+
+export const setSearchByLocation = () => ({
+    type: ProductTypes.SET_SEARCH_BY_LOCATION
+});
+
+export const searchProductByNameStart = (productName) => ({
+    type: ProductTypes.SEARCH_PRODUCT_BY_NAME_START,
+    payload: productName
+});
+
+export const searchProductByNameSuccess = (result) => ({
+    type: ProductTypes.SEARCH_PRODUCT_BY_NAME_SUCCESS,
+    payload: result
+});
+
+export const searchProductByLocationStart = (location) => ({
+    type: ProductTypes.SEARCH_PRODUCT_BY_LOCATION_START,
+    payload: location
+});
+
+export const searchProductByLocationSuccess = (result) => ({
+    type: ProductTypes.SEARCH_PRODUCT_BY_LOCATION_SUCCESS,
+    payload: result
+});
+
+export const getProductsFromAuth = (productsFromAuth) => ({
+    type: ProductTypes.GET_PRODUCTS_FROM_AUTH,
+    payload: productsFromAuth
+})
