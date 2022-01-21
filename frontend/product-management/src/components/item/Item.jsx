@@ -5,16 +5,24 @@ import {
   NameStyle,
   FunctionStyle,
   DescriptionStyle,
-  ImageStyle
+  ImageStyle,
+  ReactionStyle,
+  visitItemStyle
 } from "./Item.styles";
+import { connect } from "react-redux";
+import isEmpty from "is-empty";
 
 const Item = (props) => {
   // console.log(props);
   return (
     <ItemStyle>
-      <DotMenu id={props.id} />
+      {isEmpty(props.visitHouse) && <DotMenu id={props.id} />}
       <ImageStyle>
-        <img src={props.imageUrl} alt={props.productName} style={{ width: "200px", height: "200px"}} />
+        <img
+          src={props.imageUrl}
+          alt={props.productName}
+          style={{ width: "200px", height: "200px" }}
+        />
       </ImageStyle>
       <NameStyle>{props.productName}</NameStyle>
       <FunctionStyle>{props.functions}</FunctionStyle>
@@ -23,4 +31,8 @@ const Item = (props) => {
   );
 };
 
-export default Item;
+const mapStateToProps = state => ({
+  visitHouse: state.house.visitHouse
+})
+
+export default connect(mapStateToProps)(Item);

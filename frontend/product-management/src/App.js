@@ -22,15 +22,16 @@ const App = ({
   isLoggedIn,
   fetchProducts,
   products,
+  targetProducts
 }) => {
   // const navigate = useNavigate();
   // useEffect(() => {
   //   fetchProducts();
   // }, []);
 
-  console.log(products);
+  // console.log(products);
+  // console.log(targetProducts);
 
-  const navigate = useNavigate();
   useEffect(() => {
     if (token && tokenExpirationDate) {
       const remainingTime =
@@ -62,10 +63,12 @@ const App = ({
     <div className="App">
       {/* <Header /> */}
       <Routes>
-        <Route path="/" element={isLoggedIn ? <MyHome /> : <Login />} />
+        <Route path="/" element={isLoggedIn ? <MyHome products={products} visit={false}/> : <Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/other-houses" element={<OtherHousePage />} />
+        <Route path="/visit-house/:houseId" element={targetProducts && <MyHome products={targetProducts} visit={true}/>} />
+
       </Routes>
     </div>
   );
@@ -83,5 +86,6 @@ const mapStateToProps = (state) => ({
   tokenExpirationDate: state.auth.tokenExpirationDate,
   isLoggedIn: state.auth.isLoggedIn,
   products: state.product.products,
+  targetProducts: state.house.targetProducts
 });
 export default connect(mapStateToProps, mapDispatchToProps)(App);

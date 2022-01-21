@@ -15,6 +15,8 @@ const UserMenu = ({ userName, logout, isLoggedIn, error }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [errors, setErrors] = React.useState(error);
   const open = Boolean(anchorEl);
+
+  console.log(userName)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -47,7 +49,7 @@ const UserMenu = ({ userName, logout, isLoggedIn, error }) => {
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
-        style={{ color: "#aaa" }}
+        style={{ color: "#ccc" }}
       >
         {userName}
       </Button>

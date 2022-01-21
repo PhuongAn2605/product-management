@@ -8,7 +8,7 @@ const rootReducer = combineReducers({
     auth: authReducer,
     dialog: dialogReducer,
     product: productReducer,
-    houses: houseReducer
+    house: houseReducer
 });
 
 export default rootReducer;

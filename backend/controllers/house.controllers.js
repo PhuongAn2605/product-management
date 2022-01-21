@@ -3,12 +3,14 @@ const isEmpty = require('is-empty');
 
 const House = require('../models/House');
 const HttpError = require('../models/http-error');
+const Product = require('../models/Product');
 
 const getHouses = async (req, res, next) => {
     
     let houses;
     try{
         houses = await House.find({});
+        
         if(isEmpty(houses)){
             return next(new HttpError('NOt found any product', 404));
         }
@@ -56,5 +58,30 @@ const createHouse = async (req, res, next) => {
     res.status(201).json({ userId: newHouse.userId, products: newHouse.products })
 }
 
+const getHouseById = async (req, res, next) => {
+    const houseId = req.params.houseId;
+
+    let house;
+    let targetProducts = [];
+
+    try{
+        house = await House.findById(houseId);
+        const products = house.products;
+        // console.log(products);
+
+        for(let pid of products){
+            targetProducts.push(await Product.findById(pid));
+        }
+
+        console.log(targetProducts)
+
+    }catch(error){
+        console.log(error);
+        return next(new HttpError('Something went wrong', 500));
+    }
+    res.status(200).json({ house, targetProducts });
+}
+
 exports.getHouses = getHouses;
 exports.createHouse = createHouse;
+exports.getHouseById = getHouseById;

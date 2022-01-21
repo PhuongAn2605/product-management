@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.get('/', houseControllers.getHouses);
 
+router.get('/:houseId', houseControllers.getHouseById);
+
 router.post('/create', houseControllers.createHouse);
 
 module.exports = router;

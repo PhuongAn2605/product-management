@@ -6,9 +6,10 @@ import NavBar from "../components/nav-bar/NavBar.jsx";
 import Item from "../components/item/Item";
 import UserMenu from "../components/UserMenu/UserMenu";
 import SideBar from "../components/sidebar/SideBar.jsx";
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { openDialog } from "../redux/dialog/dialog-actions";
 import { connect } from "react-redux";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import { red } from "@mui/material/colors";
 import DialogFormAdd from "../components/dialog-add/DialogFormAdd.jsx";
 import {
@@ -16,6 +17,7 @@ import {
   setSearchByName,
 } from "../redux/product/product.actions";
 import isEmpty from "is-empty";
+import DialogComment from "../components/dialog-comment/DialogComment.jsx";
 
 const MyHomeStyle = styled.div`
   display: flex;
@@ -77,7 +79,6 @@ const SearchConditionStyle = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  
 
   span:hover {
     background-color: #dae5ec;
@@ -86,13 +87,13 @@ const SearchConditionStyle = styled.div`
 
 const NormalSearchConditionStyle = styled.span`
   margin-top: 0.5rem;
-    margin-right: 0.5rem;
-    color: #3173a5;
-    padding: 0.3rem 0.5rem;
-    background-color: #fff;
-    box-shadow: 0 3px 10px rgb(0 0 0 / 20%);
-    cursor: pointer;
-`
+  margin-right: 0.5rem;
+  color: #3173a5;
+  padding: 0.3rem 0.5rem;
+  background-color: #fff;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 20%);
+  cursor: pointer;
+`;
 
 const ChoosedSearchConditionStyle = styled.span`
   margin-top: 0.5rem;
@@ -133,6 +134,13 @@ const MessageTextStyle = styled.div`
   margin: auto;
 `;
 
+const ReactionStyle = styled.div`
+  margin: 0 3rem;
+  display: flex;
+  justify-content: space-around !important;
+  align-items: center !important;
+`
+
 const MyHome = ({
   openDialog,
   products,
@@ -142,16 +150,13 @@ const MyHome = ({
   setSearchByLocation,
   isSearchByName,
   isSearchByLocation,
-  searchedProducts
+  searchedProducts,
+  visit,
+  visitHouse,
 }) => {
+  console.log(visitHouse);
 
-  console.log(products);
-  // console.log(isSearchByName, isSearchByLocation);
-  // useEffect(() => {
-  //   fetchProducts();
-  // }, [products, fetchProducts]);
-
-  if(!isEmpty(searchedProducts) && searchedProducts.length > 0){
+  if (!isEmpty(searchedProducts) && searchedProducts.length > 0) {
     products = [...searchedProducts];
   }
 
@@ -163,7 +168,20 @@ const MyHome = ({
         </NavBarStyle>
         <ItemsStyle>
           <HeaderStyle>
-            <WelcomeText>Welcome to my home</WelcomeText>
+            <WelcomeText>
+              {visit ? (
+                <div>
+                  <p>Welcome to {visitHouse.name}</p>
+                  <ReactionStyle>
+                    <FavoriteBorderIcon fontSize="large" />
+                    <DialogComment />
+                    {/* <ChatBubbleOutlineOutlinedIcon fontSize="large" /> */}
+                  </ReactionStyle>
+                </div>
+              ) : (
+                "Welcome to my home"
+              )}
+            </WelcomeText>
             <SearchFormStyle>
               <SearchBarForm />
               <SearchConditionStyle>
@@ -174,7 +192,10 @@ const MyHome = ({
                     Tên
                   </ChoosedSearchConditionStyle>
                 ) : (
-                  <NormalSearchConditionStyle id="search-name" onClick={() => setSearchByName()}>
+                  <NormalSearchConditionStyle
+                    id="search-name"
+                    onClick={() => setSearchByName()}
+                  >
                     Tên
                   </NormalSearchConditionStyle>
                 )}
@@ -231,12 +252,13 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const mapStateToProps = (state) => ({
-  products: state.product.products,
+  // products: state.product.products,
   product: state.product.product,
   message: state.product.message,
   isSearchByName: state.product.isSearchByName,
   isSearchByLocation: state.product.isSearchByLocation,
-  searchedProducts: state.product.searchedProducts
+  searchedProducts: state.product.searchedProducts,
+  visitHouse: state.house.visitHouse,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyHome);

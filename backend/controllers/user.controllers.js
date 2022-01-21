@@ -75,6 +75,7 @@ const signup = async (req, res, next) => {
       name: userName + "'s house",
       userId: saveUser._id,
       products: [],
+      comments: []
     });
 
     const saveHouse = newHouse.save();

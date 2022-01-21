@@ -29,7 +29,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
       };
 
     case AuthTypes.SIGN_UP_FAILURE:
-      console.log(action.payload);
+      // console.log(action.payload);
       return {
         ...state,
         isLoggedIn: false,
@@ -38,7 +38,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
       };
 
     case AuthTypes.LOGIN_SUCCESS:
-      console.log(action.payload);
+      // console.log(action.payload);
       return {
         ...state,
         isLoggedIn: true,

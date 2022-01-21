@@ -12,6 +12,18 @@ export const ItemStyle = styled.div`
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 `;
 
+export const visitItemStyle = styled.div`
+  margin: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid #bbb;
+  text-align: start;
+
+  width: 200px;
+  height: 300px;
+
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+`;
+
 export const NameStyle = styled.div``;
 
 export const FunctionStyle = styled.div`
@@ -27,3 +39,8 @@ export const DescriptionStyle = styled.div``;
 export const ImageStyle = styled.div`
   margin: auto;
 `;
+
+export const ReactionStyle = styled.div`
+  display: flex;
+  justify-content: space-between;
+`

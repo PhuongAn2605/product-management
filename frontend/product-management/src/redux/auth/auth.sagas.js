@@ -34,7 +34,7 @@ export function* fetchSignupWatcher() {
 }
 
 export function* fetchLogin(payload) {
-  console.log(payload.payload);
+  // console.log(payload.payload);
   const { userName, password } = payload.payload;
 
   try {
@@ -44,7 +44,7 @@ export function* fetchLogin(payload) {
     });
 
     const data = result.data;
-    console.log(data);
+    // console.log(data);
 
     // const expirationDate = payload.payload.expirationDate;
     if (!isEmpty(data)) {
