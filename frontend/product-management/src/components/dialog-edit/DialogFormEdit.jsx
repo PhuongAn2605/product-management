@@ -75,11 +75,9 @@ const DialogFormEdit = ({
   products,
   editProduct,
 }) => {
-  // console.log(products)
   let productToEdit;
   if (!isEmpty(products)) {
     productToEdit = products.filter((p) => p._id === id);
-    console.log(productToEdit);
   }
 
   const {
@@ -96,8 +94,6 @@ const DialogFormEdit = ({
     .toISOString()
     .substring(0, 10);
 
-  // console.log(productName);
-
   const [open, setOpenDialogEdit] = useState(false);
   const [errors, setErrors] = useState(null);
   const [proNameValue, setProName] = useState(productName);
@@ -107,9 +103,6 @@ const DialogFormEdit = ({
   const [functionsValue, setFunctions] = useState(functions);
   const [descriptionValue, setDescription] = useState(description);
   const [imageValue, setImage] = useState(image);
-
-  // console.log(new Date(expirationValue).toISOString().substring(0, 10));
-  // console.log(functions);
 
   const handleDialogOpen = () => {
     setOpenDialogEdit(true);
@@ -136,8 +129,6 @@ const DialogFormEdit = ({
       id,
     };
 
-    // console.log(product);
-
     editProduct(product);
     handleDialogClose();
   };
@@ -151,6 +142,7 @@ const DialogFormEdit = ({
         onClose={handleDialogClose}
         aria-labelledby="customized-dialog-title"
         open={open}
+        scroll='body'
       >
         <BootstrapDialogTitle
           id="customized-dialog-title"

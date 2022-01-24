@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import { createTheme } from "@mui/material/styles";
-import { red } from "@mui/material/colors";
+import { amber } from "@mui/material/colors";
 
 export const theme = createTheme({
   palette: {
     primary: {
-      main: red[500],
+      main: amber[500],
     },
     secondary: {
       // This is green.A700 as hex.
@@ -35,5 +35,46 @@ export const TextHeaderStyle = styled.div`
 `;
 
 export const AuthPageStyle = styled.div`
-    margin: auto !important;    
+    display: grid;
+    grid-template-columns: 1fr 1fr !important;
+    
+    height: 100vh;
+
+
+    img{
+      width: 500px;
+      height: 500px;
+    }
+    @media(max-width: 800px){
+      img{
+        width: 400px;
+      height: 400px;
+      }
+    }
+`
+
+export const LeftItemsStyle = styled.div`
+  background-color: #fff;
+`;
+
+export const RightItemsStyle = styled.div`
+  background-color: #76cff0 ;
+`;
+
+export const TitleStyle = styled.div`
+  text-transform: uppercase;
+  margin: 2rem auto;
+`
+
+export const WelcomeTextStyle = styled.div`
+  font-size: 24px;
+  font-weight: 700;
+  color: #1FC3FF;
+  line-height: 2;
+`
+export const NewProductStyle = styled.div`
+  font-size: 20px;
+  font-weight: 700;
+  color: #F44336;
+  line-height: 1;
 `

@@ -19,7 +19,7 @@ const productSchema = new Schema(
     },
     houseId: { type: mongoose.Types.ObjectId, ref: "House" },
   },
-  { timestamp: true }
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("Product", productSchema);

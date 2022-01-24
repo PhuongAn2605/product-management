@@ -11,7 +11,10 @@ const INITIAL_STATE = {
   isLogInMode: true,
   isSignupMode: false,
   password: null,
-  products: []
+  houseId: null,
+  houseLikes: [],
+  products: [],
+  comments: []
 };
 
 const authReducer = (state = INITIAL_STATE, action) => {
@@ -29,30 +32,30 @@ const authReducer = (state = INITIAL_STATE, action) => {
       };
 
     case AuthTypes.SIGN_UP_FAILURE:
-      // console.log(action.payload);
       return {
         ...state,
         isLoggedIn: false,
-        // isLoggedInMode: false,
         error: action.payload,
       };
 
     case AuthTypes.LOGIN_SUCCESS:
-      // console.log(action.payload);
       return {
         ...state,
         isLoggedIn: true,
         token: action.payload.token,
         userName: action.payload.userName,
+        houseId: action.payload.houseId,
+        products: action.payload.products,
+        houseLikes: action.payload.houseLikes,
+        comments: action.payload.comments,
         password: action.payload.password,
         error: null,
         tokenExpirationDate: login(
           action.payload.userName,
           action.payload.password,
           action.payload.token,
-          action.payload.expirationDate
+          null
         ),
-        // products: action.payload.products
       };
 
 
@@ -60,7 +63,6 @@ const authReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isLoggedIn: false,
-        // isLoggedInMode: true,
         error: action.payload,
       };
 
@@ -68,7 +70,6 @@ const authReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isLoggedIn: false,
-        // isLoggedInMode: true,
         error: null,
         token: null,
         tokenExpirationDate: null,
@@ -78,7 +79,6 @@ const authReducer = (state = INITIAL_STATE, action) => {
     case AuthTypes.LOGOUT_FAILURE:
       return {
         ...state,
-        // isLoggedInMode: true
       };
 
     case AuthTypes.SET_LOGIN_MODE:

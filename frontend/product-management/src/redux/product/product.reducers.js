@@ -38,8 +38,6 @@ const productReducer = (state = INITIAL_STATE, action) => {
       };
 
     case ProductTypes.EDIT_PRODUCT_SUCCESS:
-      console.log(action.payload);
-      console.log(editProducts(state.products, action.payload.product))
       return {
         ...state,
         error: null,
@@ -48,6 +46,7 @@ const productReducer = (state = INITIAL_STATE, action) => {
       };
 
     case ProductTypes.DELETE_PRODUCT_SUCCESS:
+      console.log(deleteProduct(state.products, action.payload));
       return {
         ...state,
         products: deleteProduct(state.products, action.payload),
@@ -55,7 +54,6 @@ const productReducer = (state = INITIAL_STATE, action) => {
       };
 
     case ProductTypes.FETCH_FAILURE:
-      console.log(action.payload);
       return {
         ...state,
         error: action.payload,
@@ -71,7 +69,6 @@ const productReducer = (state = INITIAL_STATE, action) => {
 
     case ProductTypes.SEARCH_PRODUCT_BY_LOCATION_SUCCESS:
     case ProductTypes.SEARCH_PRODUCT_BY_NAME_SUCCESS:
-      console.log(action.payload)
       return {
         ...state,
         searchedProducts: action.payload,

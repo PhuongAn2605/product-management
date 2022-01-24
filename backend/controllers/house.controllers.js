@@ -63,23 +63,29 @@ const getHouseById = async (req, res, next) => {
 
     let house;
     let targetProducts = [];
+    let targetComments = [];
+    let houseLikes = [];
 
     try{
         house = await House.findById(houseId);
+
         const products = house.products;
-        // console.log(products);
 
         for(let pid of products){
             targetProducts.push(await Product.findById(pid));
         }
 
-        console.log(targetProducts)
+        const houseOfComments = await house.populate('comments');
+        targetComments = houseOfComments.comments;
+
+        const houseOfHouseLikes = await house.populate('houseLikes');
+        houseLikes = houseOfHouseLikes.houseLikes;
 
     }catch(error){
         console.log(error);
         return next(new HttpError('Something went wrong', 500));
     }
-    res.status(200).json({ house, targetProducts });
+    res.status(200).json({ house, targetProducts, targetComments, houseLikes });
 }
 
 exports.getHouses = getHouses;

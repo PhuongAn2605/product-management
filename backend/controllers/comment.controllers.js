@@ -31,13 +31,14 @@ const createComment = async (req, res, next) => {
   const { content, commenter } = req.body;
 
   const house = await House.findById(houseId);
-  // console.log("house: ", house);
+  let targetComments = [];
 
   const createdComment = new Comment({
     houseId,
     content,
     commenter,
-    commentLike: []
+    commentLike: [],
+    replyComments: []
   });
 
   try {
@@ -47,32 +48,32 @@ const createComment = async (req, res, next) => {
     }
     house.comments.push(saveComment);
     await house.save();
+
+    targetComments = await Comment.find({ houseId: houseId });
+    // console.log(targetComments);
+
   } catch (err) {
-    // console.log(err);
     return next(
       new HttpError("Something went wrong, could not make a comment", 500)
     );
   }
 
-  res.status(201).json({ comment: createdComment });
+  res.status(201).json({ comments: targetComments });
 };
 
 const getCommentsByHouseId = async (req, res, next) => {
   const houseId = req.params.hid;
   let houseWithComments;
   try {
-    // console.log("house: ", await House.findById(houseId));
     houseWithComments = await House.findById(houseId).populate(
       "comments"
     );
-    // console.log("house with comments: ", houseWithComments);
     if (!houseWithComments || houseWithComments.comments.length === 0) {
       return next(
         new HttpError("Could not find comments for provided house id", 404)
       );
     }
   } catch (error) {
-    // console.log(error);
     return next(new HttpError("Fetching comments failed", 500));
   }
 

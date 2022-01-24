@@ -38,6 +38,20 @@ export const sendCommentSuccess = (result) => ({
     payload: result
 });
 
+export const sendReplyCommentStart = (commentId, content, commenter) => ({
+    type: HouseTypes.SEND_REPLY_COMMENT_START,
+    payload: {
+        commentId,
+        content,
+        commenter
+    }
+});
+
+export const sendReplyCommentSuccess = (result) => ({
+    type: HouseTypes.SEND_REPLY_COMMENT_SUCCESS,
+    payload: result
+});
+
 export const getCommentsByHouseIdStart = (houseId) => ({
     type: HouseTypes.GET_COMMENTS_BY_HOUSE_ID_START,
     payload: houseId
@@ -45,6 +59,16 @@ export const getCommentsByHouseIdStart = (houseId) => ({
 
 export const getCommentsByHouseIdSuccess = (result) => ({
     type: HouseTypes.GET_COMMENTS_BY_HOUSE_ID_SUCCESS,
+    payload: result
+});
+
+export const getRepliesByCommentIdStart = (commentId) => ({
+    type: HouseTypes.GET_REPLIES_BY_COMMENT_ID_START,
+    payload: commentId
+});
+
+export const getRepliesByCommentIdSuccess = (result) => ({
+    type: HouseTypes.GET_REPLIES_BY_COMMENT_ID_SUCCESS,
     payload: result
 });
 
@@ -61,3 +85,17 @@ export const likeCommentSuccess = (result) => ({
     type: HouseTypes.LIKE_COMMENT_SUCCESS,
     payload: result
 });
+
+export const likeHouseStart = (like, houseId, userName) => ({
+    type: HouseTypes.LIKE_HOUSE_START,
+    payload: {
+        like,
+        houseId,
+        userName
+    }
+});
+
+export const likeHouseSuccess = (result) => ({
+    type: HouseTypes.LIKE_HOUSE_SUCCESS,
+    payload: result
+})

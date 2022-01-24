@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import UserMenu from "../components/UserMenu/UserMenu";
-
+import OtherHousesIcon from '@mui/icons-material/OtherHouses';
 import {
   fetchAllHouseStart,
   getHouseByIdStart,
@@ -23,21 +23,30 @@ const HouseTitleStyle = styled.div`
   background-color: #4b6e7e;
   display: flex;
   justify-content: space-between;
+  font-weight: 700;
 
 `;
 const OtherHouseStyle = styled.div`
   margin: 1rem 10rem;
   padding: 1rem;
   background-color: #d8c9c9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
+  border-radius: 10px;
   &:hover {
     background-color: #d3aeae;
   }
 `;
 
-const HeaderFriendHouseStyle = styled.div`
-  display: flex;
-`;
+
+const HouseNameStyle = styled.div`
+  font-size: 18px;
+  font-weight: 700;
+  color: #2684bb;
+  margin-left: 1rem;
+`
 
 const OtherHousePage = ({
   fetchAllHouse,
@@ -45,8 +54,8 @@ const OtherHousePage = ({
   userName,
   getHouseById,
   targetProducts,
+  visitHouse
 }) => {
-  // console.log("targetProducts: ", targetProducts);
 
   useEffect(() => {
     fetchAllHouse();
@@ -57,17 +66,15 @@ const OtherHousePage = ({
   const getHouseByIdHandler = async (id) => {
     await getHouseById(id);
 
-    if (!isEmpty(targetProducts)) {
+    if (!isEmpty(visitHouse)) {
       navigate("/visit-house/" + id);
-    }else{
-      alert('Loading...')
     }
+
+    // }else{
+    //   alert('Loading...')
+    // }
   };
   const otherHouses = houses.filter((h) => h.name.split("'s")[0] !== userName);
-  // const otherHouses = houses.map(h => h.userName.slice(-8, -1) !== userName);
-  //   const test = "Phương An's house";
-  //   console.log(test.split("'s")[0]);
-  // console.log(otherHouses);
 
   return (
     <OtherHousesPageStyle>
@@ -82,7 +89,8 @@ const OtherHousePage = ({
             getHouseByIdHandler(h._id);
           }}
         >
-          {h.name}
+          <OtherHousesIcon color="primary" fontSize="large"/>
+          <HouseNameStyle>{h.name}</HouseNameStyle>
         </OtherHouseStyle>
       ))}
     </OtherHousesPageStyle>
@@ -93,6 +101,7 @@ const mapStateToProps = (state) => ({
   houses: state.house.houses,
   userName: state.auth.userName,
   targetProducts: state.house.targetProducts,
+  visitHouse: state.house.visitHouse
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -1,12 +1,18 @@
 import styled from "styled-components";
 
 export const CommentStyle = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
   margin: 1rem;
-  width: 100%;
 `;
+
+export const CommentDetailsStyle = styled.div`
+ display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+`;
+
+export const TimeTrackStyle = styled.div`
+  font-size: 12px;
+`
 
 export const CommenterStyle = styled.div`
   color: #e97e0f;
@@ -15,19 +21,30 @@ export const CommenterStyle = styled.div`
 
 export const CommentContentStyle = styled.div`
   display: flex;
+  justify-content: flex-start;
 `;
 
 export const OtherCommentsStyle = styled.div`
   font-weight: 600;
   font-size: 20px;
-`
+`;
 export const CommentContentRightStyle = styled.div`
   margin-left: auto;
-`
-export const ContentStyle = styled.div`
-
-`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+export const ContentStyle = styled.div``;
 
 export const CommentSpanStyle = styled.div`
   font-size: 10px;
-`
+`;
+
+export const DisplayReplyCommentStyle = styled.div`
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background-color: #ddd;
+  border-radius: 10px;
+`;

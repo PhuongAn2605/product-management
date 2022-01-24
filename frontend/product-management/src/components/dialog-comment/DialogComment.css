@@ -8,3 +8,12 @@
     justify-content: flex-start;
     align-items: center;
 }
+
+.MuiInputAdornment-root.MuiInputAdornment-positionStart.MuiInputAdornment-standard.MuiInputAdornment-sizeMedium.css-ittuaa-MuiInputAdornment-root{
+    display: none;
+}
+
+.MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation24.MuiDialog-paper.MuiDialog-paperScrollBody.MuiDialog-paperWidthSm.css-2zwj5t-MuiPaper-root-MuiDialog-paper{
+    width: 100%;
+}
+

@@ -14,6 +14,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
+import Badge from "@mui/material/Badge";
 
 import { red } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
@@ -29,6 +30,8 @@ import {
   CommentContentRightStyle,
   OtherCommentsStyle,
   CommentSpanStyle,
+  LargeCommentDivStyle,
+  DisplayCommentStyle,
 } from "./DialogComment.js";
 import { Typography } from "@mui/material";
 
@@ -39,6 +42,8 @@ import {
   sendCommentStart,
 } from "../../redux/house/house.actions.js";
 import CommentItem from "../comment-item/CommentItem.jsx";
+import CommentInput from "../input/CommentInput.jsx";
+import isEmpty from "is-empty";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -89,24 +94,38 @@ const DialogComment = ({
   openDialogAction,
   visitHouse,
   getCommentsByHouseId,
-  commentDetails,
+  visit,
+  // commentDetails,
+  comments,
+  targetComments,
   sendComment,
   likeComment,
+  commentLikes,
+  houseId,
 }) => {
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState(null);
   const [commentValue, setCommentValue] = useState("");
-  console.log(visitHouse);
+  const [commentCount, setCommentCount] = useState(comments.length);
   const commenter = userName;
-  const visitHouseId = visitHouse._id;
+  const visitHouseId = visit ? visitHouse._id : houseId;
 
   const [isLiked, setIsLiked] = useState(false);
+  let likedCommentIds = [];
 
-  useEffect(() => {
-    getCommentsByHouseId(visitHouseId, commenter);
-  }, []);
+  // useEffect(() => {
+  //   getCommentsByHouseId(visitHouseId);
+  //   console.log('comments: ', comments);
+  // });
 
-  console.log(commentDetails);
+  // useEffect(() => {
+  //   console.log('dialog comment: ')
+  //   if(!isEmpty(visitHouseId)){
+  //     for(let like of commentLikes){
+  //       likedCommentIds.push(like.commentId);
+  //     }
+  //   }
+  // },[]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -115,27 +134,28 @@ const DialogComment = ({
     setOpen(false);
   };
   const sendCommentHandler = (e) => {
-    // console.log(e);
-    console.log("comment: ", commentValue);
-    console.log("commenter: ", commenter);
-
     sendComment(visitHouseId, commentValue, commenter);
+    setCommentCount(commentCount + 1);
     setCommentValue("");
   };
-
-  
 
   return (
     <DialogStyle>
       <Button variant="outlined" onClick={handleClickOpen}>
         <AddDialogStyle>
-          <ChatBubbleOutlineOutlinedIcon fontSize="large" />
+          <Badge
+            badgeContent={comments.length > 0 ? comments.length : "0"}
+            color="success"
+          >
+            <ChatBubbleOutlineOutlinedIcon fontSize="large" color="primary" />
+          </Badge>
         </AddDialogStyle>
       </Button>
       <BootstrapDialog
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={open}
+        scroll="body"
       >
         <BootstrapDialogTitle
           id="customized-dialog-title"
@@ -143,8 +163,17 @@ const DialogComment = ({
           style={{ display: "flex", alignItems: "center" }}
         >
           <AddTextStyle>
-            Bạn nghĩ gì về {visitHouse.name}
-            ?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {visit ? (
+              <span>
+                Bạn nghĩ gì về {visitHouse.name}
+                ?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              </span>
+            ) : (
+              <span>
+                Bình luận về nhà của
+                bạn&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              </span>
+            )}
           </AddTextStyle>
         </BootstrapDialogTitle>
         <DialogContent
@@ -152,29 +181,35 @@ const DialogComment = ({
           maxWidth="xl"
           style={{
             overflow: "hidden",
-            display: "grid",
-            gridTemplateColumns: "3fr 1fr",
-            justifyContent: "center",
+            display: "flex",
+            justifyContent: "flex-start",
+            margin: "1rem",
           }}
           dividers
         >
-          <div>
-            <OtherCommentsStyle>Các bình luận khác</OtherCommentsStyle>
-            {commentDetails.length > 0 &&
-              commentDetails.map((comment) => (
-                <CommentItem key={comment._id} comment={comment} userName={userName}/>
-              ))}
+          <LargeCommentDivStyle>
+            <OtherCommentsStyle>Tất cả bình luận</OtherCommentsStyle>
+            {comments && comments.length > 0 ? (
+              comments.map((comment) => {
+                return (
+                  <DisplayCommentStyle>
+                    <CommentItem
+                      key={comment._id}
+                      comment={comment}
+                      userName={userName}
+                      isReplied={false}
+                      visit={visit}
+                    />
+                  </DisplayCommentStyle>
+                );
+              })
+            ) : (
+              <div>Chưa có ai bình luận!</div>
+            )}
             <Typography gutterBottom>
-              <InputForm
-                id="comment"
-                name="Thêm bình luận"
-                type="text"
-                value={commentValue}
-                onChange={(e) => setCommentValue(e.currentTarget.value)}
-              />
-              <SendOutlinedIcon onClick={(e) => sendCommentHandler(e)} />
+              <CommentInput isComment={true} />
             </Typography>
-          </div>
+          </LargeCommentDivStyle>
         </DialogContent>
 
         <DialogActions>
@@ -193,17 +228,21 @@ const mapStateToProps = (state) => ({
   productImage: state.product.productImage,
   openDialog: state.dialog.openDialog,
   visitHouse: state.house.visitHouse,
-  commentDetails: state.house.commentDetails,
+  targetComments: state.house.targetComments,
+  commentLikes: state.house.commentLikes,
+  houseId: state.auth.houseId,
+  comments: state.house.targetComments,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   closeDialogAction: () => dispatch(closeDialog()),
   openDialogAction: () => dispatch(openDialog()),
-  getCommentsByHouseId: (houseId, commenter) =>
-    dispatch(getCommentsByHouseIdStart(houseId, commenter)),
+  getCommentsByHouseId: (houseId) =>
+    dispatch(getCommentsByHouseIdStart(houseId)),
   sendComment: (visitHouseId, comment, commenter) =>
     dispatch(sendCommentStart(visitHouseId, comment, commenter)),
-  likeComment: (commentId, like, userName) => dispatch(likeCommentStart(commentId, like, userName)),
+  likeComment: (commentId, like, userName) =>
+    dispatch(likeCommentStart(commentId, like, userName)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DialogComment);

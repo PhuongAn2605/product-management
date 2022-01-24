@@ -15,9 +15,6 @@ export const AddDialogStyle = styled.div`
   align-items: center;
   margin-left: auto !important;
 
-  /* padding: 0.5rem 1rem;
-  background-color: #459add;
-  border-radius: 30px; */
   span {
     color: #fff;
     font-weight: 400;

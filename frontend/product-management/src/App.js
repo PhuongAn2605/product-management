@@ -1,14 +1,13 @@
 import "./App.css";
 import Header from "./components/header/Header.component";
 import { Routes, Route } from "react-router-dom";
-import Login from "./pages/login.page";
-import Signup from "./pages/signup.page";
+import Login from "./pages/auth/login.page";
+import Signup from "./pages/auth/signup.page";
 import { useEffect } from "react";
 import { connect } from "react-redux";
 import { fetchLoginStart, fetchLoginSuccess, fetchLogoutStart } from "./redux/auth/auth.actions";
 import MyHome from "./pages/my-home";
 import { useNavigate } from "react-router-dom";
-import EditProductPage from "./pages/product/EditProduct";
 import { fetchProductStart } from "./redux/product/product.actions";
 import OtherHousePage from "./pages/other-houses";
 import isEmpty from "is-empty";
@@ -22,15 +21,23 @@ const App = ({
   isLoggedIn,
   fetchProducts,
   products,
-  targetProducts
+  targetProducts,
+  targetComments,
+  visitHouse,
+  authComments
 }) => {
-  // const navigate = useNavigate();
-  // useEffect(() => {
-  //   fetchProducts();
-  // }, []);
 
-  // console.log(products);
-  // console.log(targetProducts);
+  useEffect(() => {
+    if (isLoggedIn && (isEmpty(visitHouse))) {
+      const data = JSON.parse(localStorage.getItem("visitHouse"));
+      console.log(data);
+      visitHouse = data.visitHouse;
+      targetProducts = data.targetProducts;
+      targetComments = data.targetComments;
+
+      console.log('visit house: ', visitHouse)
+    }
+  }, [visitHouse]);
 
   useEffect(() => {
     if (token && tokenExpirationDate) {
@@ -44,7 +51,6 @@ const App = ({
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("userData"));
-    console.log(storedData)
     if (
       storedData &&
       storedData.token &&
@@ -76,7 +82,7 @@ const App = ({
 
 const mapDispatchToProps = (dispatch) => ({
   login: (userName, password, token, expirationDate) =>
-    dispatch(fetchLoginSuccess(userName,password, token, expirationDate)),
+    dispatch(fetchLoginStart(userName, password, expirationDate)),
   logout: () => dispatch(fetchLogoutStart()),
   fetchProducts: () => dispatch(fetchProductStart()),
 });
@@ -86,6 +92,9 @@ const mapStateToProps = (state) => ({
   tokenExpirationDate: state.auth.tokenExpirationDate,
   isLoggedIn: state.auth.isLoggedIn,
   products: state.product.products,
-  targetProducts: state.house.targetProducts
+  targetProducts: state.house.targetProducts,
+  targetComments: state.house.targetComments,
+  visitHouse: state.house.visitHouse,
+  authComments: state.auth.comments
 });
 export default connect(mapStateToProps, mapDispatchToProps)(App);

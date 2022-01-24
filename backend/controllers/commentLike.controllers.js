@@ -7,33 +7,46 @@ const likeReact = async (req, res, next) => {
   const { like, userName } = req.body;
   const commentId = req.params.commentId;
 
-  const commentLike = new CommentLike({
-    commentId,
-    like,
-    userName,
-  });
-
-
   let saveLikeComment;
-  try {
-    saveLikeComment = await commentLike.save();
-    console.log('saveLikeComment', saveLikeComment);
-    if (isEmpty(saveLikeComment)) {
-      return next(new HttpError("Could not save the comment", 500));
-    }
+  let comment = await Comment.findById(commentId);
+  let targetCommentLikes;
 
-    const comment = await Comment.findById(commentId);
-    comment.commentLikes.push(saveLikeComment);
-    await comment.save();
+  if (like) {
+    const commentLike = new CommentLike({
+      commentId,
+      userName,
+    });
 
-    console.log('log comment',comment);
+    try {
+      saveLikeComment = await commentLike.save();
+      if (isEmpty(saveLikeComment)) {
+        return next(new HttpError("Could not save the like", 500));
+      }
 
-  } catch (err) {
+      comment.commentLikes.push(saveLikeComment);
+      await comment.save();
+    } catch (err) {
       console.log(err);
-    return next(new HttpError("Something went wrong!", 500));
-  }
+      return next(new HttpError("Something went wrong!", 500));
+    }
+  }else{
+    const like = await CommentLike.findOne({ commentId: commentId, userName: userName }).populate('commentId');
+    console.log(like);
+    if(isEmpty(like)){
+      return next(new HttpError('Could not find any like for the comment', 404));
+    }
+    const deleteLike = await like.remove();
+    if (isEmpty(deleteLike)) {
+      return next(new HttpError("Could not delete the like", 500));
+    }
+    like.commentId.commentLikes.pull(like);
+    await like.commentId.save();
 
-  res.status(201).json({ commentLike: saveLikeComment });
+  }
+  const commentOfCommentLikes = await comment.populate('commentLikes');
+  targetCommentLikes = commentOfCommentLikes.commentLikes;
+
+  res.status(201).json({ commentLikes: targetCommentLikes });
 };
 
 exports.likeReact = likeReact;

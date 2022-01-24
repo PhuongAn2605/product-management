@@ -7,9 +7,9 @@ const HttpError = require("../models/http-error");
 const User = require("../models/User");
 const House = require("../models/House");
 const Product = require("../models/Product");
+const { houseLike } = require("./houseLike.controllers");
 
 const signup = async (req, res, next) => {
-  console.log(req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors);
@@ -20,7 +20,6 @@ const signup = async (req, res, next) => {
 
   const { userName, password } = req.body;
 
-  // console.log(userName, password);
   let existingUser;
   let newUser;
   let saveUser;
@@ -58,11 +57,9 @@ const signup = async (req, res, next) => {
 
       newUser = new User({
         userName,
-        // password: hashedPassword,
         password: password,
       });
       saveUser = await newUser.save();
-      // console.log(saveUser._id);
     } else {
       return next(new HttpError("Wrong password!", 422));
     }
@@ -104,44 +101,43 @@ const signup = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   const errors = validationResult(req);
-  // let isValidadPassword = false;
   let token;
 
   if (!errors.isEmpty()) {
-    // console.log(errors)
     return next(
       new HttpError("Invalid inputs passed, please check your data!", 422)
     );
   }
 
   const { userName, password } = req.body;
-  // console.log(userName, password);
 
   let existingUser;
   let houseOfUser;
   let productsOfHouse = [];
+  let houseLikes = [];
+  let comments = [];
 
   try {
     existingUser = await User.findOne({
       userName: userName,
       password: password,
     });
-    // console.log(existingUser)
     if (isEmpty(existingUser)) {
       return next(new HttpError("Could not find the user", 404));
     }
 
     const userId = existingUser._id;
-    // console.log(existingUser._id);
     houseOfUser = await House.findOne({ userId: userId });
-    // console.log(houseOfUser.products);
     const productOfHouseIds = houseOfUser.products;
     for (p of productOfHouseIds) {
       const product = await Product.findById(p);
       productsOfHouse.push(product);
-      // console.log(productsOfHouse);
     }
-    // console.log(productsOfHouse);
+
+    houseLikes = await houseOfUser.populate('houseLikes');
+    comments = await houseOfUser.populate('comments');
+    // console.log(houseLikes.houseLikes);
+
     token = jwt.sign(
       { userName: existingUser.userName },
       "supersecret_dont_share",
@@ -164,6 +160,8 @@ const login = async (req, res, next) => {
       token: token,
       houseId: houseOfUser._id,
       products: productsOfHouse,
+      houseLikes: houseLikes.houseLikes,
+      comments: comments.comments
     });
 };
 

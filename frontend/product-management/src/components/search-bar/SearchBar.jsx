@@ -6,12 +6,9 @@ import { searchProductByLocationStart, searchProductByNameStart } from "../../re
 const SearchBarForm = ({ isSearchByName, isSearchByLocation, searchProductByName, searchProductByLocation }) => {
   const [searchValue, setSearchValue] = useState('');
 
-  console.log(isSearchByName, isSearchByLocation);
-
   const searchHandler = (e) => {
     // e.preventDefault();
 
-    console.log(searchValue);
     if(isSearchByName && !isSearchByLocation){
       searchProductByName(searchValue);
     }else if(!isSearchByName && isSearchByLocation){

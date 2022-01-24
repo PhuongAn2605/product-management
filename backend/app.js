@@ -10,6 +10,7 @@ const productRouter = require('./routes/product.routes');
 const commentRouter = require('./routes/comment.routes');
 const commentLikeRouter = require('./routes/commentLike.routes');
 const replyRouter = require('./routes/reply.routes');
+const houseLikeRouter = require('./routes/houseLike.routes');
 
 
 const bodyParser = require('body-parser');
@@ -42,6 +43,7 @@ app.use('/api/comment', commentRouter);
 app.use('/api/comment-like', commentLikeRouter);
 app.use('/api/reply', replyRouter);
 app.use('/api/house', houseRouter);
+app.use('/api/house-like', houseLikeRouter);
 
 app.use((req, res, next) => {
     const error = new HttpError('Could not find the route', 404);

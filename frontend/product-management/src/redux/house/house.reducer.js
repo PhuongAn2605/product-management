@@ -7,6 +7,9 @@ const INITIAL_STATE = {
   targetComments: [],
   commentDetails: [],
   commentLikes: [],
+  houseLikes: [],
+  replyComments: [],
+  message: null,
   newComment: null,
   error: null,
 };
@@ -20,29 +23,61 @@ const houseReducer = (state = INITIAL_STATE, action) => {
         error: null,
       };
     case HouseTypes.GET_HOUSE_BY_ID_SUCCESS:
+      console.log("house: ", action.payload);
+      localStorage.setItem(
+        "visitHouse",
+        JSON.stringify({
+          visitHouse: action.payload.house,
+          targetProducts: action.payload.targetProducts,
+          targetComments: action.payload.targetComments,
+          houseLikes: action.payload.houseLikes,
+        })
+      );
+
       return {
         ...state,
         visitHouse: action.payload.house,
         targetProducts: action.payload.targetProducts,
-        targetComments: action.payload.comments,
+        targetComments: action.payload.targetComments,
+        houseLikes: action.payload.houseLikes,
         error: null,
       };
     case HouseTypes.SEND_COMMENT_SUCCESS:
+      console.log(action.payload);
       return {
         ...state,
-        newComment: action.payload,
-        commentDetails: [...state.commentDetails, action.payload.comment],
+        targetComments: action.payload.comments
+        // commentDetails: [...state.commentDetails, action.payload.comment],
+        // targetComments: [...state.targetComments, action.payload.comment],
+      };
+
+    case HouseTypes.SEND_REPLY_COMMENT_SUCCESS:
+      return {
+        ...state,
+        replyComments: action.payload.replyComments
       };
     case HouseTypes.GET_COMMENTS_BY_HOUSE_ID_SUCCESS:
       return {
         ...state,
-        commentDetails: action.payload.comments,
+        targetComments: action.payload.comments,
+      };
+
+    case HouseTypes.GET_REPLIES_BY_COMMENT_ID_SUCCESS:
+      console.log(action.payload);
+      return {
+        ...state,
+        replyComments: action.payload.replyComments,
       };
 
     case HouseTypes.LIKE_COMMENT_SUCCESS:
       return {
         ...state,
-        commentLikes: [...state.commentLikes, action.payload.commentLike],
+        commentLikes: action.payload.commentLikes,
+      };
+    case HouseTypes.LIKE_HOUSE_SUCCESS:
+      return {
+        ...state,
+        houseLikes: action.payload.houseLikes,
       };
     case HouseTypes.FETCH_FAILURE:
       return {

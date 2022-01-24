@@ -13,10 +13,9 @@ import { connect } from "react-redux";
 import isEmpty from "is-empty";
 
 const Item = (props) => {
-  // console.log(props);
   return (
     <ItemStyle>
-      {isEmpty(props.visitHouse) && <DotMenu id={props.id} />}
+      {!props.visit && <DotMenu id={props.id} />}
       <ImageStyle>
         <img
           src={props.imageUrl}

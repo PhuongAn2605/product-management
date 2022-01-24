@@ -60,7 +60,6 @@ BootstrapDialogTitle.propTypes = {
 const DialogFormDelete = ({ id, products, deleteProduct }) => {
 
   const productToDelete = products.find((p) => p._id === id);
-  console.log(productToDelete);
   const [open, setOpenDialogEdit] = useState(false);
 
   const handleDialogOpen = () => {
@@ -87,6 +86,7 @@ const DialogFormDelete = ({ id, products, deleteProduct }) => {
         onClose={handleDialogClose}
         aria-labelledby="customized-dialog-title"
         open={open}
+        scroll='body'
       >
         <BootstrapDialogTitle
           id="customized-dialog-title"

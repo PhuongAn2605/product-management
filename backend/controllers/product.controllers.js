@@ -27,10 +27,6 @@ const getProducts = async (req, res, next) => {
   });
 };
 
-const getProductsByUserName = async (req, res, next) => {
-
-}
-
 const getProductById = async (req, res, next) => {
   const productId = req.params.pid;
 
@@ -59,15 +55,11 @@ const createProduct = async (req, res, next) => {
 
   const userName = req.params.userName;
   const productOfUser = await User.findOne({ userName: userName });
-  // console.log("user_id: ", productOfUser._id);
-  console.log("user: ", productOfUser);
-
 
   const userId = productOfUser._id;
 
   const houseOfUser = await House.findOne({ userId: userId });
   const houseId = houseOfUser._id;
-  // console.log("house: ", houseOfUser)
 
   const {
     productName,
@@ -81,8 +73,6 @@ const createProduct = async (req, res, next) => {
   } = req.body;
 
 
-  // console.log(req.file.path);
-
   const createdProduct = new Product({
     productName,
     shortName,
@@ -92,7 +82,6 @@ const createProduct = async (req, res, next) => {
     location,
     description,
     image: req.file.path,
-    // commentId,
     houseId,
   });
 
@@ -156,9 +145,6 @@ const editProduct = async (req, res, next) => {
     const saveProduct = await product.save();
     if (isEmpty(saveProduct)) {
       return next(new HttpError("Could not save updated product", 500));
-    // } else {
-    //   res.status(200).json({ product: product });
-    // }
     }
   } catch (err) {
     const error = new HttpError(
@@ -174,7 +160,8 @@ const deleteProduct = async (req, res, next) => {
   const productId = req.params.pid;
 
   try {
-    const product = Product.findById(productId);
+    const product = await Product.findById(productId).populate('houseId');
+    // console.log('product: ', product);
     if (isEmpty(product)) {
       return next(new HttpError("Could not find the product", 404));
     }
@@ -183,6 +170,9 @@ const deleteProduct = async (req, res, next) => {
     if (isEmpty(deleteProduct)) {
       return next(new HttpError("Could not delete the product", 500));
     }
+
+    product.houseId.products.pull(product);
+    await product.houseId.save();
   } catch (err) {
     return next(
       new HttpError("Something went wrong, could not delete the product", 500)
@@ -204,7 +194,6 @@ const searchProductByName = async (req, res, next) => {
 
   let targetProduct;
   const { productName } = req.body;
-  // const normalizeProductName = productName.trim().toLowerCase();
   try {
     targetProduct = await Product.find({ productName: regExpSearch(productName) });
     if (isEmpty(targetProduct)) {
@@ -231,15 +220,10 @@ const searchProductByLocation = async (req, res, next) => {
 
   let targetProduct;
   const { location } = req.body;
-  // console.log(location)
-  // const normalizeProductLocation = location.trim().toLowerCase();
-  // console.log(normalizeProductLocation)
 
   try {
-    // targetProduct = await Product.findOne({ location: location.toLowerCase()  });
     targetProduct = await Product.find({ location: regExpSearch(location) });
 
-    // console.log(targetProduct);
     if (isEmpty(targetProduct)) {
       return next(
         new HttpError("Can not find the product with provided location", 404)

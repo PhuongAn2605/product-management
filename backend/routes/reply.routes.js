@@ -4,7 +4,7 @@ const replyController = require('../controllers/reply.controllers');
 
 const router = express.Router();
 
-router.get('/', replyController.getReply);
+router.get('/:cid', replyController.getReplyByCommentId);
 
 router.post('/create/:cid', replyController.createReply);
 

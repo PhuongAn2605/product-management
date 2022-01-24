@@ -8,7 +8,6 @@ import UserMenu from "../UserMenu/UserMenu";
 import { HeaderStyle, LeftHeaderItem, RightHeaderItem } from "./Header.styles";
 
 const Header = ({ logout, isLoggedIn, isLogInMode, isSignupMode }) => {
-  // console.log(isLoggedIn);
   let activeStyle = {
     textDecoration: "underline",
   };

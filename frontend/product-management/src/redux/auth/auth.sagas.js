@@ -34,7 +34,6 @@ export function* fetchSignupWatcher() {
 }
 
 export function* fetchLogin(payload) {
-  // console.log(payload.payload);
   const { userName, password } = payload.payload;
 
   try {
@@ -44,14 +43,9 @@ export function* fetchLogin(payload) {
     });
 
     const data = result.data;
-    // console.log(data);
-
-    // const expirationDate = payload.payload.expirationDate;
     if (!isEmpty(data)) {
-      // data.exprirationDate = expirationDate;
       yield put(fetchLoginSuccess(data));
       yield put(fetchProductSuccess(data.products));
-      console.log(data);
     } else {
       yield put(fetchLoginFailure("error"));
     }
@@ -68,7 +62,6 @@ export function* fetchLoginWatcher() {
 export function* fetchLogout() {
   try {
     yield Http.get("/user/logout");
-    // console.log(result);
     yield put(fetchLogoutSuccess());
   } catch (error) {
     yield put(fetchLogoutFailure());
@@ -81,12 +74,10 @@ export function* fetchLogoutWatcher() {
 
 export function* fetchCheckPassword(payload) {
   const password = payload.payload;
-  console.log(password);
   try {
     const result = yield Http.post("/user/check-password", {
       password,
     });
-    console.log(result.data);
     yield put(fetchCheckPasswordSuccess(result));
   } catch (error) {
     yield put(fetchCheckPasswordFailure(error));

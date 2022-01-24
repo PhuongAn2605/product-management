@@ -5,28 +5,35 @@ import { useNavigate } from "react-router-dom";
 import isEmpty from "is-empty";
 import { ThemeProvider } from "@mui/material/styles";
 
-import InputForm from "../components/input/Input.component";
-import ButtonForm from "../components/button/Button.component";
+import InputForm from "../../components/input/Input.component";
+import ButtonForm from "../../components/button/Button.component";
 import {
   theme,
   ErrorTextStyle,
   PasswordButtonStyle,
   TextHeaderStyle,
-  AuthPageStyle
-} from "./utils.styles";
+  AuthPageStyle,
+  RightItemsStyle,
+} from "../utils.styles";
 
 import {
   fetchLoginStart,
   fetchSignup,
   setErrorConfirmPassword,
-} from "../redux/auth/auth.actions";
+} from "../../redux/auth/auth.actions";
 
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
+import LeftItem from "./LeftItem";
+import TitleItem from "./TitleItem";
+import AuthInputForm from "./AuthInputForm";
+import UserImage from "../../images/user.png";
+import KeyImage from "../../images/key.png";
 
 const PasswordText = styled.p`
   margin-right: auto;
+  color: #fff;
 `;
 
 const SignUp = ({
@@ -45,18 +52,17 @@ const SignUp = ({
   const [isCheckLetter, setIsCheckLetter] = useState(false);
   // const [isUnique, setIsUnique] = useState(false);
   const [errors, setErrors] = useState(error);
-
-  // console.log(errors);
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const navigate = useNavigate();
 
-  const nameRef = useRef(null);
-  const passwordRef = useRef(null);
-  const confirmPasswordRef = useRef(null);
+  // const nameRef = useRef(null);
+  // const passwordRef = useRef(null);
+  // const confirmPasswordRef = useRef(null);
 
   const signupHandler = async (userName, password, confirmPassword) => {
-    console.log(userName, password, confirmPassword);
-
     if (password !== confirmPassword) {
       const err = "Confirm password not match!";
       setErrors(err);
@@ -80,18 +86,17 @@ const SignUp = ({
   };
 
   const onChangePasswordHandler = (e) => {
-    passwordRef.current.value = e.currentTarget.value;
-    let passwordValue = passwordRef.current.value;
-    // console.log(passwordValue);
-    if (passwordValue.match(/^.{8,15}$/)) {
-      // setPasswordLevel((prev) => prev + 1);
+    // passwordRef.current.value = e.currentTarget.value;
+    // let passwordValue = passwordRef.current.value;
+    setPassword(e.currentTarget.value);
+    if (password.match(/^.{8,15}$/)) {
       setIsCheckLength(true);
     } else {
       setIsCheckLength(false);
     }
 
     if (
-      passwordValue.match(
+      password.match(
         /^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s)/
       )
     ) {
@@ -114,9 +119,31 @@ const SignUp = ({
 
   return (
     <AuthPageStyle>
-      <TextHeaderStyle>Create an account</TextHeaderStyle>
-      <form className="sign-up">
-        <InputForm
+      <LeftItem />
+      <RightItemsStyle>
+        <TitleItem targetAction="Sign-up" />
+        <form className="sign-up">
+          <AuthInputForm
+            image={UserImage}
+            placeholder="User Name"
+            type="text"
+            onChange={(e) => setUserName(e.currentTarget.value)}
+          />
+          <AuthInputForm
+            image={KeyImage}
+            placeholder="Password"
+            type="password"
+            onChange={(e) => onChangePasswordHandler(e)}
+          />
+
+          <AuthInputForm
+            image={KeyImage}
+            placeholder="Confirm password"
+            type="password"
+            onChange={(e) => setConfirmPassword(e.currentTarget.value)}
+          />
+
+          {/* <InputForm
           id="userName"
           name="User Name"
           type="text"
@@ -142,49 +169,48 @@ const SignUp = ({
             (confirmPasswordRef.current.value = e.currentTarget.value)
           }
           icon={<VpnKeyIcon />}
-        />
-        {!isEmpty(errors) ? (
-          <ErrorTextStyle>{errors.toString()}</ErrorTextStyle>
-        ) : (
-          <div></div>
-        )}
+        /> */}
+          {!isEmpty(errors) ? (
+            <ErrorTextStyle>{errors.toString()}</ErrorTextStyle>
+          ) : (
+            <div></div>
+          )}
 
-        <PasswordButtonStyle>
-          <PasswordText>Password level</PasswordText>
-          <div>
-            <HorizontalRuleIcon
-              fontSize="large"
-              color={passwordLevel > 0 ? "warning" : "disabled"}
-            />
-            <HorizontalRuleIcon
-              fontSize="large"
-              color={passwordLevel > 1 ? "warning" : "disabled"}
-            />
-          </div>
-        </PasswordButtonStyle>
+          <PasswordButtonStyle>
+            <PasswordText>Password strength</PasswordText>
+            <div>
+              <HorizontalRuleIcon
+                fontSize="large"
+                color={passwordLevel > 0 ? "warning" : "disabled"}
+              />
+              <HorizontalRuleIcon
+                fontSize="large"
+                color={passwordLevel > 1 ? "warning" : "disabled"}
+              />
+            </div>
+          </PasswordButtonStyle>
 
-        <PasswordButtonStyle>
-          <ThemeProvider theme={theme}>
+          <PasswordButtonStyle>
+            <ThemeProvider theme={theme}>
+              <ButtonForm
+                title="Sign Up"
+                variant="contained"
+                style={{ color: "#fff", border: "1px solid #fff" }}
+                action={() =>
+                  signupHandler(userName, password, confirmPassword)
+                }
+              />
+            </ThemeProvider>
             <ButtonForm
-              title="Sign Up"
-              variant="contained"
-              action={() =>
-                signupHandler(
-                  nameRef.current.value,
-                  passwordRef.current.value,
-                  confirmPasswordRef.current.value
-                )
-              }
+              title="Login"
+              type="button"
+              variant="outlined"
+              style={{ color: "#fff", border: "1px solid #fff" }}
+              action={() => navigate("/login")}
             />
-          </ThemeProvider>
-          <ButtonForm
-            title="Login"
-            type="button"
-            variant="outlined"
-            action={() => navigate("/login")}
-          />
-        </PasswordButtonStyle>
-      </form>
+          </PasswordButtonStyle>
+        </form>
+      </RightItemsStyle>
     </AuthPageStyle>
   );
 };

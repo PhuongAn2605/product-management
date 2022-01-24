@@ -20,7 +20,6 @@ const DotMenuStyle = styled.div`
 `
 
 const DotMenu = (props) => {
-  console.log(props.id);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {

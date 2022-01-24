@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
 import SearchBarForm from "../components/search-bar/SearchBar";
@@ -9,8 +9,10 @@ import SideBar from "../components/sidebar/SideBar.jsx";
 import { openDialog } from "../redux/dialog/dialog-actions";
 import { connect } from "react-redux";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import { red } from "@mui/material/colors";
+import Badge from "@mui/material/Badge";
 import DialogFormAdd from "../components/dialog-add/DialogFormAdd.jsx";
 import {
   setSearchByLocation,
@@ -18,6 +20,10 @@ import {
 } from "../redux/product/product.actions";
 import isEmpty from "is-empty";
 import DialogComment from "../components/dialog-comment/DialogComment.jsx";
+import {
+  getCommentsByHouseIdStart,
+  likeHouseStart,
+} from "../redux/house/house.actions";
 
 const MyHomeStyle = styled.div`
   display: flex;
@@ -139,11 +145,12 @@ const ReactionStyle = styled.div`
   display: flex;
   justify-content: space-around !important;
   align-items: center !important;
-`
+`;
 
 const MyHome = ({
   openDialog,
   products,
+  comments,
   product,
   message,
   setSearchByName,
@@ -153,12 +160,62 @@ const MyHome = ({
   searchedProducts,
   visit,
   visitHouse,
+  houseId,
+  userName,
+  likeHouse,
+  houseLikes,
+  authHouseLikes,
+  getCommentByHouseId
 }) => {
-  console.log(visitHouse);
-
   if (!isEmpty(searchedProducts) && searchedProducts.length > 0) {
     products = [...searchedProducts];
   }
+  const [isLikeHouse, setIsLikeHouse] = useState(false);
+
+  const targetHouseLikes = visit ? houseLikes : authHouseLikes;
+  // console.log("target like: ", targetHouseLikes);
+
+  const [likeHouseCount, setLikeHouseCount] = useState(targetHouseLikes.length);
+  const [commentHouseCount, setCommentHouseCount] = useState(comments.length);
+
+  useEffect(() => {
+    if(!isEmpty(houseId)){
+      getCommentByHouseId(houseId);
+    }else if(!isEmpty(visitHouse)){
+      getCommentByHouseId(visitHouse._id);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isEmpty(visitHouse)) {
+      for (let like of targetHouseLikes) {
+        if (userName === like.userName) {
+          setIsLikeHouse(true);
+          return;
+        }
+      }
+    }
+  }, []);
+
+  const likeHouseHandler = (e) => {
+    e.preventDefault();
+    setIsLikeHouse(!isLikeHouse);
+  };
+
+  useEffect(() => {
+    if (isLikeHouse) {
+      setLikeHouseCount(likeHouseCount + 1);
+    } else {
+      if(likeHouseCount > 0){
+        setLikeHouseCount(likeHouseCount - 1);
+      }
+    }
+    if (visit) {
+      likeHouse(isLikeHouse, visitHouse._id, userName);
+    } else {
+      likeHouse(isLikeHouse, houseId, userName);
+    }
+  }, [isLikeHouse]);
 
   return (
     <div>
@@ -169,18 +226,34 @@ const MyHome = ({
         <ItemsStyle>
           <HeaderStyle>
             <WelcomeText>
-              {visit ? (
-                <div>
-                  <p>Welcome to {visitHouse.name}</p>
-                  <ReactionStyle>
-                    <FavoriteBorderIcon fontSize="large" />
-                    <DialogComment />
-                    {/* <ChatBubbleOutlineOutlinedIcon fontSize="large" /> */}
-                  </ReactionStyle>
-                </div>
-              ) : (
-                "Welcome to my home"
-              )}
+              <div>
+                {visit ? <p>Welcome to {visitHouse.name}</p> : <p>My home</p>}
+                <ReactionStyle>
+                  {!isLikeHouse ? (
+                    <Badge
+                      badgeContent={likeHouseCount}
+                      color="error"
+                    >
+                      <FavoriteBorderIcon
+                        fontSize="large"
+                        onClick={(e) => likeHouseHandler(e)}
+                      />
+                    </Badge>
+                  ) : (
+                    <Badge
+                      badgeContent={likeHouseCount}
+                      color="error"
+                    >
+                      <FavoriteIcon
+                        fontSize="large"
+                        onClick={(e) => likeHouseHandler(e)}
+                      />
+                    </Badge>
+                  )}
+                  <DialogComment visit={visit} />
+                  {/* <ChatBubbleOutlineOutlinedIcon fontSize="large" /> */}
+                </ReactionStyle>
+              </div>
             </WelcomeText>
             <SearchFormStyle>
               <SearchBarForm />
@@ -220,7 +293,7 @@ const MyHome = ({
               <UserMenu />
             </UserNameStyle>
           </HeaderStyle>
-          <DialogFormAdd />
+          {!visit && <DialogFormAdd />}
           <DisplayItemsStyle>
             <ItemDetailStyle>
               {!isEmpty(products) &&
@@ -232,6 +305,7 @@ const MyHome = ({
                     productName={p.productName}
                     functions={p.functions}
                     description={p.description}
+                    visit={visit}
                   />
                 ))}
             </ItemDetailStyle>
@@ -249,6 +323,10 @@ const mapDispatchToProps = (dispatch) => ({
   openDialog: () => dispatch(openDialog()),
   setSearchByName: () => dispatch(setSearchByName()),
   setSearchByLocation: () => dispatch(setSearchByLocation()),
+  likeHouse: (like, houseId, userName) =>
+    dispatch(likeHouseStart(like, houseId, userName)),
+  getCommentByHouseId: (houseId) =>
+    dispatch(getCommentsByHouseIdStart(houseId)),
 });
 
 const mapStateToProps = (state) => ({
@@ -259,6 +337,11 @@ const mapStateToProps = (state) => ({
   isSearchByLocation: state.product.isSearchByLocation,
   searchedProducts: state.product.searchedProducts,
   visitHouse: state.house.visitHouse,
+  houseId: state.auth.houseId,
+  userName: state.auth.userName,
+  houseLikes: state.house.houseLikes,
+  authHouseLikes: state.auth.houseLikes,
+  comments: state.house.targetComments
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyHome);

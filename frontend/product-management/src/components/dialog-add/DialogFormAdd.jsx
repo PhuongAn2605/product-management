@@ -121,8 +121,6 @@ const DialogFormAdd = ({
       userName,
     };
 
-    console.log(data);
-
     addProduct(data);
 
     setProName("");
@@ -155,6 +153,7 @@ const DialogFormAdd = ({
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={open}
+        scroll='body'
       >
         <BootstrapDialogTitle
           id="customized-dialog-title"

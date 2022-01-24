@@ -4,7 +4,14 @@ import { addProductImage } from "../../redux/product/product.actions";
 import ButtonForm from "../button/Button.component";
 import "./ImageUpload.styles.css";
 
-const ImageUpload = ({ id, center, onInput, productImage, addProductImage, imageUrl }) => {
+const ImageUpload = ({
+  id,
+  center,
+  onInput,
+  productImage,
+  addProductImage,
+  imageUrl,
+}) => {
   const [file, setFile] = useState();
   const [previewUrl, setPreviewUrl] = useState(imageUrl);
   const [isValid, setIsValid] = useState();
@@ -39,7 +46,7 @@ const ImageUpload = ({ id, center, onInput, productImage, addProductImage, image
       fileIsValid = false;
     }
 
-    addProductImage({pickedFile});
+    addProductImage({ pickedFile });
 
     onInput(pickedFile);
   };
@@ -68,6 +75,7 @@ const ImageUpload = ({ id, center, onInput, productImage, addProductImage, image
           type="button"
           title="PICK IMAGE"
           action={() => pickImageHandler()}
+          style={{ color: "#red", border: "1px solid #fff" }}
           color="primary"
         />
       </div>

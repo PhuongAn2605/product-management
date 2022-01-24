@@ -10,13 +10,13 @@ import {
 import { connect } from "react-redux";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
+import './UserMenu.css';
 
 const UserMenu = ({ userName, logout, isLoggedIn, error }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [errors, setErrors] = React.useState(error);
   const open = Boolean(anchorEl);
 
-  console.log(userName)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -32,12 +32,12 @@ const UserMenu = ({ userName, logout, isLoggedIn, error }) => {
   const logoutHandler = () => {
     logout();
     localStorage.removeItem("userData");
+    localStorage.removeItem("visitHouse");
 
     if (isEmpty(errors)) {
       navigate("/login");
     } else {
       setErrors(error);
-      console.log(errors);
     }
   };
 
@@ -63,6 +63,7 @@ const UserMenu = ({ userName, logout, isLoggedIn, error }) => {
         }}
       >
         {/* {/* <MenuItem onClick={handleClose}>Profile</MenuItem> */}
+        <MenuItem><Link to="/">My house</Link></MenuItem>
         <MenuItem><Link to="/other-houses">Other houses</Link></MenuItem>
         <MenuItem onClick={logoutHandler}>Logout</MenuItem>
       </Menu>

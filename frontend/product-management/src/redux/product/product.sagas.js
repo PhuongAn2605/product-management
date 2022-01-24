@@ -36,8 +36,6 @@ export function* addProduct(payload) {
     formData.append("image", image);
     formData.append("houseId", null);
 
-    // alert();
-
     const result = yield axios({
       method: "post",
       url: "http://localhost:5000/api/product/create/" + userName,
@@ -72,9 +70,7 @@ export function* fetchProductWatcher() {
 }
 
 export function* editProduct(payload) {
-  // console.log('payload', payload.payload)
   const product = payload.payload;
-  // console.log(product)
   const {
     proNameValue,
     shortNameValue,
@@ -86,7 +82,6 @@ export function* editProduct(payload) {
     id,
   } = product;
 
-  // console.log(image);
   try {
     const formData = new FormData();
     formData.append("productName", proNameValue);
@@ -98,8 +93,6 @@ export function* editProduct(payload) {
     formData.append("image", imageValue);
     formData.append("houseId", null);
 
-    // console.log(...formData);
-
     const result = yield axios({
       method: "patch",
       url: "http://localhost:5000/api/product/edit/" + id,
@@ -109,7 +102,6 @@ export function* editProduct(payload) {
 
     if(!isEmpty(result)){
       const data = result.data;
-      console.log(data);
       yield put(editProductSuccess(data));
     }else{
       console.log('error')
@@ -126,7 +118,6 @@ export function* editProductWatcher() {
 }
 
 export function* deleteProduct(payload) {
-  // console.log('payload', payload)
   const id = payload.payload;
   try {
     const result = Http.delete("/product/delete/" + id);
@@ -144,7 +135,6 @@ export function* deleteProductWatcher() {
 
 
 export function* searchProductByName (payload) {
-  // console.log(payload.payload);
   const productName = payload.payload;
   try{
     const result = yield Http.post('/product/search-name', {
@@ -152,7 +142,6 @@ export function* searchProductByName (payload) {
     });
 
     const data = result.data;
-    console.log(data);
     yield put(searchProductByNameSuccess(data));
   }catch(error){
     yield put(fetchFailure(error));
@@ -164,7 +153,6 @@ export function* searchProductByNameWatcher() {
 }
 
 export function* searchProductByLocation(payload) {
-  console.log(payload.payload);
   const location = payload.payload;
   try{
     const result = yield Http.post('/product/search-location', {

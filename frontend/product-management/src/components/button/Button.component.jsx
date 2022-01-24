@@ -10,7 +10,6 @@ const ButtonStyle = styled.div`
 
 const ButtonForm = (props) => {
 
-  // console.log(props);
   return (
     <ButtonStyle>
       <Button
@@ -18,6 +17,7 @@ const ButtonForm = (props) => {
         disabled={props.disabled}
         color={props.color ? props.color : "primary"}
         onClick={props.action}
+        style={props.style}
       >
         {props.title}
       </Button>
