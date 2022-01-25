@@ -5,6 +5,7 @@ const HttpError = require("../models/http-error");
 
 const likeReact = async (req, res, next) => {
   const { like, userName } = req.body;
+
   const commentId = req.params.commentId;
 
   let saveLikeComment;
@@ -29,11 +30,16 @@ const likeReact = async (req, res, next) => {
       console.log(err);
       return next(new HttpError("Something went wrong!", 500));
     }
-  }else{
-    const like = await CommentLike.findOne({ commentId: commentId, userName: userName }).populate('commentId');
+  } else {
+    const like = await CommentLike.findOne({
+      commentId: commentId,
+      userName: userName,
+    }).populate("commentId");
     console.log(like);
-    if(isEmpty(like)){
-      return next(new HttpError('Could not find any like for the comment', 404));
+    if (isEmpty(like)) {
+      return next(
+        new HttpError("Could not find any like for the comment", 404)
+      );
     }
     const deleteLike = await like.remove();
     if (isEmpty(deleteLike)) {
@@ -41,9 +47,8 @@ const likeReact = async (req, res, next) => {
     }
     like.commentId.commentLikes.pull(like);
     await like.commentId.save();
-
   }
-  const commentOfCommentLikes = await comment.populate('commentLikes');
+  const commentOfCommentLikes = await comment.populate("commentLikes");
   targetCommentLikes = commentOfCommentLikes.commentLikes;
 
   res.status(201).json({ commentLikes: targetCommentLikes });

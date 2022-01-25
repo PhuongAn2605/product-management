@@ -173,7 +173,6 @@ const MyHome = ({
   isLoggedIn,
   authComments,
 }) => {
-
   // const houseIdParam = useParams().houseId;
   // console.log(houseIdParam);
 
@@ -182,63 +181,70 @@ const MyHome = ({
   }
 
   const navigate = useNavigate();
-  let initialLikeHouse;
-
-  
-  useEffect(() => {
-    // if (!isEmpty(visitHouse)) {
-      for (let like of houseLikes) {
-        if (userName === like.userName) {
-          initialLikeHouse = true;
-          // setIsLikeHouse(true);
-          return;
-        }
-      // }
-    }
-  }, [houseLikes]);
-
-  const [isLikeHouse, setIsLikeHouse] = useState(initialLikeHouse);
-
+  const [isLikeHouse, setIsLikeHouse] = useState(false);
+  const [likeHouseCount, setLikeHouseCount] = useState(0);
+  const [initialLike, setInitialLike] = useState(true);
 
   useEffect(() => {
-
+    
     if (!isEmpty(houseId) && !visit) {
-      console.log('auth likes: ',authHouseLikes);
       setHouseLikes(authHouseLikes);
+      houseLikes = [...authHouseLikes];
+      setLikeHouseCount(houseLikes.length);
+
       setHouseComments(authComments);
+      comments = [...authComments];
       console.log("auth comment: ", comments);
     }
-    // setLikeHouseCount(houseLikes.length);
-  },[houseId, visitHouse, visit]);
+    setInitialLike(true);
+    for (let like of houseLikes) {
+      if (userName === like.userName) {
+        setIsLikeHouse(true);
+        return;
+      }
+    }
+  }, []);
+
+
+
+  // useEffect(() => {
+  //   for (let like of houseLikes) {
+  //     if (userName === like.userName) {
+  //       // initialLikeHouse = true;
+  //       setIsLikeHouse(true);
+  //       return;
+  //     }
+  //   }
+  // }, []);
 
   useEffect(() => {
-    if(!isLoggedIn){
-      navigate('/');
+    if (!isLoggedIn) {
+      navigate("/");
     }
   }, [isLoggedIn]);
 
-
   useEffect(() => {
-    // if (isLikeHouse) {
-    //   setLikeHouseCount(likeHouseCount + 1);
-    // } else {
-    //   if (likeHouseCount > 0) {
-    //     setLikeHouseCount(likeHouseCount - 1);
-    //   }else{
-    //     setLikeHouseCount("0");
 
-    //   }
-    // }
-    if (visit && !isEmpty(visitHouse)) {
-      likeHouse(isLikeHouse, visitHouse._id, userName);
-    } else {
-      likeHouse(isLikeHouse, houseId, userName);
+    if(!initialLike){
+      if (visit && !isEmpty(visitHouse)) {
+        likeHouse(isLikeHouse, visitHouse._id, userName);
+      } else {
+        likeHouse(isLikeHouse, houseId, userName);
+      }
+
+      if (isLikeHouse) {
+        setLikeHouseCount(likeHouseCount + 1);
+      } else {
+        setLikeHouseCount(likeHouseCount - 1);
+      }
     }
   }, [isLikeHouse]);
 
   const likeHouseHandler = (e) => {
-    e.preventDefault();
     setIsLikeHouse(!isLikeHouse);
+    setInitialLike(false);
+
+   
   };
 
   return (
@@ -251,17 +257,27 @@ const MyHome = ({
           <HeaderStyle>
             <WelcomeText>
               <div>
-                {(visit && !isEmpty(visitHouse)) ? <p>Welcome to {visitHouse.name}</p> : <p>My home</p>}
+                {visit && !isEmpty(visitHouse) ? (
+                  <p>Welcome to {visitHouse.name}</p>
+                ) : (
+                  <p>My home</p>
+                )}
                 <ReactionStyle>
                   {!isLikeHouse ? (
-                    <Badge badgeContent={houseLikes.length > 0 ? houseLikes.length : "0"} color="error">
+                    <Badge
+                      badgeContent={likeHouseCount > 0 ? likeHouseCount : "0"}
+                      color="error"
+                    >
                       <FavoriteBorderIcon
                         fontSize="large"
                         onClick={(e) => likeHouseHandler(e)}
                       />
                     </Badge>
                   ) : (
-                    <Badge badgeContent={houseLikes.length > 0 ? houseLikes.length : "0"} color="error">
+                    <Badge
+                      badgeContent={likeHouseCount > 0 ? likeHouseCount : "0"}
+                      color="error"
+                    >
                       <FavoriteIcon
                         fontSize="large"
                         onClick={(e) => likeHouseHandler(e)}
@@ -343,10 +359,10 @@ const mapDispatchToProps = (dispatch) => ({
   setSearchByLocation: () => dispatch(setSearchByLocation()),
   likeHouse: (like, houseId, userName) =>
     dispatch(likeHouseStart(like, houseId, userName)),
-    setHouseLikes: (houseLikes) => dispatch(setHouseLikes(houseLikes)),
-    setHouseComments: (houseComments) => dispatch(setHouseComments(houseComments)),
-    getHouseById: (houseId) => getHouseByIdStart(houseId),
-    
+  setHouseLikes: (houseLikes) => dispatch(setHouseLikes(houseLikes)),
+  setHouseComments: (houseComments) =>
+    dispatch(setHouseComments(houseComments)),
+  getHouseById: (houseId) => getHouseByIdStart(houseId),
 });
 
 const mapStateToProps = (state) => ({

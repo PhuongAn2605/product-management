@@ -87,7 +87,7 @@ const OtherHousePage = ({
         <span>Friends' House</span>
         <UserMenu />
       </HouseTitleStyle>
-      {otherHouses.map((h) => (
+      {!isEmpty(otherHouses) ? otherHouses.map((h) => (
         <OtherHouseStyle
           key={h._id}
           onClick={() => {
@@ -97,7 +97,7 @@ const OtherHousePage = ({
           <OtherHousesIcon color="primary" fontSize="large"/>
           <HouseNameStyle>{h.name}</HouseNameStyle>
         </OtherHouseStyle>
-      ))}
+      )) : <OtherHouseStyle>Not found any friends'house!</OtherHouseStyle>}
     </OtherHousesPageStyle>
   );
 };

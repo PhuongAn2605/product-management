@@ -123,6 +123,7 @@ export function* getRepliesByCommentIdWatcher() {
 }
 
 export function* likeComment(payload) {
+  console.log('comment likes payload: ', payload.payload);
   const { commentId, like, userName } = payload.payload;
 
   try {
@@ -131,7 +132,6 @@ export function* likeComment(payload) {
       userName,
     });
     const data = result.data;
-    console.log(data);
     yield put(likeCommentSuccess(data));
   } catch (error) {
     console.log("error: ", error);

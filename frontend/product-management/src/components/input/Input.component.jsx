@@ -22,6 +22,7 @@ const InputForm = (props, ref) => {
           style={props.style}
           onChange={props.onChange}
           value={props.value}
+          onKeyPress={props.onKeyPress}
           startAdornment={
             <InputAdornment position="start">
               {props.icon}

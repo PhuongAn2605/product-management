@@ -19,7 +19,7 @@ const ExpireProduct = ({ products, getExpireProductNoti, expireProducts, visit }
   return (
     <div>
       <HeaderStyle>Sản phẩm sắp hết hạn</HeaderStyle>
-      {!isEmpty(expireProducts) &&
+      {!isEmpty(expireProducts) ?
         expireProducts.map((p) => (
           <ProductStyle key={p._id}>
             <FiberManualRecordIcon color="info" />
@@ -27,7 +27,7 @@ const ExpireProduct = ({ products, getExpireProductNoti, expireProducts, visit }
             <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
             <div className="product-date">{moment(p.expiration).format('DD-MM-YYYY')}</div>
           </ProductStyle>
-        ))}
+        )) : <ProductStyle>Không tìm thấy sản phẩm nào sắp hết hạn trong vòng 30 ngày.</ProductStyle>}
     </div>
   );
 };

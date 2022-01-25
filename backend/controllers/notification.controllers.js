@@ -6,7 +6,7 @@ const getLastLogin = async (req, res, next) => {
     try{
         const lastLogin = await LoginHistory.find({ userId: userId }).sort({ "loginNo": -1 });
 
-        return res.status(200).json({ lastLogin: lastLogin[0] });
+        return res.status(200).json({ lastLogin: lastLogin[1] });
     }catch(err){
         return next(new HttpError("Something went wrong", 500));
     }

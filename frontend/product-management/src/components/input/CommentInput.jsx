@@ -13,6 +13,7 @@ const ReplyCommentStyle = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  width: 100%;
 `;
 
 const CommentInput = ({
@@ -51,10 +52,16 @@ const CommentInput = ({
         type="text"
         value={inputValue}
         onChange={(e) => setInputValue(e.currentTarget.value)}
+        onKeyPress={(e) => {
+          if(e.key === "Enter"){
+            sendCommentHandler(e);
+          }
+        }}
       />
       <SendOutlinedIcon
         style={{ color: blueGrey[500] }}
         onClick={(e) => sendCommentHandler(e)}
+        
       />
     </ReplyCommentStyle>
   );
