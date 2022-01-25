@@ -102,12 +102,11 @@ export function* editProduct(payload) {
 
     if(!isEmpty(result)){
       const data = result.data;
+      console.log(data);
       yield put(editProductSuccess(data));
     }else{
-      console.log('error')
+      console.log('error');
     }
-
-    
   } catch (error) {
     yield put(fetchFailure(error));
   }

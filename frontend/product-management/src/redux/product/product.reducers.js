@@ -23,11 +23,6 @@ const productReducer = (state = INITIAL_STATE, action) => {
         products: [...state.products, { ...action.payload.product }],
         message: "Add Successfully!",
       };
-    // case ProductTypes.ADD_PRODUCT_IMAGE:
-    //   return {
-    //     ...state,
-    //     productImage: action.payload,
-    //   };
 
     case ProductTypes.FETCH_PRODUCTS_SUCCESS:
       return {

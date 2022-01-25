@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import InputForm from "../input/Input.component.jsx";
-import ReplyIcon from "@mui/icons-material/Reply";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import PropTypes from "prop-types";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -12,24 +9,15 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
-import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
-import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import Badge from "@mui/material/Badge";
 
-import { red } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
 
 import {
   AddDialogStyle,
   DialogStyle,
   AddTextStyle,
-  CommentStyle,
-  CommenterStyle,
-  ContentStyle,
-  CommentContentStyle,
-  CommentContentRightStyle,
   OtherCommentsStyle,
-  CommentSpanStyle,
   LargeCommentDivStyle,
   DisplayCommentStyle,
 } from "./DialogComment.js";
@@ -38,6 +26,7 @@ import { Typography } from "@mui/material";
 import { closeDialog, openDialog } from "../../redux/dialog/dialog-actions.js";
 import {
   getCommentsByHouseIdStart,
+  getRepliesByCommentIdStart,
   likeCommentStart,
   sendCommentStart,
 } from "../../redux/house/house.actions.js";
@@ -84,59 +73,36 @@ BootstrapDialogTitle.propTypes = {
 };
 
 const DialogComment = ({
-  addProduct,
   userName,
-  productImage,
-  error,
-  closeDialog,
-  openDialog,
-  closeDialogAction,
-  openDialogAction,
   visitHouse,
   getCommentsByHouseId,
-  visit,
-  // commentDetails,
   comments,
-  targetComments,
-  sendComment,
-  likeComment,
-  commentLikes,
   houseId,
+  visit,
 }) => {
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState(null);
   const [commentValue, setCommentValue] = useState("");
   const [commentCount, setCommentCount] = useState(comments.length);
   const commenter = userName;
-  const visitHouseId = visit ? visitHouse._id : houseId;
+  const visitHouseId = ( visit && !isEmpty(visitHouse)) ? visitHouse._id : houseId;
 
-  const [isLiked, setIsLiked] = useState(false);
-  let likedCommentIds = [];
 
-  // useEffect(() => {
-  //   getCommentsByHouseId(visitHouseId);
-  //   console.log('comments: ', comments);
-  // });
+  useEffect(() => {
+    if (!isEmpty(visitHouse) && visit) {
+      getCommentsByHouseId(visitHouse._id);
+      console.log("visit comment: ", comments);
+    }else{
+      getCommentsByHouseId(houseId);
+    }
+  }, [houseId, visitHouse && visitHouse._id, visit]);
 
-  // useEffect(() => {
-  //   console.log('dialog comment: ')
-  //   if(!isEmpty(visitHouseId)){
-  //     for(let like of commentLikes){
-  //       likedCommentIds.push(like.commentId);
-  //     }
-  //   }
-  // },[]);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
-  };
-  const sendCommentHandler = (e) => {
-    sendComment(visitHouseId, commentValue, commenter);
-    setCommentCount(commentCount + 1);
-    setCommentValue("");
   };
 
   return (
@@ -163,7 +129,7 @@ const DialogComment = ({
           style={{ display: "flex", alignItems: "center" }}
         >
           <AddTextStyle>
-            {visit ? (
+            {(visit && !isEmpty(visitHouse)) ? (
               <span>
                 Bạn nghĩ gì về {visitHouse.name}
                 ?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -228,10 +194,11 @@ const mapStateToProps = (state) => ({
   productImage: state.product.productImage,
   openDialog: state.dialog.openDialog,
   visitHouse: state.house.visitHouse,
-  targetComments: state.house.targetComments,
   commentLikes: state.house.commentLikes,
   houseId: state.auth.houseId,
   comments: state.house.targetComments,
+  replyComments: state.house.replyComments,
+  authComments: state.auth.comments
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -243,6 +210,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(sendCommentStart(visitHouseId, comment, commenter)),
   likeComment: (commentId, like, userName) =>
     dispatch(likeCommentStart(commentId, like, userName)),
+    getRepliesByCommentId: (commentId) => dispatch(getRepliesByCommentIdStart(commentId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DialogComment);

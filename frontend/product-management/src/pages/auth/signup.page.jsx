@@ -37,21 +37,14 @@ const PasswordText = styled.p`
 `;
 
 const SignUp = ({
-  token,
-  onChange,
-  avatar,
-  login,
   signup,
-  isLoggedIn,
   error,
-  checkPasswordUnique,
-  setErrorConfirmPassword,
 }) => {
   const [passwordLevel, setPasswordLevel] = useState(0);
   const [isCheckLength, setIsCheckLength] = useState(false);
   const [isCheckLetter, setIsCheckLetter] = useState(false);
   // const [isUnique, setIsUnique] = useState(false);
-  const [errors, setErrors] = useState(error);
+  const [errors, setErrors] = useState("");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -72,7 +65,9 @@ const SignUp = ({
     if (isCheckLength && isCheckLetter) {
       signup(userName, password);
       if (!isEmpty(error)) {
-        setErrors(error);
+        const err = "Could not sign you up! Please try again!";
+        setErrors(err);
+        // setErrors(error);
         return;
       }
     } else {
@@ -86,8 +81,6 @@ const SignUp = ({
   };
 
   const onChangePasswordHandler = (e) => {
-    // passwordRef.current.value = e.currentTarget.value;
-    // let passwordValue = passwordRef.current.value;
     setPassword(e.currentTarget.value);
     if (password.match(/^.{8,15}$/)) {
       setIsCheckLength(true);
@@ -143,33 +136,6 @@ const SignUp = ({
             onChange={(e) => setConfirmPassword(e.currentTarget.value)}
           />
 
-          {/* <InputForm
-          id="userName"
-          name="User Name"
-          type="text"
-          ref={nameRef}
-          onChange={(e) => (nameRef.current.value = e.currentTarget.value)}
-          icon={<PermIdentityOutlinedIcon />}
-        />
-        <InputForm
-          id="password"
-          name="Password"
-          type="password"
-          ref={passwordRef}
-          onChange={(e) => onChangePasswordHandler(e)}
-          icon={<VpnKeyIcon />}
-        />
-
-        <InputForm
-          id="confirm-password"
-          name="Confirm Password"
-          type="password"
-          ref={confirmPasswordRef}
-          onChange={(e) =>
-            (confirmPasswordRef.current.value = e.currentTarget.value)
-          }
-          icon={<VpnKeyIcon />}
-        /> */}
           {!isEmpty(errors) ? (
             <ErrorTextStyle>{errors.toString()}</ErrorTextStyle>
           ) : (

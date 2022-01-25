@@ -1,18 +1,43 @@
 import { HeaderStyle, ProductStyle } from "./ExpireProduct.js";
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import { connect } from "react-redux";
+import { getExpireProduct } from "../../redux/notification/notification.utils.js";
+import { useEffect } from "react";
+import isEmpty from "is-empty";
+import { getExpireProductNoti } from "../../redux/notification/notification.actions.js";
+import moment from "moment";
 
-const ExpireProduct = () => {
+const ExpireProduct = ({ products, getExpireProductNoti, expireProducts, visit }) => {
+  useEffect(() => {
+    if (!isEmpty(products)) {
+      getExpireProductNoti(products);
+    }
+  }, [products, visit]);
+
+  console.log(expireProducts);
+
   return (
     <div>
       <HeaderStyle>Sản phẩm sắp hết hạn</HeaderStyle>
-      <ProductStyle>
-          <FiberManualRecordIcon color="info" />
-          <div className="product-name">Bàn ghế tròn</div>
-          <span> - </span>
-          <div className="product-date">14/07/2020</div>
-      </ProductStyle>
+      {!isEmpty(expireProducts) &&
+        expireProducts.map((p) => (
+          <ProductStyle key={p._id}>
+            <FiberManualRecordIcon color="info" />
+            <div className="product-name">{p.productName}</div>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <div className="product-date">{moment(p.expiration).format('DD-MM-YYYY')}</div>
+          </ProductStyle>
+        ))}
     </div>
   );
 };
 
-export default ExpireProduct;
+const mapStateToProps = (state) => ({
+  expireProducts: state.notification.expireProducts,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  getExpireProductNoti: (products) => dispatch(getExpireProductNoti(products)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ExpireProduct);

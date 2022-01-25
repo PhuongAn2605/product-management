@@ -4,6 +4,7 @@ const isEmpty = require("is-empty");
 const Product = require("../models/Product");
 const House = require("../models/House");
 const User = require("../models/User");
+const fs = require('fs');
 
 const escapeRegExp = (string = "") =>
   String(string).replace(/[.*+?^${}()|[]\]/g, "$&");
@@ -121,9 +122,7 @@ const editProduct = async (req, res, next) => {
     expiration,
     functions,
     description,
-    // image,
   } = req.body;
-  // const { productName } = req.body;
   const productId = req.params.pid;
 
   let product;
@@ -158,6 +157,7 @@ const editProduct = async (req, res, next) => {
 
 const deleteProduct = async (req, res, next) => {
   const productId = req.params.pid;
+  let imagePath;
 
   try {
     const product = await Product.findById(productId).populate('houseId');
@@ -166,6 +166,7 @@ const deleteProduct = async (req, res, next) => {
       return next(new HttpError("Could not find the product", 404));
     }
 
+    imagePath = product.image;
     const deleteProduct = await product.remove();
     if (isEmpty(deleteProduct)) {
       return next(new HttpError("Could not delete the product", 500));
@@ -178,6 +179,9 @@ const deleteProduct = async (req, res, next) => {
       new HttpError("Something went wrong, could not delete the product", 500)
     );
   }
+  fs.unlink(imagePath, err => {
+    console.log(err);
+  })
 
   res.status(201).send("Deleted");
 };

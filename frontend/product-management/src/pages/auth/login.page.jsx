@@ -26,10 +26,10 @@ import LeftItem from "./LeftItem";
 import TitleItem from "./TitleItem";
 import AuthInputForm from "./AuthInputForm";
 
-const Login = ({ login, isLoggedIn, error }) => {
+const Login = ({ login, error }) => {
   const [userNameValue, setUserNameValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
-  const [errors, setErrors] = useState(error);
+  const [errors, setErrors] = useState("");
 
   const navigate = useNavigate();
 
@@ -44,7 +44,8 @@ const Login = ({ login, isLoggedIn, error }) => {
     login(userName, password);
 
     if (!isEmpty(error)) {
-      setErrors(error);
+      setErrors("Could not log you in, please try again!");
+      // setErrors(error);
       return;
     } else {
       navigate("/");
@@ -69,23 +70,6 @@ const Login = ({ login, isLoggedIn, error }) => {
             type="password"
             onChange={(e) => changePasswordInputHandler(e)}
           />
-
-          {/* <InputForm
-            id="userName"
-            name="User Name"
-            type="text"
-            value={userNameValue}
-            onChange={(e) => changeEmailInputHandler(e)}
-            icon={<PermIdentityOutlinedIcon />}
-          /> */}
-          {/* <InputForm
-            id="password"
-            name="Password"
-            type="password"
-            value={passwordValue}
-            onChange={(e) => changePasswordInputHandler(e)}
-            icon={<VpnKeyIcon />}
-          /> */}
 
           {!isEmpty(errors) && (
             <ErrorTextStyle>{errors.toString()}</ErrorTextStyle>

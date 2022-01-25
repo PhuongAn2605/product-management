@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 const INITIAL_STATE = {
   isLoggedIn: false,
   userName: null,
+  userId: null,
   token: null,
   tokenExpirationDate: null,
   error: null,
@@ -44,6 +45,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
         isLoggedIn: true,
         token: action.payload.token,
         userName: action.payload.userName,
+        userId: action.payload.userId,
         houseId: action.payload.houseId,
         products: action.payload.products,
         houseLikes: action.payload.houseLikes,

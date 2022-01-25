@@ -46,7 +46,7 @@ const houseReducer = (state = INITIAL_STATE, action) => {
       console.log(action.payload);
       return {
         ...state,
-        targetComments: action.payload.comments
+        targetComments: action.payload.comments,
         // commentDetails: [...state.commentDetails, action.payload.comment],
         // targetComments: [...state.targetComments, action.payload.comment],
       };
@@ -54,7 +54,7 @@ const houseReducer = (state = INITIAL_STATE, action) => {
     case HouseTypes.SEND_REPLY_COMMENT_SUCCESS:
       return {
         ...state,
-        replyComments: action.payload.replyComments
+        replyComments: action.payload.replyComments,
       };
     case HouseTypes.GET_COMMENTS_BY_HOUSE_ID_SUCCESS:
       return {
@@ -63,7 +63,6 @@ const houseReducer = (state = INITIAL_STATE, action) => {
       };
 
     case HouseTypes.GET_REPLIES_BY_COMMENT_ID_SUCCESS:
-      console.log(action.payload);
       return {
         ...state,
         replyComments: action.payload.replyComments,
@@ -79,6 +78,19 @@ const houseReducer = (state = INITIAL_STATE, action) => {
         ...state,
         houseLikes: action.payload.houseLikes,
       };
+    case HouseTypes.SET_HOUSE_LIKES_FROM_AUTH:
+      return {
+        ...state,
+        houseLikes: action.payload,
+      };
+
+    case HouseTypes.SET_HOUSE_COMMENTS_FROM_AUTH:
+      console.log(action.payload);
+      return {
+        ...state,
+        targetComments: action.payload,
+      };
+    
     case HouseTypes.FETCH_FAILURE:
       return {
         ...state,

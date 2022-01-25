@@ -98,4 +98,14 @@ export const likeHouseStart = (like, houseId, userName) => ({
 export const likeHouseSuccess = (result) => ({
     type: HouseTypes.LIKE_HOUSE_SUCCESS,
     payload: result
-})
+});
+
+export const setHouseLikes = (houseLikes) => ({
+    type: HouseTypes.SET_HOUSE_LIKES_FROM_AUTH,
+    payload: houseLikes
+});
+
+export const setHouseComments = (authComments) => ({
+    type: HouseTypes.SET_HOUSE_COMMENTS_FROM_AUTH,
+    payload: authComments
+});

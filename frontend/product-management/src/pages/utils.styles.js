@@ -35,46 +35,58 @@ export const TextHeaderStyle = styled.div`
 `;
 
 export const AuthPageStyle = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 1fr !important;
+  display: grid;
+  grid-template-columns: 1fr 1fr !important;
+
+  height: 100vh;
+
+  img {
+    width: 500px;
+    height: 500px;
+  }
+  @media (max-width: 800px) {
     
-    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 
-
-    img{
-      width: 500px;
-      height: 500px;
-    }
-    @media(max-width: 800px){
-      img{
-        width: 400px;
+    img {
+      width: 400px;
       height: 400px;
-      }
     }
-`
+  }
+`;
 
 export const LeftItemsStyle = styled.div`
   background-color: #fff;
+  @media (max-width: 800px) {
+    width: 100%;
+  }
 `;
 
 export const RightItemsStyle = styled.div`
-  background-color: #76cff0 ;
+  background-color: #76cff0;
+  @media (max-width: 800px) {
+    width: 100%;
+  }
 `;
 
 export const TitleStyle = styled.div`
   text-transform: uppercase;
   margin: 2rem auto;
-`
+`;
 
 export const WelcomeTextStyle = styled.div`
   font-size: 24px;
   font-weight: 700;
-  color: #1FC3FF;
+  color: #1fc3ff;
   line-height: 2;
-`
+`;
 export const NewProductStyle = styled.div`
   font-size: 20px;
   font-weight: 700;
-  color: #F44336;
+  color: #f44336;
   line-height: 1;
-`
+`;

@@ -54,14 +54,19 @@ const OtherHousePage = ({
   userName,
   getHouseById,
   targetProducts,
-  visitHouse
+  visitHouse,
+  isLoggedIn
 }) => {
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchAllHouse();
-  }, []);
+    if(isLoggedIn){
+      fetchAllHouse();
 
-  const navigate = useNavigate();
+    }else{
+      navigate('/');
+    }
+  }, []);
 
   const getHouseByIdHandler = async (id) => {
     await getHouseById(id);
@@ -101,7 +106,8 @@ const mapStateToProps = (state) => ({
   houses: state.house.houses,
   userName: state.auth.userName,
   targetProducts: state.house.targetProducts,
-  visitHouse: state.house.visitHouse
+  visitHouse: state.house.visitHouse,
+  isLoggedIn: state.auth.isLoggedIn
 });
 
 const mapDispatchToProps = (dispatch) => ({

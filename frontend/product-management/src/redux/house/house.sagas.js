@@ -163,6 +163,7 @@ export function* likeHouseWatcher() {
   yield takeLatest(HouseTypes.LIKE_HOUSE_START, likeHouse);
 }
 
+
 export function* houseSaga() {
   yield all([
     call(fetchAllHousesWatcher),

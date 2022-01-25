@@ -28,18 +28,6 @@ const App = ({
 }) => {
 
   useEffect(() => {
-    if (isLoggedIn && (isEmpty(visitHouse))) {
-      const data = JSON.parse(localStorage.getItem("visitHouse"));
-      console.log(data);
-      visitHouse = data.visitHouse;
-      targetProducts = data.targetProducts;
-      targetComments = data.targetComments;
-
-      console.log('visit house: ', visitHouse)
-    }
-  }, [visitHouse]);
-
-  useEffect(() => {
     if (token && tokenExpirationDate) {
       const remainingTime =
         tokenExpirationDate.getTime() - new Date().getTime();

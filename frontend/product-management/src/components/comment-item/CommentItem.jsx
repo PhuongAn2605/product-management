@@ -40,31 +40,22 @@ const CommentItem = ({
 }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isReply, setIsReply] = useState(isReplied);
-  const [isLevel1, setIsLevel1] = useState(false);
-  const [commentLikeCount, setCommentLikeCount] = useState(commentLikes.length);
-  console.log("commentLikes: ", commentLikes.length);
+  // const [commentLikeCount, setCommentLikeCount] = useState(commentLikes.length);
 
   const { commenter, content } = comment;
-  // console.log('comment: ', comment);
   const commentId = comment._id;
 
-  // useEffect(() => {
-  //   getRepliesByCommentId(commentId);
-  // },[commentId]);
-
   useEffect(() => {
-    console.log("comment id item");
     if (!isEmpty(commentLikes)) {
       for (let like of commentLikes) {
         if (like.commentId === commentId && like.userName === userName) {
-          console.log(like);
           setIsLiked(true);
         } else {
           setIsLiked(false);
         }
       }
     }
-  }, []);
+  }, [commentId, userName, commentLikes]);
 
   const onLikeClickHandler = (e) => {
     // e.preventDefault();
@@ -76,30 +67,33 @@ const CommentItem = ({
   };
 
   const replyCommentHandler = (e) => {
-    console.log('comment id: ', commentId);
     getRepliesByCommentId(commentId);
+    setIsReply(!isReply);
 
-    setIsReply(true);
   };
 
   useEffect(() => {
-    if (isLiked) {
-      setCommentLikeCount(commentLikeCount + 1);
-    } else {
-      if (commentLikeCount > 0) {
-        setCommentLikeCount(commentLikeCount - 1);
-      }
-    }
+    // if (isLiked) {
+    //   setCommentLikeCount(commentLikeCount + 1);
+    // } else {
+    //   if (commentLikeCount > 0) {
+    //     setCommentLikeCount(commentLikeCount - 1);
+    //   }
+    // }
 
     likeComment(commentId, isLiked, userName);
-    // return;
   }, [isLiked]);
 
   const DisplayReplyComment = () => {
+    let targetReplyComments = [];
+    if(!isEmpty(replyComments)){
+      targetReplyComments = replyComments.filter(r => r.commentId === commentId);
+    }
+    console.log('target reply: ', targetReplyComments)
     return (
       <div>
-        {!isEmpty(replyComments) &&
-          replyComments.map((r) => {
+        {!isEmpty(targetReplyComments) &&
+          targetReplyComments.map((r) => {
             return (
               <DisplayReplyCommentStyle>
                 <CommentItem
@@ -108,7 +102,6 @@ const CommentItem = ({
                   userName={userName}
                   likeComment={likeComment}
                   commentLikes={commentLikes}
-                  getRepliesByCommentId
                   // replyComments
                   isReplied={true}
                 />
@@ -151,14 +144,14 @@ const CommentItem = ({
               onClick={(e) => replyCommentHandler(e)}
             />
             {!isLiked ? (
-              <Badge badgeContent={commentLikeCount}>
+              <Badge badgeContent={commentLikes.length > 0 ? commentLikes.length : "0"}>
                 <FavoriteBorderIcon
                   style={{ color: red[600] }}
                   onClick={() => setIsLiked(!isLiked)}
                 />
               </Badge>
             ) : (
-              <Badge badgeContent={commentLikeCount}>
+              <Badge badgeContent={commentLikes.length > 0 ? commentLikes.length : "0"}>
                 <FavoriteOutlinedIcon
                   style={{ color: red[600] }}
                   onClick={() => setIsLiked(!isLiked)}

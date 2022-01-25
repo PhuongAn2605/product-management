@@ -22,8 +22,14 @@ import isEmpty from "is-empty";
 import DialogComment from "../components/dialog-comment/DialogComment.jsx";
 import {
   getCommentsByHouseIdStart,
+  getHouseByIdStart,
   likeHouseStart,
+  setHouseComments,
+  setHouseLikes,
 } from "../redux/house/house.actions";
+import { getLastLoginStart } from "../redux/notification/notification.actions";
+
+import { Navigate, useNavigate, useParams } from "react-router";
 
 const MyHomeStyle = styled.div`
   display: flex;
@@ -148,11 +154,8 @@ const ReactionStyle = styled.div`
 `;
 
 const MyHome = ({
-  openDialog,
   products,
   comments,
-  product,
-  message,
   setSearchByName,
   setSearchByLocation,
   isSearchByName,
@@ -165,57 +168,78 @@ const MyHome = ({
   likeHouse,
   houseLikes,
   authHouseLikes,
-  getCommentByHouseId
+  setHouseLikes,
+  setHouseComments,
+  isLoggedIn,
+  authComments,
 }) => {
+
+  // const houseIdParam = useParams().houseId;
+  // console.log(houseIdParam);
+
   if (!isEmpty(searchedProducts) && searchedProducts.length > 0) {
     products = [...searchedProducts];
   }
-  const [isLikeHouse, setIsLikeHouse] = useState(false);
 
-  const targetHouseLikes = visit ? houseLikes : authHouseLikes;
-  // console.log("target like: ", targetHouseLikes);
+  const navigate = useNavigate();
+  let initialLikeHouse;
 
-  const [likeHouseCount, setLikeHouseCount] = useState(targetHouseLikes.length);
-  const [commentHouseCount, setCommentHouseCount] = useState(comments.length);
-
+  
   useEffect(() => {
-    if(!isEmpty(houseId)){
-      getCommentByHouseId(houseId);
-    }else if(!isEmpty(visitHouse)){
-      getCommentByHouseId(visitHouse._id);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!isEmpty(visitHouse)) {
-      for (let like of targetHouseLikes) {
+    // if (!isEmpty(visitHouse)) {
+      for (let like of houseLikes) {
         if (userName === like.userName) {
-          setIsLikeHouse(true);
+          initialLikeHouse = true;
+          // setIsLikeHouse(true);
           return;
         }
-      }
+      // }
     }
-  }, []);
+  }, [houseLikes]);
 
-  const likeHouseHandler = (e) => {
-    e.preventDefault();
-    setIsLikeHouse(!isLikeHouse);
-  };
+  const [isLikeHouse, setIsLikeHouse] = useState(initialLikeHouse);
+
 
   useEffect(() => {
-    if (isLikeHouse) {
-      setLikeHouseCount(likeHouseCount + 1);
-    } else {
-      if(likeHouseCount > 0){
-        setLikeHouseCount(likeHouseCount - 1);
-      }
+
+    if (!isEmpty(houseId) && !visit) {
+      console.log('auth likes: ',authHouseLikes);
+      setHouseLikes(authHouseLikes);
+      setHouseComments(authComments);
+      console.log("auth comment: ", comments);
     }
-    if (visit) {
+    // setLikeHouseCount(houseLikes.length);
+  },[houseId, visitHouse, visit]);
+
+  useEffect(() => {
+    if(!isLoggedIn){
+      navigate('/');
+    }
+  }, [isLoggedIn]);
+
+
+  useEffect(() => {
+    // if (isLikeHouse) {
+    //   setLikeHouseCount(likeHouseCount + 1);
+    // } else {
+    //   if (likeHouseCount > 0) {
+    //     setLikeHouseCount(likeHouseCount - 1);
+    //   }else{
+    //     setLikeHouseCount("0");
+
+    //   }
+    // }
+    if (visit && !isEmpty(visitHouse)) {
       likeHouse(isLikeHouse, visitHouse._id, userName);
     } else {
       likeHouse(isLikeHouse, houseId, userName);
     }
   }, [isLikeHouse]);
+
+  const likeHouseHandler = (e) => {
+    e.preventDefault();
+    setIsLikeHouse(!isLikeHouse);
+  };
 
   return (
     <div>
@@ -227,23 +251,17 @@ const MyHome = ({
           <HeaderStyle>
             <WelcomeText>
               <div>
-                {visit ? <p>Welcome to {visitHouse.name}</p> : <p>My home</p>}
+                {(visit && !isEmpty(visitHouse)) ? <p>Welcome to {visitHouse.name}</p> : <p>My home</p>}
                 <ReactionStyle>
                   {!isLikeHouse ? (
-                    <Badge
-                      badgeContent={likeHouseCount}
-                      color="error"
-                    >
+                    <Badge badgeContent={houseLikes.length > 0 ? houseLikes.length : "0"} color="error">
                       <FavoriteBorderIcon
                         fontSize="large"
                         onClick={(e) => likeHouseHandler(e)}
                       />
                     </Badge>
                   ) : (
-                    <Badge
-                      badgeContent={likeHouseCount}
-                      color="error"
-                    >
+                    <Badge badgeContent={houseLikes.length > 0 ? houseLikes.length : "0"} color="error">
                       <FavoriteIcon
                         fontSize="large"
                         onClick={(e) => likeHouseHandler(e)}
@@ -310,7 +328,7 @@ const MyHome = ({
                 ))}
             </ItemDetailStyle>
             <SideBarStyle>
-              <SideBar />
+              <SideBar visit={visit} products={products} />
             </SideBarStyle>
           </DisplayItemsStyle>
         </ItemsStyle>
@@ -325,14 +343,13 @@ const mapDispatchToProps = (dispatch) => ({
   setSearchByLocation: () => dispatch(setSearchByLocation()),
   likeHouse: (like, houseId, userName) =>
     dispatch(likeHouseStart(like, houseId, userName)),
-  getCommentByHouseId: (houseId) =>
-    dispatch(getCommentsByHouseIdStart(houseId)),
+    setHouseLikes: (houseLikes) => dispatch(setHouseLikes(houseLikes)),
+    setHouseComments: (houseComments) => dispatch(setHouseComments(houseComments)),
+    getHouseById: (houseId) => getHouseByIdStart(houseId),
+    
 });
 
 const mapStateToProps = (state) => ({
-  // products: state.product.products,
-  product: state.product.product,
-  message: state.product.message,
   isSearchByName: state.product.isSearchByName,
   isSearchByLocation: state.product.isSearchByLocation,
   searchedProducts: state.product.searchedProducts,
@@ -341,7 +358,9 @@ const mapStateToProps = (state) => ({
   userName: state.auth.userName,
   houseLikes: state.house.houseLikes,
   authHouseLikes: state.auth.houseLikes,
-  comments: state.house.targetComments
+  comments: state.house.targetComments,
+  isLoggedIn: state.auth.isLoggedIn,
+  authComments: state.auth.comments,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyHome);

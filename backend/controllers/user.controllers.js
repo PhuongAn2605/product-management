@@ -8,13 +8,15 @@ const User = require("../models/User");
 const House = require("../models/House");
 const Product = require("../models/Product");
 const { houseLike } = require("./houseLike.controllers");
+const LoginHistory = require("../models/LoginHistory");
 
 const signup = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors);
     return next(
-      new HttpError("Invalid inputs passed, please check your data!", 422)
+      res.status(422).send("Invalid inputs passed, please check your data!")
+      // new HttpError("Invalid inputs passed, please check your data!", 422)
     );
   }
 
@@ -29,20 +31,21 @@ const signup = async (req, res, next) => {
   try {
     existingUserName = await User.findOne({ userName: userName });
     if (!isEmpty(existingUserName)) {
-      const error = new HttpError(
-        "User exists already, please login instead",
-        422
-      );
-      return next(error);
+      // const error = new HttpError(
+      //   "User exists already, please login instead",
+      //   422
+      // );
+      // return next(error);
       // const error = "User exists already, please login instead";
-      // res.status(422).json(error);
+      return res.status(422).send("User exists already, please login instead");
     }
 
     const existingPassword = await User.findOne({ password: password });
     if (!isEmpty(existingPassword)) {
-      return next(
-        new HttpError("Password is taken, please try another password", 403)
-      );
+      return res.status(403).send("Password is taken, please try another password");
+      // return next(
+      //   new HttpError("Password is taken, please try another password", 403)
+      // );
     }
 
     if (
@@ -61,7 +64,8 @@ const signup = async (req, res, next) => {
       });
       saveUser = await newUser.save();
     } else {
-      return next(new HttpError("Wrong password!", 422));
+      return res.status(422).send("Wrong password!");
+      // return next(new HttpError("Wrong password!", 422));
     }
 
     if (isEmpty(saveUser)) {
@@ -116,6 +120,7 @@ const login = async (req, res, next) => {
   let productsOfHouse = [];
   let houseLikes = [];
   let comments = [];
+  let loginTracker;
 
   try {
     existingUser = await User.findOne({
@@ -123,7 +128,8 @@ const login = async (req, res, next) => {
       password: password,
     });
     if (isEmpty(existingUser)) {
-      return next(new HttpError("Could not find the user", 404));
+      return res.status(404).send("Could not find the user");
+      // return next(new HttpError("Could not find the user", 404));
     }
 
     const userId = existingUser._id;
@@ -137,6 +143,14 @@ const login = async (req, res, next) => {
     houseLikes = await houseOfUser.populate('houseLikes');
     comments = await houseOfUser.populate('comments');
     // console.log(houseLikes.houseLikes);
+    const loginHistories = await LoginHistory.find({ userId: userId });
+
+    loginTracker = new LoginHistory({
+      userId,
+      loginNo: loginHistories.length + 1
+    });
+
+    await loginTracker.save();
 
     token = jwt.sign(
       { userName: existingUser.userName },
@@ -156,12 +170,14 @@ const login = async (req, res, next) => {
     .status(200)
     .json({
       userName: existingUser.userName,
+      userId: existingUser._id,
       password: existingUser.password,
       token: token,
       houseId: houseOfUser._id,
       products: productsOfHouse,
       houseLikes: houseLikes.houseLikes,
-      comments: comments.comments
+      comments: comments.comments,
+      loginTracker
     });
 };
 

@@ -10,6 +10,7 @@ export const HeaderStyle = styled.div`
 
 export const ProductStyle = styled.div`
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    margin: 1rem;
 `
