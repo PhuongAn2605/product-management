@@ -12,14 +12,8 @@ const houseLike = async (req, res, next) => {
   let targetHouseLikes;
 
   house = await House.findById(houseId);
-  // console.log('house: ',house)
 
   if (like) {
-    // const userNameLikedHouse = HouseLike.findOne({ userName: userName });
-    // if(!isEmpty(userNameLikedHouse)){
-    //     res.status(403).send("User likes house already!");
-
-    // }
     const houseLike = new HouseLike({
       houseId,
       userName,

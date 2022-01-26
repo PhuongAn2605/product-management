@@ -59,7 +59,6 @@ const createReply = async (req, res, next) => {
 
   const repliesOfComment = await targetComment.populate('replyComments');
   const targetReplies = repliesOfComment.replyComments;
-  console.log(targetReplies);
 
   res.status(201).json({ replyComments: targetReplies });
 };

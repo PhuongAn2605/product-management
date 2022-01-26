@@ -35,7 +35,6 @@ const likeReact = async (req, res, next) => {
       commentId: commentId,
       userName: userName,
     }).populate("commentId");
-    console.log(like);
     if (isEmpty(like)) {
       return next(
         new HttpError("Could not find any like for the comment", 404)

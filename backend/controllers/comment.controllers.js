@@ -50,8 +50,6 @@ const createComment = async (req, res, next) => {
     await house.save();
 
     targetComments = await Comment.find({ houseId: houseId });
-    // console.log(targetComments);
-
   } catch (err) {
     return next(
       new HttpError("Something went wrong, could not make a comment", 500)

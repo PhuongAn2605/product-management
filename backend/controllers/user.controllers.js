@@ -142,7 +142,6 @@ const login = async (req, res, next) => {
 
     houseLikes = await houseOfUser.populate('houseLikes');
     comments = await houseOfUser.populate('comments');
-    // console.log(houseLikes.houseLikes);
     const loginHistories = await LoginHistory.find({ userId: userId });
 
     loginTracker = new LoginHistory({
