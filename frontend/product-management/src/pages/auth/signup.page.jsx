@@ -1,20 +1,19 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import isEmpty from "is-empty";
 import { ThemeProvider } from "@mui/material/styles";
+import { Field, formValueSelector, reduxForm } from "redux-form";
 
-import InputForm from "../../components/input/Input.component";
 import ButtonForm from "../../components/button/Button.component";
 import {
   theme,
   ErrorTextStyle,
   PasswordButtonStyle,
-  TextHeaderStyle,
   AuthPageStyle,
   RightItemsStyle,
-} from "../utils.styles";
+} from "../utils/utils.styles";
 
 import {
   fetchLoginStart,
@@ -23,37 +22,28 @@ import {
 } from "../../redux/auth/auth.actions";
 
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
-import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
-import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import LeftItem from "./LeftItem";
 import TitleItem from "./TitleItem";
 import AuthInputForm from "./AuthInputForm";
 import UserImage from "../../images/user.png";
 import KeyImage from "../../images/key.png";
+import { signupValidation } from "../utils/formValidation";
 
 const PasswordText = styled.p`
   margin-right: auto;
   color: #fff;
 `;
 
-const SignUp = ({
-  signup,
-  error,
-}) => {
+let SignUp = ({ signup, errorFromState }) => {
   const [passwordLevel, setPasswordLevel] = useState(0);
   const [isCheckLength, setIsCheckLength] = useState(false);
   const [isCheckLetter, setIsCheckLetter] = useState(false);
-  // const [isUnique, setIsUnique] = useState(false);
   const [errors, setErrors] = useState("");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const navigate = useNavigate();
-
-  // const nameRef = useRef(null);
-  // const passwordRef = useRef(null);
-  // const confirmPasswordRef = useRef(null);
 
   const signupHandler = async (userName, password, confirmPassword) => {
     if (password !== confirmPassword) {
@@ -64,10 +54,9 @@ const SignUp = ({
 
     if (isCheckLength && isCheckLetter) {
       signup(userName, password);
-      if (!isEmpty(error)) {
+      if (!isEmpty(errorFromState)) {
         const err = "Could not sign you up! Please try again!";
         setErrors(err);
-        // setErrors(error);
         return;
       }
     } else {
@@ -116,20 +105,26 @@ const SignUp = ({
       <RightItemsStyle>
         <TitleItem targetAction="Sign-up" />
         <form className="sign-up">
-          <AuthInputForm
+          <Field
+            name="userName"
+            component={AuthInputForm}
             image={UserImage}
             placeholder="User Name"
             type="text"
             onChange={(e) => setUserName(e.currentTarget.value)}
           />
-          <AuthInputForm
+          <Field
+            name="password"
+            component={AuthInputForm}
             image={KeyImage}
             placeholder="Password"
             type="password"
             onChange={(e) => onChangePasswordHandler(e)}
           />
 
-          <AuthInputForm
+          <Field
+            name="confirmPassword"
+            component={AuthInputForm}
             image={KeyImage}
             placeholder="Confirm password"
             type="password"
@@ -184,7 +179,7 @@ const SignUp = ({
 const mapStateToProps = (state) => ({
   token: state.auth.token,
   isLoggedIn: state.auth.isLoggedIn,
-  error: state.auth.error,
+  errorFromState: state.auth.error,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -192,5 +187,18 @@ const mapDispatchToProps = (dispatch) => ({
   login: (userName, token) => dispatch(fetchLoginStart(userName, token, null)),
   setErrorConfirmPassword: (error) => dispatch(setErrorConfirmPassword(error)),
 });
+
+SignUp = reduxForm({
+  form: "signupForm",
+  validate: signupValidation
+})(SignUp);
+
+const selector = formValueSelector("signupForm");
+
+SignUp = connect(state => ({
+  userName: selector(state, "userName"),
+  password: selector(state, "password"),
+  confirmPassword: selector(state, "confirmPassword")
+}))(SignUp);
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

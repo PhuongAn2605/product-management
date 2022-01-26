@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import InputForm from "../../components/input/Input.component";
 import ButtonForm from "../../components/button/Button.component";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { fetchLoginStart } from "../../redux/auth/auth.actions";
-import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
-import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import { ThemeProvider } from "@mui/material/styles";
+import { Field, formValueSelector, reduxForm } from "redux-form";
+
 import UserImage from "../../images/user.png";
 import KeyImage from "../../images/key.png";
 import "./custom.css";
@@ -21,12 +20,13 @@ import {
   AuthPageStyle,
   LeftItemsStyle,
   RightItemsStyle,
-} from "../utils.styles";
+} from "../utils/utils.styles";
 import LeftItem from "./LeftItem";
 import TitleItem from "./TitleItem";
 import AuthInputForm from "./AuthInputForm";
+import { loginValidation } from "../utils/formValidation";
 
-const Login = ({ login, error }) => {
+let Login = ({ login, errorFormState }) => {
   const [userNameValue, setUserNameValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
   const [errors, setErrors] = useState("");
@@ -40,12 +40,15 @@ const Login = ({ login, error }) => {
     setPasswordValue(e.currentTarget.value);
   };
 
-  const loginHandler = (userName, password) => {
-    login(userName, password);
+  const loginHandler = (userName, password, e) => {
+    e.preventDefault();
 
-    if (!isEmpty(error)) {
+    if(userName && password){
+      login(userName, password);
+    }
+
+    if (!isEmpty(errorFormState)) {
       setErrors("Could not log you in, please try again!");
-      // setErrors(error);
       return;
     } else {
       navigate("/");
@@ -58,13 +61,17 @@ const Login = ({ login, error }) => {
       <RightItemsStyle>
         <TitleItem targetAction="Login" />
         <form className="login">
-          <AuthInputForm
+          <Field
+            name="userName"
+            component={AuthInputForm}
             image={UserImage}
             placeholder="User Name"
             type="text"
             onChange={(e) => changeNameInputHandler(e)}
           />
-          <AuthInputForm
+          <Field
+            name="password"
+            component={AuthInputForm}
             image={KeyImage}
             placeholder="Password"
             type="password"
@@ -81,7 +88,7 @@ const Login = ({ login, error }) => {
                 title="Login"
                 variant="contained"
                 style={{ color: "#fff", border: "1px solid #fff" }}
-                action={() => loginHandler(userNameValue, passwordValue)}
+                action={(e) => loginHandler(userNameValue, passwordValue, e)}
               />
             </ThemeProvider>
             <ButtonForm
@@ -105,7 +112,19 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = (state) => ({
   isLoggedIn: state.auth.isLoggedIn,
-  error: state.auth.error,
+  errorFormState: state.auth.error,
 });
+
+Login = reduxForm({
+  form: "loginForm",
+  validate: loginValidation
+})(Login);
+
+const selector = formValueSelector("loginForm");
+
+Login = connect(state => ({
+  userName: selector(state, "userName"),
+  password: selector(state, "password")
+}))(Login);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

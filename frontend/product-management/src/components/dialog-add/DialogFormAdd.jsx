@@ -52,8 +52,6 @@ const BootstrapDialogTitle = (props) => {
           onClick={onClose}
           sx={{
             position: "absolute",
-            // right: 8,
-            // top: 8,
             color: (theme) => theme.palette.grey[500],
           }}
         >
@@ -73,11 +71,6 @@ const DialogFormAdd = ({
   addProduct,
   userName,
   productImage,
-  error,
-  closeDialog,
-  openDialog,
-  closeDialogAction,
-  openDialogAction,
 }) => {
   
   const [open, setOpen] = useState(false);
@@ -133,12 +126,6 @@ const DialogFormAdd = ({
 
 
     handleClose();
-
-    // if(isEmpty(error)){
-    //   closeDialog();
-    // }else{
-    //   return;
-    // }
   };
 
   return (
@@ -163,7 +150,7 @@ const DialogFormAdd = ({
           <AddTextStyle>Thêm mới đồ vật</AddTextStyle>
         </BootstrapDialogTitle>
         <DialogContent
-          fullWidth={true}
+          fullwidth={true}
           maxWidth="xl"
           style={{
             overflow: "hidden",

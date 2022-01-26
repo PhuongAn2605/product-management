@@ -62,9 +62,12 @@ export const setSearchByLocation = () => ({
     type: ProductTypes.SET_SEARCH_BY_LOCATION
 });
 
-export const searchProductByNameStart = (productName) => ({
+export const searchProductByNameStart = (targetHouseId, productName) => ({
     type: ProductTypes.SEARCH_PRODUCT_BY_NAME_START,
-    payload: productName
+    payload: {
+        targetHouseId,
+        productName
+    }
 });
 
 export const searchProductByNameSuccess = (result) => ({
@@ -72,15 +75,31 @@ export const searchProductByNameSuccess = (result) => ({
     payload: result
 });
 
-export const searchProductByLocationStart = (location) => ({
+export const searchProductByLocationStart = (targetHouseId, location) => ({
     type: ProductTypes.SEARCH_PRODUCT_BY_LOCATION_START,
-    payload: location
+    payload: {
+        targetHouseId,
+        location
+    }
 });
 
 export const searchProductByLocationSuccess = (result) => ({
     type: ProductTypes.SEARCH_PRODUCT_BY_LOCATION_SUCCESS,
     payload: result
 });
+
+export const setSearchState = () => ({
+    type: ProductTypes.SET_SEARCH_STATE
+});
+
+export const cancelSearch = () => ({
+    type: ProductTypes.CANCEL_SEARCH
+})
+
+export const searchProductFailure = (error) => ({
+    type: ProductTypes.SEARCH_PRODUCT_FAILURE,
+    payload: error
+})
 
 export const getProductsFromAuth = (productsFromAuth) => ({
     type: ProductTypes.GET_PRODUCTS_FROM_AUTH,

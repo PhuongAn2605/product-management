@@ -3,7 +3,7 @@ import {
     LeftItemsStyle,
     WelcomeTextStyle,
     TitleStyle
-  } from "../utils.styles";
+  } from "../utils/utils.styles";
 import NewProductTeamImage from "../../images/isometric-office.gif";
   
 

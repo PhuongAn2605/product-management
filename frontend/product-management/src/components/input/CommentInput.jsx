@@ -8,6 +8,7 @@ import {
 } from "../../redux/house/house.actions";
 import styled from "styled-components";
 import { blueGrey } from "@mui/material/colors";
+import isEmpty from "is-empty";
 
 const ReplyCommentStyle = styled.div`
   display: flex;
@@ -28,8 +29,12 @@ const CommentInput = ({
   visit,
   userName,
 }) => {
+  console.log('visit: ', visit);
   const [inputValue, setInputValue] = useState("");
   const sendCommentHandler = (e) => {
+    if(isEmpty(inputValue)){
+      alert('Comment is empty!');
+    }
     if (isComment && visit) {
       console.log('comment visit: ')
       sendComment(visitHouse._id, inputValue, commenter);

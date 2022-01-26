@@ -25,8 +25,4 @@ const ButtonForm = (props) => {
   );
 };
 
-// const mapDispatchToProps = dispatch => ({
-//   signup: (userName, password) => dispatch(fetchSignup(userName, password))
-// })
-
 export default ButtonForm;

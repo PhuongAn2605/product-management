@@ -54,8 +54,6 @@ const BootstrapDialogTitle = (props) => {
           onClick={onClose}
           sx={{
             position: "absolute",
-            // right: 8,
-            // top: 8,
             color: (theme) => theme.palette.grey[500],
           }}
         >
@@ -79,6 +77,7 @@ const DialogComment = ({
   visit,
   userName,
 }) => {
+  console.log('dialog visit: ', visit);
   const [open, setOpen] = useState(false);
   const visitHouseId = visit && !isEmpty(visitHouse) ? visitHouse._id : houseId;
 
@@ -88,8 +87,9 @@ const DialogComment = ({
       console.log("visit comment: ", comments);
     } else {
       getCommentsByHouseId(houseId);
+      console.log('auth comment: ', comments);
     }
-  }, [houseId, visitHouse && visitHouse._id, visit]);
+  }, [houseId && houseId, visitHouse && visitHouse._id, visit]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -136,7 +136,7 @@ const DialogComment = ({
           </AddTextStyle>
         </BootstrapDialogTitle>
         <DialogContent
-          fullWidth={true}
+          fullwidth={true}
           maxWidth="xl"
           style={{
             overflow: "hidden",
@@ -166,7 +166,7 @@ const DialogComment = ({
               <div>Chưa có ai bình luận!</div>
             )}
             <Typography gutterBottom>
-              <CommentInput isComment={true} />
+              <CommentInput isComment={true} visit={visit} />
             </Typography>
           </LargeCommentDivStyle>
         </DialogContent>

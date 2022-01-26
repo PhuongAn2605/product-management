@@ -8,7 +8,6 @@ export const theme = createTheme({
       main: amber[500],
     },
     secondary: {
-      // This is green.A700 as hex.
       main: "#11cb5f",
     },
   },

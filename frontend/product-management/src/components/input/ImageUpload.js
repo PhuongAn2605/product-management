@@ -18,10 +18,6 @@ const ImageUpload = ({
 
   const filePickerRef = useRef();
 
-  // useEffect(() => {
-
-  // }, [])
-
   useEffect(() => {
     if (!file) {
       return;

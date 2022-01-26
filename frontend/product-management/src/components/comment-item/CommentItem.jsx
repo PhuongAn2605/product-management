@@ -36,6 +36,8 @@ const CommentItem = ({
   visit,
   isReplied,
 }) => {
+  console.log('comment item visit: ', visit);
+
   const [isLiked, setIsLiked] = useState(false);
   const [isReply, setIsReply] = useState(isReplied);
   const [initialLike, setInitialLike] = useState(true);
@@ -58,9 +60,6 @@ const CommentItem = ({
           setIsLiked(true);
           return;
         }
-        // else {
-        //   setIsLiked(false);
-        // }
       }
       setCommentLikeCount(commentLikes.length);
     }
@@ -111,7 +110,6 @@ const CommentItem = ({
                   userName={userName}
                   likeComment={likeComment}
                   commentLikes={commentLikes}
-                  // replyComments
                   isReplied={true}
                 />
               </DisplayReplyCommentStyle>

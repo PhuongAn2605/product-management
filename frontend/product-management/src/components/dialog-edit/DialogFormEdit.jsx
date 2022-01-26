@@ -50,8 +50,6 @@ const BootstrapDialogTitle = (props) => {
           onClick={onClose}
           sx={{
             position: "absolute",
-            // right: 8,
-            // top: 8,
             color: (theme) => theme.palette.grey[500],
           }}
         >
@@ -152,7 +150,7 @@ const DialogFormEdit = ({
           <AddTextStyle>Sửa thông tin sản phẩm</AddTextStyle>
         </BootstrapDialogTitle>
         <DialogContent
-          fullWidth={true}
+          fullwidth={true}
           maxWidth="xl"
           style={{
             overflow: "hidden",

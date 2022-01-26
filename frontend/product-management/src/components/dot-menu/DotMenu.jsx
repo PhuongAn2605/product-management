@@ -7,7 +7,6 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 import './DotMenu.css';
 import styled from "styled-components";
-// import DialogFormEdit from "../dialog-edit/DialogFormEdit.jsx";
 import DialogFormEdit from "../dialog-edit/DialogFormEdit.jsx";
 import { deleteProductStart } from "../../redux/product/product.actions";
 import DialogFormDelete from "../dialog-delete/DialogFormDelete.jsx";

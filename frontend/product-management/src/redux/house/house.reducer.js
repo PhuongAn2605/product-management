@@ -23,7 +23,6 @@ const houseReducer = (state = INITIAL_STATE, action) => {
         error: null,
       };
     case HouseTypes.GET_HOUSE_BY_ID_SUCCESS:
-      console.log("house: ", action.payload);
       localStorage.setItem(
         "visitHouse",
         JSON.stringify({
@@ -47,8 +46,6 @@ const houseReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         targetComments: action.payload.comments,
-        // commentDetails: [...state.commentDetails, action.payload.comment],
-        // targetComments: [...state.targetComments, action.payload.comment],
       };
 
     case HouseTypes.SEND_REPLY_COMMENT_SUCCESS:
@@ -85,7 +82,6 @@ const houseReducer = (state = INITIAL_STATE, action) => {
       };
 
     case HouseTypes.SET_HOUSE_COMMENTS_FROM_AUTH:
-      console.log(action.payload);
       return {
         ...state,
         targetComments: action.payload,

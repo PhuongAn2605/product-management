@@ -10,18 +10,17 @@ import { openDialog } from "../redux/dialog/dialog-actions";
 import { connect } from "react-redux";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import { red } from "@mui/material/colors";
 import Badge from "@mui/material/Badge";
 import DialogFormAdd from "../components/dialog-add/DialogFormAdd.jsx";
 import {
+  cancelSearch,
   setSearchByLocation,
   setSearchByName,
 } from "../redux/product/product.actions";
 import isEmpty from "is-empty";
 import DialogComment from "../components/dialog-comment/DialogComment.jsx";
 import {
-  getCommentsByHouseIdStart,
   getHouseByIdStart,
   likeHouseStart,
   setHouseComments,
@@ -77,6 +76,9 @@ const DisplayItemsStyle = styled.div`
 
 const SideBarStyle = styled.div`
   margin: 0.5rem;
+  @media (max-width: 800px) {
+    display: none;
+  }
 `;
 
 const ItemDetailStyle = styled.div`
@@ -161,6 +163,8 @@ const MyHome = ({
   isSearchByName,
   isSearchByLocation,
   searchedProducts,
+  isSearched,
+  cancelSearch,
   visit,
   visitHouse,
   houseId,
@@ -176,17 +180,15 @@ const MyHome = ({
   // const houseIdParam = useParams().houseId;
   // console.log(houseIdParam);
 
-  if (!isEmpty(searchedProducts) && searchedProducts.length > 0) {
-    products = [...searchedProducts];
-  }
-
   const navigate = useNavigate();
   const [isLikeHouse, setIsLikeHouse] = useState(false);
-  const [likeHouseCount, setLikeHouseCount] = useState(0);
+  const [likeHouseCount, setLikeHouseCount] = useState(
+    houseLikes && houseLikes.length
+  );
   const [initialLike, setInitialLike] = useState(true);
 
   useEffect(() => {
-    
+    cancelSearch();
     if (!isEmpty(houseId) && !visit) {
       setHouseLikes(authHouseLikes);
       houseLikes = [...authHouseLikes];
@@ -194,7 +196,6 @@ const MyHome = ({
 
       setHouseComments(authComments);
       comments = [...authComments];
-      console.log("auth comment: ", comments);
     }
     setInitialLike(true);
     for (let like of houseLikes) {
@@ -205,17 +206,10 @@ const MyHome = ({
     }
   }, []);
 
-
-
-  // useEffect(() => {
-  //   for (let like of houseLikes) {
-  //     if (userName === like.userName) {
-  //       // initialLikeHouse = true;
-  //       setIsLikeHouse(true);
-  //       return;
-  //     }
-  //   }
-  // }, []);
+  if (isSearched) {
+    products = [...searchedProducts];
+    console.log("products: ", products);
+  }
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -224,8 +218,7 @@ const MyHome = ({
   }, [isLoggedIn]);
 
   useEffect(() => {
-
-    if(!initialLike){
+    if (!initialLike) {
       if (visit && !isEmpty(visitHouse)) {
         likeHouse(isLikeHouse, visitHouse._id, userName);
       } else {
@@ -243,8 +236,6 @@ const MyHome = ({
   const likeHouseHandler = (e) => {
     setIsLikeHouse(!isLikeHouse);
     setInitialLike(false);
-
-   
   };
 
   return (
@@ -290,7 +281,7 @@ const MyHome = ({
               </div>
             </WelcomeText>
             <SearchFormStyle>
-              <SearchBarForm />
+              <SearchBarForm visit={visit} />
               <SearchConditionStyle>
                 {isSearchByName && !isSearchByLocation ? (
                   <ChoosedSearchConditionStyle
@@ -363,6 +354,7 @@ const mapDispatchToProps = (dispatch) => ({
   setHouseComments: (houseComments) =>
     dispatch(setHouseComments(houseComments)),
   getHouseById: (houseId) => getHouseByIdStart(houseId),
+  cancelSearch: () => dispatch(cancelSearch()),
 });
 
 const mapStateToProps = (state) => ({
@@ -377,6 +369,7 @@ const mapStateToProps = (state) => ({
   comments: state.house.targetComments,
   isLoggedIn: state.auth.isLoggedIn,
   authComments: state.auth.comments,
+  isSearched: state.product.isSearched,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyHome);

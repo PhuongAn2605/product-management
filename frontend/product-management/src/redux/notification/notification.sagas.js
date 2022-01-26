@@ -5,7 +5,6 @@ import { getLastLoginSuccess } from "./notification.actions";
 import NotificationTypes from "./notification.types";
 
 export function* getLastLogin(payload) {
-    console.log(payload);
     const userId = payload.payload;
     try{
         const result = yield Http.get("/notification/last-login/" + userId);

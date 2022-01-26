@@ -9,6 +9,7 @@ import {
   fetchProductSuccess,
   searchProductByLocationSuccess,
   searchProductByNameSuccess,
+  searchProductFailure,
 } from "./product.actions";
 import axios from "axios";
 import isEmpty from "is-empty";
@@ -24,6 +25,8 @@ export function* addProduct(payload) {
     description,
     image,
   } = product;
+
+  console.log(typeof(image));
 
   try {
     const formData = new FormData();
@@ -71,6 +74,7 @@ export function* fetchProductWatcher() {
 
 export function* editProduct(payload) {
   const product = payload.payload;
+  console.log(product);
   const {
     proNameValue,
     shortNameValue,
@@ -134,16 +138,19 @@ export function* deleteProductWatcher() {
 
 
 export function* searchProductByName (payload) {
-  const productName = payload.payload;
+  console.log(payload)
+  const productName = payload.payload.productName;
+  const houseId = payload.payload.targetHouseId;
   try{
-    const result = yield Http.post('/product/search-name', {
-    productName
+    const result = yield Http.post('/product/search-name/', {
+    productName,
+    houseId
     });
 
     const data = result.data;
     yield put(searchProductByNameSuccess(data));
   }catch(error){
-    yield put(fetchFailure(error));
+    yield put(searchProductFailure(error));
   }
 }
 
@@ -152,16 +159,19 @@ export function* searchProductByNameWatcher() {
 }
 
 export function* searchProductByLocation(payload) {
-  const location = payload.payload;
+  const location = payload.payload.location;
+  const houseId = payload.payload.targetHouseId;
+
   try{
     const result = yield Http.post('/product/search-location', {
-    location
+    location,
+    houseId
     });
 
     const data = result.data;
     yield put(searchProductByLocationSuccess(data));
   }catch(error){
-    yield put(fetchFailure(error));
+    yield put(searchProductFailure(error));
   }
 }
 

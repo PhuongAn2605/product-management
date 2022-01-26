@@ -74,10 +74,6 @@ const OtherHousePage = ({
     if (!isEmpty(visitHouse)) {
       navigate("/visit-house/" + id);
     }
-
-    // }else{
-    //   alert('Loading...')
-    // }
   };
   const otherHouses = houses.filter((h) => h.name.split("'s")[0] !== userName);
 

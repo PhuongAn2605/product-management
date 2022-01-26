@@ -6,24 +6,43 @@ import "./custom.css";
 import InputAdornment from "@mui/material/InputAdornment";
 
 const AuthInputFormStyle = styled.div`
-    margin: 1rem auto;
-    width: 100%;
+  margin: 1rem auto;
+  width: 100%;
 `;
-const AuthInputForm = (props) => {
+const ErrorText = styled.div`
+  color: red;
+  font-weight: 550;
+`;
+
+const AuthInputForm = ({
+  type,
+  placeholder,
+  onChange,
+  image,
+  label,
+  input,
+  meta: { touched, error, invalid },
+  ...custom
+}) => {
   return (
     <AuthInputFormStyle>
       <TextField
-        // id="outlined-required"
-        //   label="User Name"
-        type={props.type}
-        placeholder={props.placeholder}
-        onChange={props.onChange}
-        inputRef={props.ref}
-        style={{ backgroundColor: "#fff", borderRadius: "10px", width: "300px" }}
+        type={type}
+        label={label}
+        placeholder={placeholder}
+        onChange={onChange}
+        error={touched && invalid}
+        {...input}
+        {...custom}
+        style={{
+          backgroundColor: "#fff",
+          borderRadius: "10px",
+          width: "300px",
+        }}
         InputProps={{
           startAdornment: (
             <img
-              src={props.image}
+              src={image}
               style={{
                 width: "20px",
                 height: "20px",
@@ -35,6 +54,7 @@ const AuthInputForm = (props) => {
           ),
         }}
       />
+      {touched && error && <ErrorText>{error}</ErrorText>}
     </AuthInputFormStyle>
   );
 };

@@ -10,6 +10,7 @@ const INITIAL_STATE = {
   message: null,
   isSearchByName: true,
   isSearchByLocation: false,
+  isSearched: false,
   searchedProducts: [],
 };
 
@@ -36,7 +37,7 @@ const productReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         error: null,
-        message: "Add Successfully!",
+        message: "Edit Successfully!",
         products: editProducts(state.products, action.payload.product),
       };
 
@@ -62,12 +63,30 @@ const productReducer = (state = INITIAL_STATE, action) => {
         isSearchByLocation: !state.isSearchByLocation,
       };
 
+    case ProductTypes.SET_SEARCH_STATE:
+      return {
+        ...state,
+        isSearched: true
+      }
+    case ProductTypes.CANCEL_SEARCH:
+      return {
+        ...state,
+        isSearched: false,
+        searchedProducts: []
+      }
+
     case ProductTypes.SEARCH_PRODUCT_BY_LOCATION_SUCCESS:
     case ProductTypes.SEARCH_PRODUCT_BY_NAME_SUCCESS:
       return {
         ...state,
         searchedProducts: action.payload,
       };
+    case ProductTypes.SEARCH_PRODUCT_FAILURE:
+      return {
+        ...state,
+        searchedProducts: [],
+        error: action.payload
+      }
 
     case ProductTypes.GET_PRODUCTS_FROM_AUTH:
       return{

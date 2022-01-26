@@ -15,8 +15,6 @@ const notificationReducer = (state=INITIAL_STATE, action) => {
                 lastLogin: action.payload.lastLogin
             }
         case NotificationTypes.GET_EXPIRE_PRODUCT_NOTI:
-            console.log(action.payload);
-            console.log(filterExpireProducts(action.payload))
             return {
                 ...state,
                 expireProducts: filterExpireProducts(action.payload)
