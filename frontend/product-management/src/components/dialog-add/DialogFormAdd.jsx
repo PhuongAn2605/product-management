@@ -106,6 +106,7 @@ const DialogFormAdd = ({
   };
   const addProductHandler = (e) => {
     e.preventDefault();
+    console.log(image)
 
     const product = {
       proName,
