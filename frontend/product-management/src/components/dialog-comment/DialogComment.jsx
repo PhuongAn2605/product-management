@@ -30,8 +30,8 @@ import {
   sendCommentStart,
 } from "../../redux/house/house.actions.js";
 import CommentItem from "../comment-item/CommentItem.jsx";
-import CommentInput from "../input/CommentInput.jsx";
 import isEmpty from "is-empty";
+import CommentInput from "../input/CommentInput.jsx";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -77,6 +77,7 @@ const DialogComment = ({
   visit,
   userName,
 }) => {
+  console.log('dialog comment: ')
   const [open, setOpen] = useState(false);
   const visitHouseId = visit && !isEmpty(visitHouse) ? visitHouse._id : houseId;
 
@@ -87,6 +88,8 @@ const DialogComment = ({
       getCommentsByHouseId(houseId);
     }
   }, [houseId && houseId, visitHouse && visitHouse._id, visit]);
+
+  console.log(comments);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -146,6 +149,7 @@ const DialogComment = ({
             <OtherCommentsStyle>Tất cả bình luận</OtherCommentsStyle>
             {comments && comments.length > 0 ? (
               comments.map((comment) => {
+                // console.log('dialog comment: ', comment);
                 return (
                   <DisplayCommentStyle>
                     <CommentItem
@@ -162,7 +166,7 @@ const DialogComment = ({
               <div>Chưa có ai bình luận!</div>
             )}
             <Typography gutterBottom>
-              <CommentInput isComment={true} visit={visit} />
+            <CommentInput isComment={true} visit={visit} />
             </Typography>
           </LargeCommentDivStyle>
         </DialogContent>

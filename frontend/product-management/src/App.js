@@ -55,7 +55,6 @@ const App = ({
 
   return (
     <div className="App">
-      {/* <Header /> */}
       <Routes>
         <Route path="/" element={isLoggedIn ? <MyHome products={products} visit={false}/> : <Login />} />
         <Route path="/login" element={<Login />} />

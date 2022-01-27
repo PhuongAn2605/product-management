@@ -57,8 +57,7 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-const DialogFormDelete = ({ id, products, deleteProduct }) => {
-
+const DialogFormDelete = ({ id, products, deleteProduct, errorFromState }) => {
   const productToDelete = products.find((p) => p._id === id);
   const [open, setOpenDialogEdit] = useState(false);
 
@@ -70,10 +69,14 @@ const DialogFormDelete = ({ id, products, deleteProduct }) => {
   };
 
   const deleteProductHander = (e) => {
-
     if (!isEmpty(id)) {
       deleteProduct(id);
-      handleDialogClose();
+      if (!isEmpty(errorFromState)) {
+        alert("Deleting failed!");
+      } else {
+        alert("Delete successfuly!");
+        handleDialogClose();
+      }
     }
   };
 
@@ -86,7 +89,7 @@ const DialogFormDelete = ({ id, products, deleteProduct }) => {
         onClose={handleDialogClose}
         aria-labelledby="customized-dialog-title"
         open={open}
-        scroll='body'
+        scroll="body"
       >
         <BootstrapDialogTitle
           id="customized-dialog-title"
@@ -130,6 +133,7 @@ const mapStateToProps = (state) => ({
   productImage: state.product.productImage,
   openDialog: state.dialog.openDialog,
   products: state.product.products,
+  errorFromState: state.product.error,
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -21,7 +21,6 @@ const InputForm = ({
   value,
   onKeyPress,
   icon,
-
   label,
   input,
   meta: { touched, error, invalid},
@@ -34,15 +33,11 @@ const InputForm = ({
         <Input
           id={id}
           type={type}
-          // name={id}
           label={label}
           error={touched && invalid}
           {...input}
           {...custom}
           style={style}
-          // onChange={onChange}
-          value={value}
-          onKeyPress={onKeyPress}
           startAdornment={
             <InputAdornment position="start">{icon}</InputAdornment>
           }

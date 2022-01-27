@@ -77,14 +77,16 @@ let DialogFormEdit = ({
   products,
   editProduct,
   getProductById,
+  productReduxForm,
+  errorFromState,
+  message
 }) => {
-
   // let productName, shortName, location, expiration, description, image, functions;
-  // let formatedExpiration; 
+  // let formatedExpiration;
 
   useEffect(() => {
     getProductById(id);
-  }, [id])
+  }, [id]);
 
   let productToEdit;
   if (!isEmpty(products)) {
@@ -116,6 +118,18 @@ let DialogFormEdit = ({
     expiration,
     description,
   } = productToEdit[0];
+
+  // const {
+  //   productName,
+  //   shortName,
+  //   location,
+  //   image,
+  //   houseId,
+  //   functions,
+  //   expiration,
+  //   description,
+  // } = productReduxForm;
+
   const formatedExpiration = new Date(expiration)
     .toISOString()
     .substring(0, 10);
@@ -156,7 +170,12 @@ let DialogFormEdit = ({
     };
 
     editProduct(product);
-    // handleDialogClose();
+    if(!isEmpty(errorFromState) && isEmpty(message)){
+      setOpenDialogEdit("Editing failed!");
+    }else if(isEmpty(errorFromState) && !isEmpty(message)){
+      alert("Edit successfuly!");
+      handleDialogClose();
+    }
   };
 
   return (
@@ -168,7 +187,7 @@ let DialogFormEdit = ({
         onClose={handleDialogClose}
         aria-labelledby="customized-dialog-title"
         open={open}
-        scroll='body'
+        scroll="body"
       >
         <BootstrapDialogTitle
           id="customized-dialog-title"
@@ -267,7 +286,6 @@ let DialogFormEdit = ({
                     ) : (
                       <MenuItem value={"Đựng đồ"}>Đựng đồ</MenuItem>
                     )}
-
                   </Select>
                 </FormControl>
               </Box>
@@ -312,7 +330,9 @@ const mapStateToProps = (state) => ({
   productImage: state.product.productImage,
   openDialog: state.dialog.openDialog,
   products: state.product.products,
-  productToEdit: state.product.productToEdit
+  productToEdit: state.product.productToEdit,
+  errorFromState: state.product.error,
+  message: state.product.message
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -321,36 +341,40 @@ const mapDispatchToProps = (dispatch) => ({
   closeDialogAction: () => dispatch(closeDialog()),
   openDialogAction: () => dispatch(openDialog()),
   editProduct: (product) => dispatch(editProductStart(product)),
-  getProductById: (productId) => dispatch(getProductByIdStart(productId))
+  getProductById: (productId) => dispatch(getProductByIdStart(productId)),
 });
 
 DialogFormEdit = reduxForm({
   form: "dialogFormEdit",
-  validate: formProductValidation
+  // enableReinitialize: true,
+  destroyOnUnmount: false,
+  validate: formProductValidation,
 })(DialogFormEdit);
 
-const selector = formValueSelector("dialogFormEdit");
-
+const editSelector = formValueSelector("dialogFormEdit");
 DialogFormEdit = connect((state) => {
-  const product = selector(
+  const productReduxForm = editSelector(
     state,
     "productName",
     "shortName",
     "location",
     "expiration",
-    "description",
-    "functions"
+    "description"
   );
-
   const editProduct = state.product.productToEdit;
-  return {
-    initialValues: editProduct && {
-      ...editProduct,
-      expiration: moment(editProduct.expiration).format("DD-MM-YYYY")
-    }
-  }
-}
-)(DialogFormEdit);
+  console.log(editProduct && editProduct.productName);
 
+  return {
+    initialValues: !isEmpty(editProduct) && {
+      productName: editProduct.productName,
+      // productName: "Test",
+      shortName: editProduct.shortName,
+      location: editProduct.location,
+      expiration: moment(editProduct.expiration).format("yyyy-MM-DD"),
+      description: editProduct.description,
+    },
+    productReduxForm,
+  };
+})(DialogFormEdit);
 
 export default connect(mapStateToProps, mapDispatchToProps)(DialogFormEdit);

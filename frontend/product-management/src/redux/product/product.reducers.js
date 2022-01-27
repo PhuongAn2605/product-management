@@ -5,7 +5,7 @@ import { deleteProduct, editProducts } from "./product.utils";
 const INITIAL_STATE = {
   product: null,
   productImage: null,
-  error: null,
+  error: "",
   products: [],
   message: null,
   isSearchByName: true,
@@ -50,9 +50,13 @@ const productReducer = (state = INITIAL_STATE, action) => {
       };
 
     case ProductTypes.FETCH_FAILURE:
+      console.log(action.payload.message)
+    state.error = action.payload.message;
+    console.log('state error', state.error);
       return {
         ...state,
-        error: action.payload,
+        error: action.payload.message,
+        message: null
       };
 
     case ProductTypes.SET_SEARCH_BY_NAME:

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
+import Input from "@mui/material/Input";
+
 import InputForm from "./Input.component.jsx";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import {
@@ -15,6 +17,7 @@ const ReplyCommentStyle = styled.div`
   justify-content: flex-start;
   align-items: center;
   width: 100%;
+  margin-top: 2rem;
 `;
 
 const CommentInput = ({
@@ -29,10 +32,6 @@ const CommentInput = ({
   visit,
   userName,
 
-  label,
-  input,
-  meta: { touched, error, invalid },
-  ...custom
 }) => {
   const [inputValue, setInputValue] = useState("");
   const sendCommentHandler = (e) => {
@@ -53,7 +52,7 @@ const CommentInput = ({
 
   return (
     <ReplyCommentStyle>
-      <InputForm
+      <Input
         id="comment"
         name={name}
         type="text"
@@ -64,9 +63,6 @@ const CommentInput = ({
             sendCommentHandler(e);
           }
         }}
-        error={touched && invalid}
-        {...input}
-        {...custom}
       />
       <SendOutlinedIcon
         style={{ color: blueGrey[500] }}

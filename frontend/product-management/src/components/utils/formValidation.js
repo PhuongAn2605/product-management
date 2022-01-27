@@ -17,9 +17,9 @@ export const formProductValidation = values => {
     if(!values.description){
         error.description = REQUIRE;
     }
-    if(!values.functions){
-        error.functions = REQUIRE;
-    }
+    // if(!values.functions){
+    //     error.functions = REQUIRE;
+    // }
     // if(!values.image){
     //     error.image = REQUIRE;
     // }

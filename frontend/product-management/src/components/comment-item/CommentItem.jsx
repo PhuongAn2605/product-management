@@ -26,8 +26,10 @@ import { connect } from "react-redux";
 import isEmpty from "is-empty";
 import CommentInput from "../input/CommentInput.jsx";
 import moment from "moment";
+import { Field, formValueSelector, reduxForm } from "redux-form";
+import { commentValidation } from "../utils/commentValidation.js";
 
-const CommentItem = ({
+let CommentItem = ({
   userName,
   comment,
   likeComment,
@@ -36,13 +38,13 @@ const CommentItem = ({
   visit,
   isReplied,
 }) => {
-
   const [isLiked, setIsLiked] = useState(false);
   const [isReply, setIsReply] = useState(isReplied);
   const [initialLike, setInitialLike] = useState(true);
 
-  const { commenter, content, commentLikes } = comment;
-  const commentId = comment._id;
+  console.log('comment item: ', comment)
+  const { commenter, content, commentLikes } = !isEmpty(comment) && comment;
+  const commentId = !isEmpty(comment) && comment._id;
 
   const [commentLikeCount, setCommentLikeCount] = useState(
     commentLikes && commentLikes.length
@@ -63,7 +65,6 @@ const CommentItem = ({
   }, [commentId, userName, commentLikes]);
 
   const onLikeClickHandler = () => {
-
     setIsLiked(!isLiked);
     setInitialLike(false);
   };
@@ -112,6 +113,8 @@ const CommentItem = ({
           })}
         {!isReplied && (
           <CommentInput
+            name="comment"
+            component={CommentInput}
             commentId={commentId}
             isComment={false}
             visit={visit}
@@ -167,7 +170,7 @@ const CommentItem = ({
           </CommentContentRightStyle>
         )}
       </CommentDetailsStyle>
-      <TimeTrackStyle>{moment(comment.createdAt).fromNow()}</TimeTrackStyle>
+      <TimeTrackStyle>{moment(!isEmpty(comment) && comment.createdAt).fromNow()}</TimeTrackStyle>
     </CommentStyle>
   );
 };
@@ -183,5 +186,16 @@ const mapStateToProps = (state) => ({
   replyComments: state.house.replyComments,
   userName: state.auth.userName,
 });
+
+// CommentItem = reduxForm({
+//   form: "commentItem",
+//   validate: commentValidation
+// })(CommentItem);
+
+// const selector = formValueSelector("commentItem");
+
+// CommentItem = connect(state => ({
+//   comment: selector(state, "comment")
+// }))(CommentItem);
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommentItem);

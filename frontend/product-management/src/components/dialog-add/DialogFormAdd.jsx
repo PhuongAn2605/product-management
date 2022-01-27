@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import isEmpty from "is-empty";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import Box from "@mui/material/Box";
 
 import PropTypes from "prop-types";
 import Button from "@mui/material/Button";
@@ -62,9 +68,15 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-let DialogFormAdd = ({ addProduct, userName, productImage }) => {
+let DialogFormAdd = ({
+  addProduct,
+  userName,
+  productImage,
+  errorFromState,
+  message,
+}) => {
   const [open, setOpen] = useState(false);
-  const [errors, setErrors] = useState(null);
+  const [noti, setNoti] = useState(null);
   const [proName, setProName] = useState("");
   const [shortName, setShortName] = useState("");
   const [location, setLocation] = useState("");
@@ -103,6 +115,14 @@ let DialogFormAdd = ({ addProduct, userName, productImage }) => {
     };
 
     addProduct(data);
+    if (!isEmpty(errorFromState) && isEmpty(message)) {
+      setNoti("Adding failed!")
+
+    } else if (isEmpty(errorFromState) && !isEmpty(message)) {
+      alert("Add successfully!");
+      handleClose();
+
+    }
 
     setProName("");
     setShortName("");
@@ -111,8 +131,6 @@ let DialogFormAdd = ({ addProduct, userName, productImage }) => {
     setFunctions("");
     setDescription("");
     setImage(null);
-
-    // handleClose();
   };
 
   return (
@@ -188,12 +206,29 @@ let DialogFormAdd = ({ addProduct, userName, productImage }) => {
               />
             </Typography>
             <Typography gutterBottom>
-              <Field
-                name="functions"
-                component={SelectField}
-                value={functions}
-                // onChange={(e) => setFunctions(e.currentTarget.value)}
-              />
+              <Box sx={{ maxWidth: 200 }} style={{ margin: "auto" }}>
+                <FormControl style={{ minWidth: 420 }} size="large">
+                  <InputLabel id="demo-simple-select-label">
+                    Chọn chức năng
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={functions}
+                    label="Chọn chức năng"
+                    onChange={(e) => setFunctions(e.target.value)}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "flex-start",
+                    }}
+                  >
+                    <MenuItem value="Trang trí">Trang trí</MenuItem>
+                    <MenuItem value="Ngồi">Ngồi</MenuItem>
+                    <MenuItem value="Đựng đồ">Đựng đồ</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
             </Typography>
 
             <Typography gutterBottom>
@@ -208,13 +243,10 @@ let DialogFormAdd = ({ addProduct, userName, productImage }) => {
             </Typography>
           </div>
           <Typography gutterBottom>
-            <ImageUpload
-              id="image"
-              center="center"
-              onInput={inputHandler}
-            />
+            <ImageUpload id="image" center="center" onInput={inputHandler} />
           </Typography>
         </DialogContent>
+        {!isEmpty(noti) && <div style={{color: "red", textAlign: "center"}}>{noti}</div>}
         <DialogActions>
           <Button autoFocus onClick={handleClose}>
             Cancel
@@ -229,10 +261,11 @@ let DialogFormAdd = ({ addProduct, userName, productImage }) => {
 };
 
 const mapStateToProps = (state) => ({
-  error: state.product.product,
   userName: state.auth.userName,
   productImage: state.product.productImage,
   openDialog: state.dialog.openDialog,
+  errorFromState: state.product.error,
+  message: state.product.message,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -244,6 +277,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 DialogFormAdd = reduxForm({
   form: "dialogFormAdd",
+  destroyOnUnmount: false,
   validate: formProductValidation,
 })(DialogFormAdd);
 
@@ -255,7 +289,7 @@ DialogFormAdd = connect((state) => ({
   location: selector(state, "location"),
   expiration: selector(state, "expiration"),
   description: selector(state, "description"),
-  functions: selector(state, "functions"),
+  // functions: selector(state, "functions"),
 }))(DialogFormAdd);
 
 export default connect(mapStateToProps, mapDispatchToProps)(DialogFormAdd);
