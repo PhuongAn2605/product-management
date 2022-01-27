@@ -77,17 +77,14 @@ const DialogComment = ({
   visit,
   userName,
 }) => {
-  console.log('dialog visit: ', visit);
   const [open, setOpen] = useState(false);
   const visitHouseId = visit && !isEmpty(visitHouse) ? visitHouse._id : houseId;
 
   useEffect(() => {
     if (!isEmpty(visitHouse) && visit) {
       getCommentsByHouseId(visitHouse._id);
-      console.log("visit comment: ", comments);
     } else {
       getCommentsByHouseId(houseId);
-      console.log('auth comment: ', comments);
     }
   }, [houseId && houseId, visitHouse && visitHouse._id, visit]);
 
@@ -136,7 +133,6 @@ const DialogComment = ({
           </AddTextStyle>
         </BootstrapDialogTitle>
         <DialogContent
-          fullwidth={true}
           maxWidth="xl"
           style={{
             overflow: "hidden",

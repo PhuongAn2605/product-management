@@ -42,7 +42,6 @@ const houseReducer = (state = INITIAL_STATE, action) => {
         error: null,
       };
     case HouseTypes.SEND_COMMENT_SUCCESS:
-      console.log(action.payload);
       return {
         ...state,
         targetComments: action.payload.comments,

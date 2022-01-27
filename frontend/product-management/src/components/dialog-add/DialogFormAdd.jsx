@@ -19,17 +19,12 @@ import { Typography } from "@mui/material";
 import ImageUpload from "../input/ImageUpload.js";
 import "./DialogFormAdd.css";
 
-import { useTheme } from "@mui/material/styles";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import Box from "@mui/material/Box";
 import { addProductStart } from "../../redux/product/product.actions.js";
-import isEmpty from "is-empty";
 import { useNavigate } from "react-router";
 import { closeDialog, openDialog } from "../../redux/dialog/dialog-actions.js";
+import { Field, formValueSelector, reduxForm } from "redux-form";
+import { formProductValidation } from "../utils/formValidation.js";
+import SelectField from "../input/SelectField.jsx";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -67,12 +62,7 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-const DialogFormAdd = ({
-  addProduct,
-  userName,
-  productImage,
-}) => {
-  
+let DialogFormAdd = ({ addProduct, userName, productImage }) => {
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState(null);
   const [proName, setProName] = useState("");
@@ -82,8 +72,6 @@ const DialogFormAdd = ({
   const [functions, setFunctions] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(productImage);
-
-
 
   const navigate = useNavigate();
 
@@ -124,8 +112,7 @@ const DialogFormAdd = ({
     setDescription("");
     setImage(null);
 
-
-    handleClose();
+    // handleClose();
   };
 
   return (
@@ -140,7 +127,7 @@ const DialogFormAdd = ({
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={open}
-        scroll='body'
+        scroll="body"
       >
         <BootstrapDialogTitle
           id="customized-dialog-title"
@@ -150,7 +137,6 @@ const DialogFormAdd = ({
           <AddTextStyle>Thêm mới đồ vật</AddTextStyle>
         </BootstrapDialogTitle>
         <DialogContent
-          fullwidth={true}
           maxWidth="xl"
           style={{
             overflow: "hidden",
@@ -162,71 +148,59 @@ const DialogFormAdd = ({
         >
           <div>
             <Typography gutterBottom>
-              <InputForm
-                id="productName"
-                name="Tên sản phẩm"
+              <Field
+                id="Tên sản phẩm"
+                name="productName"
+                component={InputForm}
                 type="text"
                 value={proName}
                 onChange={(e) => setProName(e.currentTarget.value)}
               />
             </Typography>
             <Typography gutterBottom>
-              <InputForm
-                id="shortName"
-                name="Tên viết tắt"
+              <Field
+                id="Tên viết tắt"
+                name="shortName"
+                component={InputForm}
                 type="text"
                 value={shortName}
                 onChange={(e) => setShortName(e.currentTarget.value)}
               />
             </Typography>
             <Typography gutterBottom>
-              <InputForm
-                id="location"
-                name="Vị trí đặt sản phẩm"
+              <Field
+                id="Vị trí đặt sản phẩm"
+                name="location"
+                component={InputForm}
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.currentTarget.value)}
               />
             </Typography>
             <Typography gutterBottom>
-              <InputForm
-                id="expiration"
-                name="Hạn sử dụng sản phẩm"
+              <Field
+                id="Hạn sử dụng sản phẩm"
+                name="expiration"
+                component={InputForm}
                 type="date"
                 value={expiration}
                 onChange={(e) => setExpiration(e.currentTarget.value)}
               />
             </Typography>
             <Typography gutterBottom>
-              <Box sx={{ maxWidth: 200 }} style={{ margin: "auto" }}>
-                <FormControl style={{ minWidth: 420 }} size="large">
-                  <InputLabel id="demo-simple-select-label">
-                    Chọn chức năng
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={functions}
-                    label="Chọn chức năng"
-                    onChange={(e) => setFunctions(e.target.value)}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "flex-start",
-                    }}
-                  >
-                    <MenuItem value="Trang trí">Trang trí</MenuItem>
-                    <MenuItem value="Ngồi">Ngồi</MenuItem>
-                    <MenuItem value="Đựng đồ">Đựng đồ</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
+              <Field
+                name="functions"
+                component={SelectField}
+                value={functions}
+                // onChange={(e) => setFunctions(e.currentTarget.value)}
+              />
             </Typography>
 
             <Typography gutterBottom>
-              <InputForm
-                id="description"
-                name="Mô tả đồ vật"
+              <Field
+                id="Mô tả đồ vật"
+                name="description"
+                component={InputForm}
                 type="textarea"
                 value={description}
                 onChange={(e) => setDescription(e.currentTarget.value)}
@@ -234,7 +208,11 @@ const DialogFormAdd = ({
             </Typography>
           </div>
           <Typography gutterBottom>
-            <ImageUpload id="image" center="center" onInput={inputHandler} />
+            <ImageUpload
+              id="image"
+              center="center"
+              onInput={inputHandler}
+            />
           </Typography>
         </DialogContent>
         <DialogActions>
@@ -263,5 +241,21 @@ const mapDispatchToProps = (dispatch) => ({
   closeDialogAction: () => dispatch(closeDialog()),
   openDialogAction: () => dispatch(openDialog()),
 });
+
+DialogFormAdd = reduxForm({
+  form: "dialogFormAdd",
+  validate: formProductValidation,
+})(DialogFormAdd);
+
+const selector = formValueSelector("dialogFormAdd");
+
+DialogFormAdd = connect((state) => ({
+  productName: selector(state, "productName"),
+  shortName: selector(state, "shortName"),
+  location: selector(state, "location"),
+  expiration: selector(state, "expiration"),
+  description: selector(state, "description"),
+  functions: selector(state, "functions"),
+}))(DialogFormAdd);
 
 export default connect(mapStateToProps, mapDispatchToProps)(DialogFormAdd);

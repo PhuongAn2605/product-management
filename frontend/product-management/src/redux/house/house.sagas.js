@@ -103,9 +103,7 @@ export function* getCommentsByHouseIdWatcher() {
 }
 
 export function* getRepliesByCommentId(payload) {
-  console.log(payload);
   const commentId = payload.payload;
-  console.log(commentId);
   try {
     const result = yield Http.get("/reply/" + commentId);
     const data = result.data;
@@ -123,7 +121,6 @@ export function* getRepliesByCommentIdWatcher() {
 }
 
 export function* likeComment(payload) {
-  console.log('comment likes payload: ', payload.payload);
   const { commentId, like, userName } = payload.payload;
 
   try {

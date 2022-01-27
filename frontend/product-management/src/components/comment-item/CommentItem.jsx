@@ -36,7 +36,6 @@ const CommentItem = ({
   visit,
   isReplied,
 }) => {
-  console.log('comment item visit: ', visit);
 
   const [isLiked, setIsLiked] = useState(false);
   const [isReply, setIsReply] = useState(isReplied);
@@ -53,9 +52,7 @@ const CommentItem = ({
     setInitialLike(true);
 
     if (!isEmpty(commentLikes)) {
-      console.log('commentLikes: ', commentLikes);
       for (let like of commentLikes) {
-        console.log('comment like: ', like)
         if (like.commentId === commentId && like.userName === userName) {
           setIsLiked(true);
           return;
@@ -66,7 +63,6 @@ const CommentItem = ({
   }, [commentId, userName, commentLikes]);
 
   const onLikeClickHandler = () => {
-    console.log("before: ", isLiked);
 
     setIsLiked(!isLiked);
     setInitialLike(false);
@@ -97,7 +93,6 @@ const CommentItem = ({
         (r) => r.commentId === commentId
       );
     }
-    console.log("target reply: ", targetReplyComments);
     return (
       <div>
         {!isEmpty(targetReplyComments) &&

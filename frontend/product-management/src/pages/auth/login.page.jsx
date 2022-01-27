@@ -42,13 +42,14 @@ let Login = ({ login, errorFormState }) => {
 
   const loginHandler = (userName, password, e) => {
     e.preventDefault();
+    console.log(e.currentTarget.value);
 
     if(userName && password){
       login(userName, password);
     }
 
     if (!isEmpty(errorFormState)) {
-      setErrors("Could not log you in, please try again!");
+      setErrors("Opps, wrong username or password!");
       return;
     } else {
       navigate("/");

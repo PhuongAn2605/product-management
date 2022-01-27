@@ -10,10 +10,12 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/material/styles";
+import moment from "moment";
+import { Field, formValueSelector, reduxForm } from "redux-form";
 
 import InputForm from "../input/Input.component.jsx";
 import { DialogStyle, AddTextStyle } from "./DialogFormEdit.js";
-import { Typography } from "@mui/material";
+import { Input, Typography } from "@mui/material";
 import ImageUpload from "../input/ImageUpload.js";
 import "./DialogFormEdit.css";
 
@@ -25,9 +27,11 @@ import Box from "@mui/material/Box";
 import {
   addProductStart,
   editProductStart,
+  getProductByIdStart,
 } from "../../redux/product/product.actions.js";
 import isEmpty from "is-empty";
 import { closeDialog, openDialog } from "../../redux/dialog/dialog-actions.js";
+import { formProductValidation } from "../utils/formValidation.js";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -65,19 +69,43 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-const DialogFormEdit = ({
+let DialogFormEdit = ({
   addProduct,
   userName,
   productImage,
   id,
   products,
   editProduct,
+  getProductById,
 }) => {
+
+  // let productName, shortName, location, expiration, description, image, functions;
+  // let formatedExpiration; 
+
+  useEffect(() => {
+    getProductById(id);
+  }, [id])
+
   let productToEdit;
   if (!isEmpty(products)) {
     productToEdit = products.filter((p) => p._id === id);
   }
 
+  // if(!isEmpty(productToEdit)){
+  //   productName = productToEdit.productName;
+  //   shortName = productToEdit.shortName;
+  //   location = productToEdit.location;
+  //   expiration = productToEdit.expiration;
+  //   description = productToEdit.description;
+  //   image = productToEdit.image;
+  //   functions = productToEdit.functions;
+
+  //   formatedExpiration = new Date(expiration)
+  //   .toISOString()
+  //   .substring(0, 10);
+
+  //   // let { productName, shortName, location, functions, description, image, expiration } = productToEdit;
+  // }
   const {
     productName,
     shortName,
@@ -94,7 +122,7 @@ const DialogFormEdit = ({
 
   const [open, setOpenDialogEdit] = useState(false);
   const [errors, setErrors] = useState(null);
-  const [proNameValue, setProName] = useState(productName);
+  const [proNameValue, setProName] = useState(productName && productName);
   const [shortNameValue, setShortName] = useState(shortName);
   const [locationValue, setLocation] = useState(location);
   const [expirationValue, setExpiration] = useState(formatedExpiration);
@@ -128,7 +156,7 @@ const DialogFormEdit = ({
     };
 
     editProduct(product);
-    handleDialogClose();
+    // handleDialogClose();
   };
 
   return (
@@ -150,7 +178,6 @@ const DialogFormEdit = ({
           <AddTextStyle>Sửa thông tin sản phẩm</AddTextStyle>
         </BootstrapDialogTitle>
         <DialogContent
-          fullwidth={true}
           maxWidth="xl"
           style={{
             overflow: "hidden",
@@ -160,38 +187,42 @@ const DialogFormEdit = ({
           }}
           dividers
         >
-          <div>
+          <form>
             <Typography gutterBottom>
-              <InputForm
-                id="productName"
-                name="Tên sản phẩm"
+              <Field
+                id="Tên sản phẩm"
+                name="productName"
+                component={InputForm}
                 type="text"
                 value={proNameValue}
                 onChange={(e) => setProName(e.currentTarget.value)}
               />
             </Typography>
             <Typography gutterBottom>
-              <InputForm
-                id="shortName"
-                name="Tên viết tắt"
+              <Field
+                id="Tên viết tắt"
+                name="shortName"
+                component={InputForm}
                 type="text"
                 value={shortNameValue}
                 onChange={(e) => setShortName(e.currentTarget.value)}
               />
             </Typography>
             <Typography gutterBottom>
-              <InputForm
-                id="location"
-                name="Vị trí đặt sản phẩm"
+              <Field
+                id="Vị trí đặt sản phẩm"
+                name="location"
+                component={InputForm}
                 type="text"
                 value={locationValue}
                 onChange={(e) => setLocation(e.currentTarget.value)}
               />
             </Typography>
             <Typography gutterBottom>
-              <InputForm
-                id="expiration"
-                name="Hạn sử dụng sản phẩm"
+              <Field
+                id="Hạn sử dụng sản phẩm"
+                name="expiration"
+                component={InputForm}
                 type="date"
                 value={expirationValue}
                 onChange={(e) => setExpiration(e.currentTarget.value)}
@@ -237,24 +268,22 @@ const DialogFormEdit = ({
                       <MenuItem value={"Đựng đồ"}>Đựng đồ</MenuItem>
                     )}
 
-                    {/* <MenuItem value={"Trang trí"} selected={false} >Trang trí</MenuItem>
-                    <MenuItem value="Ngồi">Ngồi</MenuItem>
-                    <MenuItem value="Đựng đồ">Đựng đồ</MenuItem> */}
                   </Select>
                 </FormControl>
               </Box>
             </Typography>
 
             <Typography gutterBottom>
-              <InputForm
-                id="description"
-                name="Mô tả đồ vật"
+              <Field
+                id="Mô tả đồ vật"
+                name="description"
+                component={InputForm}
                 type="text"
                 value={descriptionValue}
                 onChange={(e) => setDescription(e.currentTarget.value)}
               />
             </Typography>
-          </div>
+          </form>
           <Typography gutterBottom>
             <ImageUpload
               id="image"
@@ -283,6 +312,7 @@ const mapStateToProps = (state) => ({
   productImage: state.product.productImage,
   openDialog: state.dialog.openDialog,
   products: state.product.products,
+  productToEdit: state.product.productToEdit
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -291,6 +321,36 @@ const mapDispatchToProps = (dispatch) => ({
   closeDialogAction: () => dispatch(closeDialog()),
   openDialogAction: () => dispatch(openDialog()),
   editProduct: (product) => dispatch(editProductStart(product)),
+  getProductById: (productId) => dispatch(getProductByIdStart(productId))
 });
+
+DialogFormEdit = reduxForm({
+  form: "dialogFormEdit",
+  validate: formProductValidation
+})(DialogFormEdit);
+
+const selector = formValueSelector("dialogFormEdit");
+
+DialogFormEdit = connect((state) => {
+  const product = selector(
+    state,
+    "productName",
+    "shortName",
+    "location",
+    "expiration",
+    "description",
+    "functions"
+  );
+
+  const editProduct = state.product.productToEdit;
+  return {
+    initialValues: editProduct && {
+      ...editProduct,
+      expiration: moment(editProduct.expiration).format("DD-MM-YYYY")
+    }
+  }
+}
+)(DialogFormEdit);
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(DialogFormEdit);

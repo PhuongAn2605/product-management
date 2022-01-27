@@ -4,35 +4,54 @@ import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
 
 import { InputStyle } from "./Input.styles";
-import { useHttpCLient } from "../../hooks/http-hook";
 import { InputAdornment } from "@mui/material";
-import './Input.styles.css';
+import "./Input.styles.css";
+import styled from "styled-components";
 
-const InputForm = (props, ref) => {
+const ErrorText = styled.div`
+  color: red;
+`;
 
+const InputForm = ({
+  id,
+  name,
+  type,
+  style,
+  onChange,
+  value,
+  onKeyPress,
+  icon,
+
+  label,
+  input,
+  meta: { touched, error, invalid},
+  ...custom
+}) => {
   return (
     <InputStyle>
       <FormControl variant="standard">
-        <InputLabel htmlFor={props.id}>{props.name}</InputLabel>
+        <InputLabel htmlFor={id}>{id}</InputLabel>
         <Input
-          id={props.id}
-          type={props.type}
-          name={props.id}
-          inputRef={ref}
-          style={props.style}
-          onChange={props.onChange}
-          value={props.value}
-          onKeyPress={props.onKeyPress}
+          id={id}
+          type={type}
+          // name={id}
+          label={label}
+          error={touched && invalid}
+          {...input}
+          {...custom}
+          style={style}
+          // onChange={onChange}
+          value={value}
+          onKeyPress={onKeyPress}
           startAdornment={
-            <InputAdornment position="start">
-              {props.icon}
-            </InputAdornment>
+            <InputAdornment position="start">{icon}</InputAdornment>
           }
-          required
         />
+      {touched && error && <ErrorText>{error}</ErrorText>}
+
       </FormControl>
     </InputStyle>
   );
 };
-const forwardedRef = React.forwardRef(InputForm);
-export default forwardedRef;
+// const forwardedRef = React.forwardRef(InputForm);
+export default InputForm;

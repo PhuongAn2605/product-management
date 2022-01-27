@@ -208,7 +208,6 @@ const MyHome = ({
 
   if (isSearched) {
     products = [...searchedProducts];
-    console.log("products: ", products);
   }
 
   useEffect(() => {

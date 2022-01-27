@@ -96,7 +96,6 @@ const DialogFormDelete = ({ id, products, deleteProduct }) => {
           <AddTextStyle>Xác nhận xóa</AddTextStyle>
         </BootstrapDialogTitle>
         <DialogContent
-          fullWidth={true}
           maxWidth="xl"
           style={{
             overflow: "hidden",

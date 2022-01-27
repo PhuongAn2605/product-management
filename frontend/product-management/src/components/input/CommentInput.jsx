@@ -28,18 +28,20 @@ const CommentInput = ({
   commentId,
   visit,
   userName,
+
+  label,
+  input,
+  meta: { touched, error, invalid },
+  ...custom
 }) => {
-  console.log('visit: ', visit);
   const [inputValue, setInputValue] = useState("");
   const sendCommentHandler = (e) => {
     if(isEmpty(inputValue)){
       alert('Comment is empty!');
     }
     if (isComment && visit) {
-      console.log('comment visit: ')
       sendComment(visitHouse._id, inputValue, commenter);
     } else if (isComment && !visit) {
-      console.log('comment not visit: ');
 
       sendComment(houseId, inputValue, commenter);
     } else {
@@ -62,6 +64,9 @@ const CommentInput = ({
             sendCommentHandler(e);
           }
         }}
+        error={touched && invalid}
+        {...input}
+        {...custom}
       />
       <SendOutlinedIcon
         style={{ color: blueGrey[500] }}

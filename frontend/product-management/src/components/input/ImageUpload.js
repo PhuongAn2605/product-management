@@ -1,8 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { connect } from "react-redux";
+import styled from "styled-components";
 import { addProductImage } from "../../redux/product/product.actions";
 import ButtonForm from "../button/Button.component";
 import "./ImageUpload.styles.css";
+
+const ErrorText = styled.div`
+  color: red;
+`;
 
 const ImageUpload = ({
   id,
@@ -11,6 +16,7 @@ const ImageUpload = ({
   productImage,
   addProductImage,
   imageUrl,
+
 }) => {
   const [file, setFile] = useState();
   const [previewUrl, setPreviewUrl] = useState(imageUrl);

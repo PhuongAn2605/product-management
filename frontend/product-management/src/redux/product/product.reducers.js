@@ -12,6 +12,7 @@ const INITIAL_STATE = {
   isSearchByLocation: false,
   isSearched: false,
   searchedProducts: [],
+  productToEdit: null
 };
 
 const productReducer = (state = INITIAL_STATE, action) => {
@@ -42,7 +43,6 @@ const productReducer = (state = INITIAL_STATE, action) => {
       };
 
     case ProductTypes.DELETE_PRODUCT_SUCCESS:
-      console.log(deleteProduct(state.products, action.payload));
       return {
         ...state,
         products: deleteProduct(state.products, action.payload),
@@ -92,6 +92,12 @@ const productReducer = (state = INITIAL_STATE, action) => {
       return{
         ...state,
         products: action.payload
+      }
+    
+    case ProductTypes.GET_PRODUCT_BY_ID_SUCCESS:
+      return {
+        ...state,
+        productToEdit: action.payload.product
       }
 
     default:

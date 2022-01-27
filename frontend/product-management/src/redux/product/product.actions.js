@@ -105,3 +105,13 @@ export const getProductsFromAuth = (productsFromAuth) => ({
     type: ProductTypes.GET_PRODUCTS_FROM_AUTH,
     payload: productsFromAuth
 })
+
+export const getProductByIdStart = (productId) => ({
+    type: ProductTypes.GET_PRODUCT_BY_ID_START,
+    payload: productId
+});
+
+export const getProductByIdSuccess = (result) => ({
+    type: ProductTypes.GET_PRODUCT_BY_ID_SUCCESS,
+    payload: result
+})

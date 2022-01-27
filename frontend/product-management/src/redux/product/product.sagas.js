@@ -7,6 +7,7 @@ import {
   editProductSuccess,
   fetchFailure,
   fetchProductSuccess,
+  getProductByIdSuccess,
   searchProductByLocationSuccess,
   searchProductByNameSuccess,
   searchProductFailure,
@@ -25,8 +26,6 @@ export function* addProduct(payload) {
     description,
     image,
   } = product;
-
-  console.log(typeof(image));
 
   try {
     const formData = new FormData();
@@ -74,7 +73,6 @@ export function* fetchProductWatcher() {
 
 export function* editProduct(payload) {
   const product = payload.payload;
-  console.log(product);
   const {
     proNameValue,
     shortNameValue,
@@ -106,7 +104,6 @@ export function* editProduct(payload) {
 
     if(!isEmpty(result)){
       const data = result.data;
-      console.log(data);
       yield put(editProductSuccess(data));
     }else{
       console.log('error');
@@ -138,7 +135,6 @@ export function* deleteProductWatcher() {
 
 
 export function* searchProductByName (payload) {
-  console.log(payload)
   const productName = payload.payload.productName;
   const houseId = payload.payload.targetHouseId;
   try{
@@ -179,6 +175,21 @@ export function* searchProductByLocationWatcher() {
   yield takeLatest(ProductTypes.SEARCH_PRODUCT_BY_LOCATION_START, searchProductByLocation);
 }
 
+export function* getProductById(payload){
+  const productId = payload.payload;
+  try{
+    const result = yield Http.get('/product/' + productId);
+    const data = result.data;
+    yield put(getProductByIdSuccess(data));
+  }catch(err){
+    yield put(fetchFailure(err));
+  }
+}
+
+export function* getProductByIdWatcher(){
+  yield takeLatest(ProductTypes.GET_PRODUCT_BY_ID_START, getProductById);
+}
+
 export function* productSaga() {
   yield all([
     call(addProductWatcher),
@@ -186,6 +197,7 @@ export function* productSaga() {
     call(editProductWatcher),
     call(deleteProductWatcher),
     call(searchProductByNameWatcher),
-    call(searchProductByLocationWatcher)
+    call(searchProductByLocationWatcher),
+    call(getProductByIdWatcher)
   ]);
 }

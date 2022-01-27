@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import "./custom.css";
-import InputAdornment from "@mui/material/InputAdornment";
 
 const AuthInputFormStyle = styled.div`
   margin: 1rem auto;
@@ -30,7 +29,7 @@ const AuthInputForm = ({
         type={type}
         label={label}
         placeholder={placeholder}
-        onChange={onChange}
+        // onChange={onChange}
         error={touched && invalid}
         {...input}
         {...custom}
