@@ -63,5 +63,56 @@ const createReply = async (req, res, next) => {
   res.status(201).json({ replyComments: targetReplies });
 };
 
+const editReply = async (req, res) => {
+  const { content } = req.body;
+  const replyId = req.params.rid;
+
+  let reply;
+  try{
+    reply = await Reply.findById(replyId);
+    if(isEmpty(reply)){
+      return res.status(400).send("Could not find any reply with provided id!");
+    }
+    reply.content = content;
+    const saveReply = await reply.save();
+    if(isEmpty(saveReply)){
+      return res.status(500).send("Could not save the reply!");
+    }
+
+  }catch(err){
+    return res.status(500).send("Something went wrong");
+  }
+  res.status(200).json({ reply: reply })
+
+}
+
+const deleteReply = async (req, res) => {
+  const replyId = req.params.rid;
+  let reply;
+
+  console.log(await Reply.findById(replyId));
+
+  try{
+    reply = await Reply.findById(replyId).populate("commentId");
+    console.log(reply)
+    if(isEmpty(reply)){
+      return res.status(404).send("Could not find the reply with provied id!");
+    }
+    const deleteReply = await reply.remove();
+    if(isEmpty(deleteReply)){
+      return res.status(500).send("Could not delete the reply!");
+    }
+    reply.commentId.replyComments.pull(reply);
+    await reply.commentId.save();
+
+  }catch(error){
+    console.log(error)
+    return res.status(500).send("Something went wrong");
+  }
+  res.status(200).send("Deleted the reply!");
+}
+
 exports.createReply = createReply;
 exports.getReplyByCommentId = getReplyByCommentId;
+exports.editReply = editReply;
+exports.deleteReply = deleteReply;

@@ -107,8 +107,6 @@ const createProduct = async (req, res, next) => {
 };
 
 const editProduct = async (req, res, next) => {
-  console.log(req);
-  console.log(req.body);
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -152,14 +150,9 @@ const editProduct = async (req, res, next) => {
     product.expiration = expiration;
     product.functions = functions;
     product.description = description;
-    console.log('start update image')
     product.image = imagePath;
-
-    console.log('after: ', product);
-
     const saveProduct = await product.save();
 
-    console.log('save product: ', saveProduct);
     if (isEmpty(saveProduct)) {
       return next(new HttpError("Could not save updated product", 500));
     }
@@ -200,7 +193,7 @@ const deleteProduct = async (req, res, next) => {
     console.log(err);
   })
 
-  res.status(201).send("Deleted");
+  res.status(200).send("Deleted");
 };
 
 const searchProductByName = async (req, res, next) => {
@@ -214,26 +207,10 @@ const searchProductByName = async (req, res, next) => {
   }
 
   let targetProducts;
-  let house;
-  let productsOfHouse;
-  let searchedProducts;
 
   const { productName, houseId } = req.body;
-  console.log(req.body);
-  
   try {
-    // house = await House.findById(houseId).populate("products");
-    // console.log(house);
-    // productsOfHouse = house.products;
-
     targetProducts = await Product.find({ productName: regExpSearch(productName), houseId: houseId });
-
-    console.log('target products: ', targetProducts);
-    // if (isEmpty(targetProducts)) {
-    //   return next(
-    //     new HttpError("Can not find the product with provided name", 404)
-    //   );
-    // }
 
   } catch (err) {
     console.log(err);
@@ -259,11 +236,6 @@ const searchProductByLocation = async (req, res, next) => {
   try {
     targetProduct = await Product.find({ location: regExpSearch(location), houseId: houseId });
 
-    // if (isEmpty(targetProduct)) {
-    //   return next(
-    //     new HttpError("Can not find the product with provided location", 404)
-    //   );
-    // }
   } catch (err) {
     return next(new HttpError("Something went wrong, please try again!", 500));
   }

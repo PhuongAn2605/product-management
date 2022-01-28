@@ -6,6 +6,7 @@ import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Box from "@mui/material/Box";
+import { Alert, Snackbar, Typography } from "@mui/material";
 
 import PropTypes from "prop-types";
 import Button from "@mui/material/Button";
@@ -21,7 +22,6 @@ import { styled } from "@mui/material/styles";
 
 import InputForm from "../input/Input.component.jsx";
 import { AddDialogStyle, DialogStyle, AddTextStyle } from "./DialogFormAdd.js";
-import { Typography } from "@mui/material";
 import ImageUpload from "../input/ImageUpload.js";
 import "./DialogFormAdd.css";
 
@@ -85,6 +85,9 @@ let DialogFormAdd = ({
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(productImage);
 
+  const [openAlertSuccess, setOpenAlertSuccess] = useState(false);
+  const [openAlertFailure, setOpenAlertFailure] = useState(false);
+
   const navigate = useNavigate();
 
   const handleClickOpen = () => {
@@ -114,14 +117,22 @@ let DialogFormAdd = ({
       userName,
     };
 
-    addProduct(data);
-    if (!isEmpty(errorFromState) && isEmpty(message)) {
-      setNoti("Adding failed!")
-
-    } else if (isEmpty(errorFromState) && !isEmpty(message)) {
-      alert("Add successfully!");
       handleClose();
+      setTimeout(() => {
+        addProduct(data);
+      }, 200);
 
+
+    if (!isEmpty(errorFromState)) {
+      setNoti("Adding failed!");
+      setOpenAlertFailure(true);
+      setOpenAlertSuccess(false);
+      // handleClose();
+    } else if (isEmpty(errorFromState) && !isEmpty(message)) {
+      setNoti("Add successfully!");
+      setOpenAlertSuccess(true);
+      setOpenAlertFailure(false);
+      // handleClose();
     }
 
     setProName("");
@@ -131,6 +142,14 @@ let DialogFormAdd = ({
     setFunctions("");
     setDescription("");
     setImage(null);
+  };
+
+  const handleCloseAlert = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenAlertSuccess(false);
+    setOpenAlertFailure(false);
   };
 
   return (
@@ -246,7 +265,9 @@ let DialogFormAdd = ({
             <ImageUpload id="image" center="center" onInput={inputHandler} />
           </Typography>
         </DialogContent>
-        {!isEmpty(noti) && <div style={{color: "red", textAlign: "center"}}>{noti}</div>}
+        {/* {!isEmpty(noti) && (
+          <div style={{ color: "red", textAlign: "center" }}>{noti}</div>
+        )} */}
         <DialogActions>
           <Button autoFocus onClick={handleClose}>
             Cancel
@@ -256,6 +277,37 @@ let DialogFormAdd = ({
           </Button>
         </DialogActions>
       </BootstrapDialog>
+      <Snackbar
+        open={openAlertSuccess}
+        autoHideDuration={6000}
+        onClose={handleCloseAlert}
+      >
+        <Alert
+          onClose={handleCloseAlert}
+          severity="success"
+          variant="filled"
+          color="success"
+          sx={{ width: "100%" }}
+        >
+          {noti}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={openAlertFailure}
+        autoHideDuration={6000}
+        onClose={handleCloseAlert}
+        color="error"
+      >
+        <Alert
+          onClose={handleCloseAlert}
+          variant="filled"
+          color="error"
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {noti}
+        </Alert>
+      </Snackbar>
     </DialogStyle>
   );
 };
@@ -277,7 +329,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 DialogFormAdd = reduxForm({
   form: "dialogFormAdd",
-  destroyOnUnmount: false,
+  // destroyOnUnmount: false,
   validate: formProductValidation,
 })(DialogFormAdd);
 

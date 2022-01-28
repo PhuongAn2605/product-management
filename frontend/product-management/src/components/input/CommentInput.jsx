@@ -56,6 +56,7 @@ const CommentInput = ({
         id="comment"
         name={name}
         type="text"
+        placeholder={name}
         value={inputValue}
         onChange={(e) => setInputValue(e.currentTarget.value)}
         onKeyPress={(e) => {

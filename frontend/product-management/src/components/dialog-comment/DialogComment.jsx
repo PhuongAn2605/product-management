@@ -149,7 +149,6 @@ const DialogComment = ({
             <OtherCommentsStyle>Tất cả bình luận</OtherCommentsStyle>
             {comments && comments.length > 0 ? (
               comments.map((comment) => {
-                // console.log('dialog comment: ', comment);
                 return (
                   <DisplayCommentStyle>
                     <CommentItem

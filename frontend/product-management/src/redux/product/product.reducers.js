@@ -12,7 +12,7 @@ const INITIAL_STATE = {
   isSearchByLocation: false,
   isSearched: false,
   searchedProducts: [],
-  productToEdit: null
+  productToEdit: null,
 };
 
 const productReducer = (state = INITIAL_STATE, action) => {
@@ -31,7 +31,6 @@ const productReducer = (state = INITIAL_STATE, action) => {
         ...state,
         products: action.payload,
         error: null,
-        message: "Add Successfully!",
       };
 
     case ProductTypes.EDIT_PRODUCT_SUCCESS:
@@ -43,20 +42,20 @@ const productReducer = (state = INITIAL_STATE, action) => {
       };
 
     case ProductTypes.DELETE_PRODUCT_SUCCESS:
+      console.log(action.payload)
       return {
         ...state,
-        products: deleteProduct(state.products, action.payload),
         error: null,
+        message: "Delete successfully",
+        products: deleteProduct(state.products, action.payload),
       };
 
     case ProductTypes.FETCH_FAILURE:
-      console.log(action.payload.message)
-    state.error = action.payload.message;
-    console.log('state error', state.error);
+      state.error = action.payload.message;
       return {
         ...state,
         error: action.payload.message,
-        message: null
+        message: null,
       };
 
     case ProductTypes.SET_SEARCH_BY_NAME:
@@ -70,14 +69,14 @@ const productReducer = (state = INITIAL_STATE, action) => {
     case ProductTypes.SET_SEARCH_STATE:
       return {
         ...state,
-        isSearched: true
-      }
+        isSearched: true,
+      };
     case ProductTypes.CANCEL_SEARCH:
       return {
         ...state,
         isSearched: false,
-        searchedProducts: []
-      }
+        searchedProducts: [],
+      };
 
     case ProductTypes.SEARCH_PRODUCT_BY_LOCATION_SUCCESS:
     case ProductTypes.SEARCH_PRODUCT_BY_NAME_SUCCESS:
@@ -89,20 +88,20 @@ const productReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         searchedProducts: [],
-        error: action.payload
-      }
+        error: action.payload,
+      };
 
     case ProductTypes.GET_PRODUCTS_FROM_AUTH:
-      return{
+      return {
         ...state,
-        products: action.payload
-      }
-    
+        products: action.payload,
+      };
+
     case ProductTypes.GET_PRODUCT_BY_ID_SUCCESS:
       return {
         ...state,
-        productToEdit: action.payload.product
-      }
+        productToEdit: action.payload.product,
+      };
 
     default:
       return state;

@@ -82,6 +82,59 @@ const getCommentsByHouseId = async (req, res, next) => {
   });
 };
 
+const editComment = async (req, res, next) => {
+
+  const { content } = req.body;
+  const commentId = req.params.cid;
+
+  let comment;
+  try{
+    comment = await Comment.findById(commentId);
+    if(isEmpty(comment)){
+      return res.status(400).send("Could not find any comment with provided id!");
+    }
+
+    comment.content = content;
+    const saveComment = await comment.save();
+    if(isEmpty(saveComment)){
+      return res.status(500).send("Could not save the comment!");
+    }
+
+  }catch(err){
+    return res.status(500).send("Something went wrong!");
+  }
+
+  res.status(200).json({ comment: comment });
+}
+
+const deleteComment = async (req, res, next) => {
+  const commentId = req.params.cid;
+  let comment;
+
+  console.log(await Comment.findById(commentId))
+  try{
+    comment = await Comment.findById(commentId).populate("houseId");
+    if(isEmpty(comment)){
+      return res.status(404).send("Could not find the comment with provied id!");
+    }
+
+    const deleteComment = await comment.remove();
+    if(isEmpty(deleteComment)){
+      return res.status(500).send("Could not delete the comment!");
+    }
+
+    comment.houseId.comments.pull(comment);
+    await comment.houseId.save();
+  }catch(err){
+    console.log(err);
+    return res.status(500).send("Something went wrong!");
+  }
+
+  res.status(200).json({ comment: comment });
+}
+
 exports.createComment = createComment;
 exports.getComment = getComment;
 exports.getCommentsByHouseId = getCommentsByHouseId;
+exports.editComment = editComment;
+exports.deleteComment = deleteComment;

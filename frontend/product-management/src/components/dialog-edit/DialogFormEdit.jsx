@@ -15,7 +15,7 @@ import { Field, formValueSelector, reduxForm } from "redux-form";
 
 import InputForm from "../input/Input.component.jsx";
 import { DialogStyle, AddTextStyle } from "./DialogFormEdit.js";
-import { Input, Typography } from "@mui/material";
+import { Alert, Input, Snackbar, Typography } from "@mui/material";
 import ImageUpload from "../input/ImageUpload.js";
 import "./DialogFormEdit.css";
 
@@ -79,7 +79,7 @@ let DialogFormEdit = ({
   getProductById,
   productReduxForm,
   errorFromState,
-  message
+  message,
 }) => {
   // let productName, shortName, location, expiration, description, image, functions;
   // let formatedExpiration;
@@ -93,21 +93,6 @@ let DialogFormEdit = ({
     productToEdit = products.filter((p) => p._id === id);
   }
 
-  // if(!isEmpty(productToEdit)){
-  //   productName = productToEdit.productName;
-  //   shortName = productToEdit.shortName;
-  //   location = productToEdit.location;
-  //   expiration = productToEdit.expiration;
-  //   description = productToEdit.description;
-  //   image = productToEdit.image;
-  //   functions = productToEdit.functions;
-
-  //   formatedExpiration = new Date(expiration)
-  //   .toISOString()
-  //   .substring(0, 10);
-
-  //   // let { productName, shortName, location, functions, description, image, expiration } = productToEdit;
-  // }
   const {
     productName,
     shortName,
@@ -119,23 +104,12 @@ let DialogFormEdit = ({
     description,
   } = productToEdit[0];
 
-  // const {
-  //   productName,
-  //   shortName,
-  //   location,
-  //   image,
-  //   houseId,
-  //   functions,
-  //   expiration,
-  //   description,
-  // } = productReduxForm;
-
   const formatedExpiration = new Date(expiration)
     .toISOString()
     .substring(0, 10);
 
   const [open, setOpenDialogEdit] = useState(false);
-  const [errors, setErrors] = useState(null);
+  const [noti, setNoti] = useState(null);
   const [proNameValue, setProName] = useState(productName && productName);
   const [shortNameValue, setShortName] = useState(shortName);
   const [locationValue, setLocation] = useState(location);
@@ -143,6 +117,8 @@ let DialogFormEdit = ({
   const [functionsValue, setFunctions] = useState(functions);
   const [descriptionValue, setDescription] = useState(description);
   const [imageValue, setImage] = useState(image);
+  const [openAlertEditSuccess, setOpenAlertSuccess] = useState(false);
+  const [openAlertEditFailure, setOpenAlertFailure] = useState(false);
 
   const handleDialogOpen = () => {
     setOpenDialogEdit(true);
@@ -170,12 +146,26 @@ let DialogFormEdit = ({
     };
 
     editProduct(product);
-    if(!isEmpty(errorFromState) && isEmpty(message)){
-      setOpenDialogEdit("Editing failed!");
-    }else if(isEmpty(errorFromState) && !isEmpty(message)){
-      alert("Edit successfuly!");
+
+    if (!isEmpty(errorFromState)) {
+      setNoti("Editing failed!");
+      setOpenAlertFailure(true);
+      setOpenAlertFailure(false);
+      handleDialogClose();
+    } else if (isEmpty(errorFromState) && !isEmpty(message)) {
+      setNoti("Edit successfully!");
+      setOpenAlertSuccess(true);
+      setOpenAlertFailure(false);
       handleDialogClose();
     }
+  };
+
+  const handleCloseEditAlert = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenAlertSuccess(false);
+    setOpenAlertFailure(false);
   };
 
   return (
@@ -320,6 +310,34 @@ let DialogFormEdit = ({
           </Button>
         </DialogActions>
       </BootstrapDialog>
+      <Snackbar
+        open={openAlertEditSuccess}
+        autoHideDuration={6000}
+        onClose={handleCloseEditAlert}
+      >
+        <Alert
+          onClose={handleCloseEditAlert}
+          variant="filled"
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {noti}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={openAlertEditFailure}
+        autoHideDuration={6000}
+        onClose={handleCloseEditAlert}
+      >
+        <Alert
+          onClose={handleCloseEditAlert}
+          variant="filled"
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {noti}
+        </Alert>
+      </Snackbar>
     </DialogStyle>
   );
 };
@@ -332,7 +350,7 @@ const mapStateToProps = (state) => ({
   products: state.product.products,
   productToEdit: state.product.productToEdit,
   errorFromState: state.product.error,
-  message: state.product.message
+  message: state.product.message,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -347,7 +365,7 @@ const mapDispatchToProps = (dispatch) => ({
 DialogFormEdit = reduxForm({
   form: "dialogFormEdit",
   // enableReinitialize: true,
-  destroyOnUnmount: false,
+  // destroyOnUnmount: false,
   validate: formProductValidation,
 })(DialogFormEdit);
 
@@ -362,7 +380,6 @@ DialogFormEdit = connect((state) => {
     "description"
   );
   const editProduct = state.product.productToEdit;
-  console.log(editProduct && editProduct.productName);
 
   return {
     initialValues: !isEmpty(editProduct) && {

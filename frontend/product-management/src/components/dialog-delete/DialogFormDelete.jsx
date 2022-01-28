@@ -9,12 +9,13 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import { Alert, Snackbar, Typography } from "@mui/material";
+
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { red } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
 
 import { DialogStyle, AddTextStyle } from "./DialogFormDelete.js";
-import { Typography } from "@mui/material";
 import "./DialogFormDelete.css";
 
 import { closeDialog, openDialog } from "../../redux/dialog/dialog-actions.js";
@@ -57,27 +58,49 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-const DialogFormDelete = ({ id, products, deleteProduct, errorFromState }) => {
+const DialogFormDelete = ({ id, products, deleteProduct, errorFromState, message }) => {
   const productToDelete = products.find((p) => p._id === id);
   const [open, setOpenDialogEdit] = useState(false);
+
+  const [noti, setNoti] = useState(null);
+  const [openAlertDeleteSuccess, setOpenAlertDeleteSuccess] = useState(false);
+  const [openAlertDeleteFailure, setOpenAlertDeleteFailure] = useState(false);
 
   const handleDialogOpen = () => {
     setOpenDialogEdit(true);
   };
-  const handleDialogClose = () => {
+  const handleDialogDeleteClose = () => {
     setOpenDialogEdit(false);
   };
 
   const deleteProductHander = (e) => {
+    console.log(id);
     if (!isEmpty(id)) {
-      deleteProduct(id);
+      setTimeout(() => {
+        deleteProduct(id);
+      }, 1000);
+
       if (!isEmpty(errorFromState)) {
-        alert("Deleting failed!");
+        setNoti("Deleting failed!");
+        setOpenAlertDeleteFailure(true);
+        setOpenAlertDeleteSuccess(false);
+        handleDialogDeleteClose();
+
       } else {
-        alert("Delete successfuly!");
-        handleDialogClose();
+        setNoti("Delete successfully!");
+        setOpenAlertDeleteSuccess(true);
+        setOpenAlertDeleteFailure(false);
+        handleDialogDeleteClose();
       }
     }
+  };
+
+  const handleCloseDeleteAlert = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenAlertDeleteSuccess(false);
+    setOpenAlertDeleteFailure(false);
   };
 
   return (
@@ -86,14 +109,14 @@ const DialogFormDelete = ({ id, products, deleteProduct, errorFromState }) => {
         <span>Delete</span>
       </Button>
       <BootstrapDialog
-        onClose={handleDialogClose}
+        onClose={handleDialogDeleteClose}
         aria-labelledby="customized-dialog-title"
         open={open}
         scroll="body"
       >
         <BootstrapDialogTitle
           id="customized-dialog-title"
-          onClose={handleDialogClose}
+          onClose={handleDialogDeleteClose}
           style={{ display: "flex", alignItems: "center" }}
         >
           <AddTextStyle>Xác nhận xóa</AddTextStyle>
@@ -115,7 +138,7 @@ const DialogFormDelete = ({ id, products, deleteProduct, errorFromState }) => {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleDialogClose}>
+          <Button autoFocus onClick={handleDialogDeleteClose}>
             Cancel
           </Button>
           <Button autoFocus onClick={(e) => deleteProductHander(e)}>
@@ -123,6 +146,37 @@ const DialogFormDelete = ({ id, products, deleteProduct, errorFromState }) => {
           </Button>
         </DialogActions>
       </BootstrapDialog>
+      <Snackbar
+        open={openAlertDeleteSuccess}
+        autoHideDuration={6000}
+        onClose={handleCloseDeleteAlert}
+      >
+        <Alert
+          onClose={handleCloseDeleteAlert}
+          severity="success"
+          variant="filled"
+          color="success"
+          sx={{ width: "100%" }}
+        >
+          {noti}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={openAlertDeleteFailure}
+        autoHideDuration={6000}
+        onClose={handleCloseDeleteAlert}
+        color="error"
+      >
+        <Alert
+          onClose={handleCloseDeleteAlert}
+          variant="filled"
+          color="error"
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {noti}
+        </Alert>
+      </Snackbar>
     </DialogStyle>
   );
 };
@@ -134,6 +188,7 @@ const mapStateToProps = (state) => ({
   openDialog: state.dialog.openDialog,
   products: state.product.products,
   errorFromState: state.product.error,
+  message: state.product.message
 });
 
 const mapDispatchToProps = (dispatch) => ({

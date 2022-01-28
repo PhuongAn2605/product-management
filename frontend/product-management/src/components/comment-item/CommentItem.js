@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+export const CommentItemStyle = styled.div`
+
+`
+
 export const CommentStyle = styled.div`
   margin: 1rem;
 `;
@@ -48,3 +52,13 @@ export const DisplayReplyCommentStyle = styled.div`
   background-color: #ddd;
   border-radius: 10px;
 `;
+
+export const AdditionStyle = styled.div`
+  display: flex;
+  margin-top: 0.5rem;
+`
+
+export const DeleteEditActionStyle = styled.div`
+  display: flex;
+  margin-left: auto;
+`

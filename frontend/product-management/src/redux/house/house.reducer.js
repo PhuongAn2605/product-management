@@ -1,4 +1,6 @@
+import { CommentTypes } from "../comment/comment.types";
 import HouseTypes from "./house.types";
+import { deleteComment, editComment } from "./house.utils";
 
 const INITIAL_STATE = {
   houses: [],
@@ -10,7 +12,7 @@ const INITIAL_STATE = {
   houseLikes: [],
   replyComments: [],
   message: null,
-  newComment: null,
+  currentComment: null,
   error: null,
 };
 
@@ -45,34 +47,40 @@ const houseReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         targetComments: action.payload.comments,
+        error: null
       };
 
     case HouseTypes.SEND_REPLY_COMMENT_SUCCESS:
       return {
         ...state,
         replyComments: action.payload.replyComments,
+        erorr: null
       };
     case HouseTypes.GET_COMMENTS_BY_HOUSE_ID_SUCCESS:
       return {
         ...state,
         targetComments: action.payload.comments,
+        error: null
       };
 
     case HouseTypes.GET_REPLIES_BY_COMMENT_ID_SUCCESS:
       return {
         ...state,
         replyComments: action.payload.replyComments,
+        error: null
       };
 
     case HouseTypes.LIKE_COMMENT_SUCCESS:
       return {
         ...state,
         commentLikes: action.payload.commentLikes,
+        error: null
       };
     case HouseTypes.LIKE_HOUSE_SUCCESS:
       return {
         ...state,
         houseLikes: action.payload.houseLikes,
+        error: null
       };
     case HouseTypes.SET_HOUSE_LIKES_FROM_AUTH:
       return {
@@ -85,7 +93,40 @@ const houseReducer = (state = INITIAL_STATE, action) => {
         ...state,
         targetComments: action.payload,
       };
-    
+
+
+    case CommentTypes.EDIT_COMMENT_SUCCESS:
+      return {
+        ...state,
+        error: null,
+        message: 'Edit comment successfully!',
+        currentComment: action.payload.comment,
+        targetComments: editComment(state.targetComments, action.payload.comment)
+      }
+
+    case CommentTypes.DELETE_COMMENT_SUCCESS:
+      return {
+        ...state,
+        error: null,
+        message: "Delete comment successfully!",
+        targetComments: deleteComment(state.targetComments, action.payload)
+      }
+      case CommentTypes.EDIT_REPLY_COMMENT_SUCCESS:
+        return {
+          ...state,
+          error: null,
+          message: 'Edit successfully!',
+          currentComment: action.payload.comment,
+          replyComments: editComment(state.replyComments, action.payload.reply)
+        }
+  
+      case CommentTypes.DELETE_REPLY_COMMENT_SUCCESS:
+        return {
+          ...state,
+          error: null,
+          message: "Delete successfully!",
+          replyComments: deleteComment(state.replyComments, action.payload)
+        }
     case HouseTypes.FETCH_FAILURE:
       return {
         ...state,
