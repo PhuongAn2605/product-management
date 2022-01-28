@@ -88,8 +88,6 @@ let DialogFormAdd = ({
   const [openAlertSuccess, setOpenAlertSuccess] = useState(false);
   const [openAlertFailure, setOpenAlertFailure] = useState(false);
 
-  const navigate = useNavigate();
-
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -117,18 +115,21 @@ let DialogFormAdd = ({
       userName,
     };
 
-      handleClose();
-      setTimeout(() => {
-        addProduct(data);
-      }, 200);
+      // setTimeout(() => {
+      //   addProduct(data);
+      // }, 2000);
+      addProduct(data);
 
+      handleClose();
+
+      console.log(errorFromState);
 
     if (!isEmpty(errorFromState)) {
       setNoti("Adding failed!");
       setOpenAlertFailure(true);
       setOpenAlertSuccess(false);
       // handleClose();
-    } else if (isEmpty(errorFromState) && !isEmpty(message)) {
+    } else {
       setNoti("Add successfully!");
       setOpenAlertSuccess(true);
       setOpenAlertFailure(false);

@@ -31,21 +31,12 @@ const signup = async (req, res, next) => {
   try {
     existingUserName = await User.findOne({ userName: userName });
     if (!isEmpty(existingUserName)) {
-      // const error = new HttpError(
-      //   "User exists already, please login instead",
-      //   422
-      // );
-      // return next(error);
-      // const error = "User exists already, please login instead";
       return res.status(422).send("User exists already, please login instead");
     }
 
     const existingPassword = await User.findOne({ password: password });
     if (!isEmpty(existingPassword)) {
       return res.status(403).send("Password is taken, please try another password");
-      // return next(
-      //   new HttpError("Password is taken, please try another password", 403)
-      // );
     }
 
     if (
@@ -129,8 +120,13 @@ const login = async (req, res, next) => {
     });
     if (isEmpty(existingUser)) {
       return res.status(404).send("Could not find the user");
-      // return next(new HttpError("Could not find the user", 404));
     }
+
+
+    // const isValidPassword = await bcrypt.compare(password, existingUser.password);
+    // if(!isValidPassword){
+    //   return res.status(403).send("Invalid credentials, could not log you in.");
+    // }
 
     const userId = existingUser._id;
     houseOfUser = await House.findOne({ userId: userId });

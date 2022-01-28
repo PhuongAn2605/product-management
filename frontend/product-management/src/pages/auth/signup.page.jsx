@@ -53,7 +53,9 @@ let SignUp = ({ signup, errorFromState }) => {
     }
 
     if (isCheckLength && isCheckLetter) {
-      signup(userName, password);
+      setTimeout(() => {
+        signup(userName, password);
+      }, 500);
       if (!isEmpty(errorFromState)) {
         const err = "Could not sign you up! Please try again!";
         setErrors(err);
@@ -184,21 +186,20 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   signup: (userName, password) => dispatch(fetchSignup(userName, password)),
-  login: (userName, token) => dispatch(fetchLoginStart(userName, token, null)),
   setErrorConfirmPassword: (error) => dispatch(setErrorConfirmPassword(error)),
 });
 
 SignUp = reduxForm({
   form: "signupForm",
-  validate: signupValidation
+  validate: signupValidation,
 })(SignUp);
 
 const selector = formValueSelector("signupForm");
 
-SignUp = connect(state => ({
+SignUp = connect((state) => ({
   userName: selector(state, "userName"),
   password: selector(state, "password"),
-  confirmPassword: selector(state, "confirmPassword")
+  confirmPassword: selector(state, "confirmPassword"),
 }))(SignUp);
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

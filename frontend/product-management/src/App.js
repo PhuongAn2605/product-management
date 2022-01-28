@@ -3,14 +3,19 @@ import Header from "./components/header/Header.component";
 import { Routes, Route } from "react-router-dom";
 import Login from "./pages/auth/login.page";
 import Signup from "./pages/auth/signup.page";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { connect } from "react-redux";
-import { fetchLoginStart, fetchLoginSuccess, fetchLogoutStart } from "./redux/auth/auth.actions";
+import {
+  fetchLoginStart,
+  fetchLoginSuccess,
+  fetchLogoutStart,
+} from "./redux/auth/auth.actions";
 import MyHome from "./pages/my-home";
 import { useNavigate } from "react-router-dom";
 import { fetchProductStart } from "./redux/product/product.actions";
 import OtherHousePage from "./pages/other-houses";
 import isEmpty from "is-empty";
+import { login } from "./redux/auth/auth.utils";
 
 let logoutTimer;
 const App = ({
@@ -24,7 +29,8 @@ const App = ({
   targetProducts,
   targetComments,
   visitHouse,
-  authComments
+  authComments,
+  tokenFromState,
 }) => {
 
   useEffect(() => {
@@ -56,12 +62,25 @@ const App = ({
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={isLoggedIn ? <MyHome products={products} visit={false}/> : <Login />} />
+        <Route
+          path="/"
+          element={
+            isLoggedIn ? (
+              <MyHome products={products} visit={false} />
+            ) : (
+              <Login />
+            )
+          }
+        />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/other-houses" element={<OtherHousePage />} />
-        <Route path="/visit-house/:houseId" element={targetProducts && <MyHome products={targetProducts} visit={true}/>} />
-
+        <Route
+          path="/visit-house/:houseId"
+          element={
+            targetProducts && <MyHome products={targetProducts} visit={true} />
+          }
+        />
       </Routes>
     </div>
   );
@@ -69,7 +88,7 @@ const App = ({
 
 const mapDispatchToProps = (dispatch) => ({
   login: (userName, password, token, expirationDate) =>
-    dispatch(fetchLoginStart(userName, password, expirationDate)),
+    dispatch(fetchLoginStart(userName, password, token, expirationDate)),
   logout: () => dispatch(fetchLogoutStart()),
   fetchProducts: () => dispatch(fetchProductStart()),
 });
@@ -82,6 +101,7 @@ const mapStateToProps = (state) => ({
   targetProducts: state.house.targetProducts,
   targetComments: state.house.targetComments,
   visitHouse: state.house.visitHouse,
-  authComments: state.auth.comments
+  authComments: state.auth.comments,
+  tokenFromState: state.auth.token,
 });
 export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -45,7 +45,9 @@ let Login = ({ login, errorFormState }) => {
     console.log(e.currentTarget.value);
 
     if(userName && password){
-      login(userName, password);
+      setTimeout(() => {
+        login(userName, password);
+      }, 1000);
     }
 
     if (!isEmpty(errorFormState)) {

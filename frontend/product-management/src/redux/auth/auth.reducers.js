@@ -69,6 +69,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
       };
 
     case AuthTypes.LOGOUT_SUCCESS:
+      localStorage.removeItem("userData");
       return {
         ...state,
         isLoggedIn: false,

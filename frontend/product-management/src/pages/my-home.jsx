@@ -176,6 +176,7 @@ const MyHome = ({
   setHouseComments,
   isLoggedIn,
   authComments,
+
 }) => {
   // const houseIdParam = useParams().houseId;
   // console.log(houseIdParam);
@@ -280,7 +281,7 @@ const MyHome = ({
               </div>
             </WelcomeText>
             <SearchFormStyle>
-              <SearchBarForm visit={visit} />
+              <SearchBarForm visit={visit} style={{ width: "120%" }} />
               <SearchConditionStyle>
                 {isSearchByName && !isSearchByLocation ? (
                   <ChoosedSearchConditionStyle

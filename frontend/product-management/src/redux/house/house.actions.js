@@ -109,3 +109,9 @@ export const setHouseComments = (authComments) => ({
     type: HouseTypes.SET_HOUSE_COMMENTS_FROM_AUTH,
     payload: authComments
 });
+
+export const setSearchedHouses = (searchedHouses) => ({
+    type: HouseTypes.SET_SEARCH_HOUSE,
+    payload: searchedHouses
+});
+

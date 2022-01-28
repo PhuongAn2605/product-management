@@ -77,7 +77,6 @@ const DialogComment = ({
   visit,
   userName,
 }) => {
-  console.log('dialog comment: ')
   const [open, setOpen] = useState(false);
   const visitHouseId = visit && !isEmpty(visitHouse) ? visitHouse._id : houseId;
 
@@ -88,8 +87,6 @@ const DialogComment = ({
       getCommentsByHouseId(houseId);
     }
   }, [houseId && houseId, visitHouse && visitHouse._id, visit]);
-
-  console.log(comments);
 
   const handleClickOpen = () => {
     setOpen(true);

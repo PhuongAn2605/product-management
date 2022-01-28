@@ -22,7 +22,7 @@ router.post(
   "/login",
   [
     check("userName").not().isEmpty(),
-    check("password").isLength({ min: 8, max: 15 }),
+    check("password").not().isEmpty(),
   ],
   userControllers.login
 );

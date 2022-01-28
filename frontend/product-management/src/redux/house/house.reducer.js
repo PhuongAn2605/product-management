@@ -14,6 +14,8 @@ const INITIAL_STATE = {
   message: null,
   currentComment: null,
   error: null,
+  searchedHouses: [],
+  isSearch: false
 };
 
 const houseReducer = (state = INITIAL_STATE, action) => {
@@ -22,6 +24,8 @@ const houseReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         houses: action.payload,
+        searchedHouses: [],
+        isSearch: false,
         error: null,
       };
     case HouseTypes.GET_HOUSE_BY_ID_SUCCESS:
@@ -47,40 +51,40 @@ const houseReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         targetComments: action.payload.comments,
-        error: null
+        error: null,
       };
 
     case HouseTypes.SEND_REPLY_COMMENT_SUCCESS:
       return {
         ...state,
         replyComments: action.payload.replyComments,
-        erorr: null
+        erorr: null,
       };
     case HouseTypes.GET_COMMENTS_BY_HOUSE_ID_SUCCESS:
       return {
         ...state,
         targetComments: action.payload.comments,
-        error: null
+        error: null,
       };
 
     case HouseTypes.GET_REPLIES_BY_COMMENT_ID_SUCCESS:
       return {
         ...state,
         replyComments: action.payload.replyComments,
-        error: null
+        error: null,
       };
 
     case HouseTypes.LIKE_COMMENT_SUCCESS:
       return {
         ...state,
         commentLikes: action.payload.commentLikes,
-        error: null
+        error: null,
       };
     case HouseTypes.LIKE_HOUSE_SUCCESS:
       return {
         ...state,
         houseLikes: action.payload.houseLikes,
-        error: null
+        error: null,
       };
     case HouseTypes.SET_HOUSE_LIKES_FROM_AUTH:
       return {
@@ -94,45 +98,53 @@ const houseReducer = (state = INITIAL_STATE, action) => {
         targetComments: action.payload,
       };
 
-
     case CommentTypes.EDIT_COMMENT_SUCCESS:
       return {
         ...state,
         error: null,
-        message: 'Edit comment successfully!',
+        message: "Edit comment successfully!",
         currentComment: action.payload.comment,
-        targetComments: editComment(state.targetComments, action.payload.comment)
-      }
+        targetComments: editComment(
+          state.targetComments,
+          action.payload.comment
+        ),
+      };
 
     case CommentTypes.DELETE_COMMENT_SUCCESS:
       return {
         ...state,
         error: null,
         message: "Delete comment successfully!",
-        targetComments: deleteComment(state.targetComments, action.payload)
-      }
-      case CommentTypes.EDIT_REPLY_COMMENT_SUCCESS:
-        return {
-          ...state,
-          error: null,
-          message: 'Edit successfully!',
-          currentComment: action.payload.comment,
-          replyComments: editComment(state.replyComments, action.payload.reply)
-        }
-  
-      case CommentTypes.DELETE_REPLY_COMMENT_SUCCESS:
-        return {
-          ...state,
-          error: null,
-          message: "Delete successfully!",
-          replyComments: deleteComment(state.replyComments, action.payload)
-        }
+        targetComments: deleteComment(state.targetComments, action.payload),
+      };
+    case CommentTypes.EDIT_REPLY_COMMENT_SUCCESS:
+      return {
+        ...state,
+        error: null,
+        message: "Edit successfully!",
+        currentComment: action.payload.comment,
+        replyComments: editComment(state.replyComments, action.payload.reply),
+      };
+
+    case CommentTypes.DELETE_REPLY_COMMENT_SUCCESS:
+      return {
+        ...state,
+        error: null,
+        message: "Delete successfully!",
+        replyComments: deleteComment(state.replyComments, action.payload),
+      };
     case HouseTypes.FETCH_FAILURE:
       return {
         ...state,
         error: action.payload,
       };
 
+    case HouseTypes.SET_SEARCH_HOUSE:
+      return {
+        ...state,
+        searchedHouses: action.payload,
+        isSearch: true
+      }
     default:
       return state;
   }
