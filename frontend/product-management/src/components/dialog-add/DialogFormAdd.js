@@ -14,6 +14,7 @@ export const AddDialogStyle = styled.div`
   justify-content: flex-end;
   align-items: center;
   margin-left: auto !important;
+  margin-right: 2.5rem;
 
   padding: 0.5rem 1rem;
   background-color: #459add;

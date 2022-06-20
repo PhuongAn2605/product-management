@@ -25,6 +25,7 @@ const getProducts = async (req, res, next) => {
 
   res.json({
     products: products.map((product) => product.toObject({ getters: true })),
+    message: "Get product successfully!"
   });
 };
 
@@ -42,7 +43,7 @@ const getProductById = async (req, res, next) => {
     return next(new HttpError("Could not get the product by provided id", 404));
   }
 
-  res.status(200).json({ product: product.toObject({ getters: true }) });
+  res.status(200).json({ product: product.toObject({ getters: true }), message: "Get product successfully!" });
 };
 
 const createProduct = async (req, res, next) => {
@@ -103,7 +104,7 @@ const createProduct = async (req, res, next) => {
     return next(new HttpError("Creating product failed!", 500));
   }
 
-  res.status(201).json({ product: createdProduct });
+  res.status(201).json({ product: createdProduct, message: "Create product successfully!" });
 };
 
 const editProduct = async (req, res, next) => {
@@ -162,7 +163,7 @@ const editProduct = async (req, res, next) => {
       500
     );
   }
-  res.status(200).json({ product: product });
+  res.status(200).json({ product: product, message: "Update product successfully!" });
 
 };
 
@@ -193,7 +194,8 @@ const deleteProduct = async (req, res, next) => {
     console.log(err);
   })
 
-  res.status(200).send("Deleted");
+  // res.status(200).send("Deleted");
+  res.status(200).json({ message: "Delete product successfully!"});
 };
 
 const searchProductByName = async (req, res, next) => {

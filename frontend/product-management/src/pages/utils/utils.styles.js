@@ -18,7 +18,7 @@ export const ErrorTextStyle = styled.div`
 `;
 
 export const PasswordButtonStyle = styled.div`
-  width: 50% !important;
+  /* width: 50% !important; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -36,9 +36,7 @@ export const TextHeaderStyle = styled.div`
 export const AuthPageStyle = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr !important;
-
   height: 100vh;
-
   img {
     width: 500px;
     height: 500px;
@@ -60,6 +58,13 @@ export const AuthPageStyle = styled.div`
 
 export const LeftItemsStyle = styled.div`
   background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* display: 'flex';
+  justify-content: 'center';
+  align-items: 'center'; */
   @media (max-width: 800px) {
     width: 100%;
   }
@@ -67,6 +72,10 @@ export const LeftItemsStyle = styled.div`
 
 export const RightItemsStyle = styled.div`
   background-color: #76cff0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   @media (max-width: 800px) {
     width: 100%;
   }

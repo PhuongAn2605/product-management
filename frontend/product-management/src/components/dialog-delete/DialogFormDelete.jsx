@@ -45,6 +45,7 @@ const BootstrapDialogTitle = (props) => {
             position: "absolute",
             color: (theme) => theme.palette.grey[500],
           }}
+          style={{ marginLeft: "auto"}}
         >
           <CloseIcon />
         </IconButton>
@@ -148,7 +149,7 @@ const DialogFormDelete = ({ id, products, deleteProduct, errorFromState, message
       </BootstrapDialog>
       <Snackbar
         open={openAlertDeleteSuccess}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={handleCloseDeleteAlert}
       >
         <Alert
@@ -163,7 +164,7 @@ const DialogFormDelete = ({ id, products, deleteProduct, errorFromState, message
       </Snackbar>
       <Snackbar
         open={openAlertDeleteFailure}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={handleCloseDeleteAlert}
         color="error"
       >

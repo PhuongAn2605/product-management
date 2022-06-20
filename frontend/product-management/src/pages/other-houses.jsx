@@ -10,6 +10,8 @@ import {
   getHouseByIdStart,
 } from "../redux/house/house.actions";
 import SearchBarForm from "../components/search-bar/SearchBar.jsx";
+import NavBar from "../components/nav-bar/NavBar.jsx";
+
 
 const OtherHousesPageStyle = styled.div`
   text-align: center;
@@ -21,7 +23,9 @@ const HouseTitleStyle = styled.div`
   font-size: 20px;
   color: #eee;
   font-weight: 700;
-  background-color: #4b6e7e;
+  /* background-color: #4b6e7e; */
+  background-color: #ebf0f5;
+  box-shadow: 5px 5px 5px #888888;
   display: flex;
   justify-content: space-between;
   font-weight: 700;
@@ -89,6 +93,8 @@ const OtherHousePage = ({
 
   return (
     <OtherHousesPageStyle>
+      <div>
+          <NavBar />
       <HouseTitleStyle>
         <span>Friends' House</span>
         <SearchBarForm
@@ -98,6 +104,8 @@ const OtherHousePage = ({
         />
         <UserMenu />
       </HouseTitleStyle>
+      </div>
+
       <CenterAllHouses style={{ margin: "auto" }}>
       {!isEmpty(otherHouses) ? (
         otherHouses.map((h) => (

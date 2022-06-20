@@ -31,6 +31,7 @@ import { closeDialog, openDialog } from "../../redux/dialog/dialog-actions.js";
 import { Field, formValueSelector, reduxForm } from "redux-form";
 import { formProductValidation } from "../utils/formValidation.js";
 import SelectField from "../input/SelectField.jsx";
+import moment from "moment";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -39,13 +40,16 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogActions-root": {
     padding: theme.spacing(1),
   },
+  minWidth:' 80%'
 }));
 
 const BootstrapDialogTitle = (props) => {
-  const { children, onClose, ...other } = props;
+  const { children, onClose, pristine, reset, submitting, ...others } = props;
+  
+  console.log('props: ', pristine)
 
   return (
-    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+    <DialogTitle sx={{ m: 0, p: 2 }} {...others}>
       {children}
       {onClose ? (
         <IconButton
@@ -54,7 +58,9 @@ const BootstrapDialogTitle = (props) => {
           sx={{
             position: "absolute",
             color: (theme) => theme.palette.grey[500],
+            marginLeft: "auto"
           }}
+          style={{ marginLeft: "auto"}}
         >
           <CloseIcon />
         </IconButton>
@@ -68,13 +74,11 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-let DialogFormAdd = ({
-  addProduct,
-  userName,
-  productImage,
-  errorFromState,
-  message,
-}) => {
+// const initialValues = {
+//   expiration: moment(),
+// }
+let DialogFormAdd = (props) => {
+  const {addProduct, userName, productImage, errorFromState, initialValues, message} = props;
   const [open, setOpen] = useState(false);
   const [noti, setNoti] = useState(null);
   const [proName, setProName] = useState("");
@@ -87,6 +91,22 @@ let DialogFormAdd = ({
 
   const [openAlertSuccess, setOpenAlertSuccess] = useState(false);
   const [openAlertFailure, setOpenAlertFailure] = useState(false);
+  const [validExpiration, setValidExpiration] = useState(false);
+  const [invalid, setInValid] = useState(true);
+
+  console.log('initialValues: ', initialValues)
+
+  useEffect(() => {
+    props.initialize(initialValues);
+  }, []);
+
+  useEffect(() => {
+    if(!isEmpty(proName) && !isEmpty(shortName) && !isEmpty(location) && !isEmpty(expiration) && validExpiration) {
+      setInValid(false);
+    } else {
+      setInValid(true);
+    }
+  }, [proName, shortName, location, expiration, validExpiration])
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -153,6 +173,16 @@ let DialogFormAdd = ({
     setOpenAlertFailure(false);
   };
 
+  const handleChangeExpiration = (e) => {
+    if(!isEmpty(expiration) && moment(expiration).isBefore(moment()) ){
+      setValidExpiration(false);
+    } else if(!isEmpty(expiration)){
+      console.log('e.currentTarget.value: ', e.currentTarget.value)
+      setValidExpiration(true);
+    }
+    setExpiration(e.currentTarget.value);
+  }
+
   return (
     <DialogStyle>
       <Button variant="outlined" onClick={handleClickOpen}>
@@ -161,11 +191,13 @@ let DialogFormAdd = ({
           <span>Thêm mới đồ vật</span>
         </AddDialogStyle>
       </Button>
-      <BootstrapDialog
+      <Dialog
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={open}
         scroll="body"
+        fullWidth
+        maxWidth="xl"
       >
         <BootstrapDialogTitle
           id="customized-dialog-title"
@@ -184,7 +216,7 @@ let DialogFormAdd = ({
           }}
           dividers
         >
-          <div>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
             <Typography gutterBottom>
               <Field
                 id="Tên sản phẩm"
@@ -222,11 +254,11 @@ let DialogFormAdd = ({
                 component={InputForm}
                 type="date"
                 value={expiration}
-                onChange={(e) => setExpiration(e.currentTarget.value)}
+                onChange={(e) => handleChangeExpiration(e)}
               />
             </Typography>
             <Typography gutterBottom>
-              <Box sx={{ maxWidth: 200 }} style={{ margin: "auto" }}>
+              <Box sx={{ maxWidth: 200 }} >
                 <FormControl style={{ minWidth: 420 }} size="large">
                   <InputLabel id="demo-simple-select-label">
                     Chọn chức năng
@@ -273,14 +305,15 @@ let DialogFormAdd = ({
           <Button autoFocus onClick={handleClose}>
             Cancel
           </Button>
-          <Button autoFocus onClick={(e) => addProductHandler(e)}>
+          {console.log('invalid: ', invalid)}
+          <Button autoFocus onClick={(e) => addProductHandler(e)} disabled={invalid}>
             Add Product
           </Button>
         </DialogActions>
-      </BootstrapDialog>
+      </Dialog>
       <Snackbar
         open={openAlertSuccess}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={handleCloseAlert}
       >
         <Alert
@@ -295,7 +328,7 @@ let DialogFormAdd = ({
       </Snackbar>
       <Snackbar
         open={openAlertFailure}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={handleCloseAlert}
         color="error"
       >

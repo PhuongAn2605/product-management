@@ -20,6 +20,11 @@ const INITIAL_STATE = {
 
 const houseReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case HouseTypes.FETCH_ALL_HOUSE_START:
+      return {
+        ...state,
+        error: null
+      }
     case HouseTypes.FETCH_ALL_HOUSE_SUCCESS:
       return {
         ...state,
@@ -28,6 +33,11 @@ const houseReducer = (state = INITIAL_STATE, action) => {
         isSearch: false,
         error: null,
       };
+    case HouseTypes.GET_HOUSE_BY_ID_START:
+      return {
+        ...state,
+        error: null
+      }
     case HouseTypes.GET_HOUSE_BY_ID_SUCCESS:
       localStorage.setItem(
         "visitHouse",
@@ -47,39 +57,66 @@ const houseReducer = (state = INITIAL_STATE, action) => {
         houseLikes: action.payload.houseLikes,
         error: null,
       };
+    case HouseTypes.SEND_COMMENT_START:
+      return {
+        ...state,
+        error: null
+      }
     case HouseTypes.SEND_COMMENT_SUCCESS:
       return {
         ...state,
         targetComments: action.payload.comments,
         error: null,
       };
-
+    case HouseTypes.SEND_REPLY_COMMENT_START:
+      return {
+        ...state,
+        error: null
+      }
     case HouseTypes.SEND_REPLY_COMMENT_SUCCESS:
       return {
         ...state,
         replyComments: action.payload.replyComments,
         erorr: null,
       };
+    case HouseTypes.GET_COMMENTS_BY_HOUSE_ID_START:
+      return {
+        ...state,
+        error: null
+      }
     case HouseTypes.GET_COMMENTS_BY_HOUSE_ID_SUCCESS:
       return {
         ...state,
         targetComments: action.payload.comments,
         error: null,
       };
-
+    case HouseTypes.GET_REPLIES_BY_COMMENT_ID_START:
+      return {
+        ...state,
+        error: null
+      }
     case HouseTypes.GET_REPLIES_BY_COMMENT_ID_SUCCESS:
       return {
         ...state,
         replyComments: action.payload.replyComments,
         error: null,
       };
-
+    case HouseTypes.LIKE_COMMENT_START:
+      return {
+        ...state,
+        error: null
+      }
     case HouseTypes.LIKE_COMMENT_SUCCESS:
       return {
         ...state,
         commentLikes: action.payload.commentLikes,
         error: null,
       };
+    case HouseTypes.LIKE_HOUSE_START:
+      return {
+        ...state,
+        error: null
+      }
     case HouseTypes.LIKE_HOUSE_SUCCESS:
       return {
         ...state,
@@ -97,7 +134,11 @@ const houseReducer = (state = INITIAL_STATE, action) => {
         ...state,
         targetComments: action.payload,
       };
-
+    case CommentTypes.EDIT_COMMENT_START:
+      return {
+        ...state,
+        error: null
+      }
     case CommentTypes.EDIT_COMMENT_SUCCESS:
       return {
         ...state,
@@ -109,7 +150,11 @@ const houseReducer = (state = INITIAL_STATE, action) => {
           action.payload.comment
         ),
       };
-
+    case CommentTypes.DELETE_COMMENT_START:
+      return {
+        ...state,
+        error: null
+      }
     case CommentTypes.DELETE_COMMENT_SUCCESS:
       return {
         ...state,
@@ -117,6 +162,11 @@ const houseReducer = (state = INITIAL_STATE, action) => {
         message: "Delete comment successfully!",
         targetComments: deleteComment(state.targetComments, action.payload),
       };
+    case CommentTypes.EDIT_REPLY_COMMENT_START:
+      return {
+        ...state,
+        error: null
+      }
     case CommentTypes.EDIT_REPLY_COMMENT_SUCCESS:
       return {
         ...state,
@@ -125,7 +175,11 @@ const houseReducer = (state = INITIAL_STATE, action) => {
         currentComment: action.payload.comment,
         replyComments: editComment(state.replyComments, action.payload.reply),
       };
-
+    case CommentTypes.DELETE_REPLY_COMMENT_START:
+    return {
+      ...state,
+      error: null
+    }
     case CommentTypes.DELETE_REPLY_COMMENT_SUCCESS:
       return {
         ...state,

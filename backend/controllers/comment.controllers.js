@@ -17,7 +17,7 @@ const getComment = async (req, res, next) => {
     console.log(err);
     return next(new HttpError("Something went wrong", 500));
   }
-  res.status(200).json({ comment: comment.content });
+  res.status(200).json({ comment: comment.content, message: "Get comment successfully!" });
 };
 
 const createComment = async (req, res, next) => {
@@ -56,7 +56,7 @@ const createComment = async (req, res, next) => {
     );
   }
 
-  res.status(201).json({ comments: targetComments });
+  res.status(201).json({ comments: targetComments, message: "Create comment successfully!" });
 };
 
 const getCommentsByHouseId = async (req, res, next) => {
@@ -79,6 +79,7 @@ const getCommentsByHouseId = async (req, res, next) => {
     comments: houseWithComments.comments.map((comment) =>
       comment.toObject({ getters: true })
     ),
+    message: "Get house successfully!"
   });
 };
 
@@ -104,7 +105,7 @@ const editComment = async (req, res, next) => {
     return res.status(500).send("Something went wrong!");
   }
 
-  res.status(200).json({ comment: comment });
+  res.status(200).json({ comment: comment, message: "Update comment successfully!" });
 }
 
 const deleteComment = async (req, res, next) => {
@@ -130,7 +131,7 @@ const deleteComment = async (req, res, next) => {
     return res.status(500).send("Something went wrong!");
   }
 
-  res.status(200).json({ comment: comment });
+  res.status(200).json({ comment: comment, message: "Delete comment successfully!" });
 }
 
 exports.createComment = createComment;

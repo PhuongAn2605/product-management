@@ -29,6 +29,7 @@ import {
 import { getLastLoginStart } from "../redux/notification/notification.actions";
 
 import { Navigate, useNavigate, useParams } from "react-router";
+import moment from "moment";
 
 const MyHomeStyle = styled.div`
   display: flex;
@@ -40,13 +41,20 @@ const HeaderStyle = styled.div`
   display: grid;
   grid-template-columns: 1.5fr 1.5fr 4.2fr;
   align-items: center;
+  width: 100%;
+  padding: 1rem;
+  background-color: #ebf0f5;
+  box-shadow: 5px 5px 5px #888888;
+  /* margin-right: 1rem; */
+
 `;
 
 const NavBarStyle = styled.div``;
 
 const ItemsStyle = styled.div`
-  margin: 1rem;
+  /* margin: 1rem; */
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
   flex-wrap: wrap;
 `;
@@ -66,6 +74,7 @@ const UserNameStyle = styled.div`
   display: flex;
   align-items: center;
   margin-left: auto;
+  margin-right: 2rem;
 `;
 
 const DisplayItemsStyle = styled.div`
@@ -87,6 +96,7 @@ const ItemDetailStyle = styled.div`
   grid-auto-rows: min-content;
   justify-content: center;
   align-items: flex-start;
+  margin: 0 1rem;
 `;
 
 const SearchConditionStyle = styled.div`
@@ -238,6 +248,10 @@ const MyHome = ({
     setInitialLike(false);
   };
 
+  const initialValues = {
+    expiration: moment().format('mm/dd/yyyy')
+  }
+
   return (
     <div>
       <MyHomeStyle>
@@ -318,7 +332,7 @@ const MyHome = ({
               <UserMenu />
             </UserNameStyle>
           </HeaderStyle>
-          {!visit && <DialogFormAdd />}
+          {!visit && <DialogFormAdd initialValues={initialValues} />}
           <DisplayItemsStyle>
             <ItemDetailStyle>
               {!isEmpty(products) &&

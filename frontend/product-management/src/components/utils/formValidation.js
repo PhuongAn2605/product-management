@@ -1,3 +1,4 @@
+import moment from "moment"
 const REQUIRE = 'This field is required!';
 
 export const formProductValidation = values => {
@@ -14,9 +15,15 @@ export const formProductValidation = values => {
     if(!values.expiration){
         error.expiration = REQUIRE;
     }
-    if(!values.description){
-        error.description = REQUIRE;
+    console.log('kkk: ', !moment(values.expiration).startOf('day').isSame(moment().startOf('day')));
+    console.log('values.expiration: ', values.expiration);
+    console.log('haha: ', moment(values.expiration).isBefore(moment()))
+    if(values.expiration && (moment(values.expiration).isBefore(moment()))){
+      error.expiration = "Expiration date can not be before the current date!";
     }
+    // if(!values.description){
+    //     error.description = REQUIRE;
+    // }
     // if(!values.functions){
     //     error.functions = REQUIRE;
     // }

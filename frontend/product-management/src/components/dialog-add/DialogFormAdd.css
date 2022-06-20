@@ -23,7 +23,7 @@
 }
 
 .MuiMenuItem-root.MuiMenuItem-gutters.MuiButtonBase-root.css-kk1bwy-MuiButtonBase-root-MuiMenuItem-root:hover {
-  background-color: rgb(98, 175, 233);
+  background-color: transparent;
   color: white;
 }
 
@@ -44,7 +44,8 @@
 }
 
 .MuiButton-root.MuiButton-text.MuiButton-textPrimary.MuiButton-sizeMedium.MuiButton-textSizeMedium.MuiButtonBase-root.css-1e6y48t-MuiButtonBase-root-MuiButton-root:hover {
-  background-color: rgb(98, 175, 233);
+  /* background-color: rgb(98, 175, 233); */
+  background-color: transparent;
   border-radius: 10px;
 }
 
@@ -65,4 +66,9 @@
 .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation0.MuiAlert-root.MuiAlert-filledSuccess {
   background-color: rgb(59 159 29) !important;
   color: #fff !important;
+}
+
+.MuiMenuItem-root.MuiMenuItem-gutters.MuiButtonBase-root.css-kk1bwy-MuiButtonBase-root-MuiMenuItem-root:hover {
+  background-color: #eee;
+  color: black;
 }

@@ -14,6 +14,7 @@ import {
 } from "./product.actions";
 import axios from "axios";
 import isEmpty from "is-empty";
+import { toastError, toastSuccess } from "../../utils/ToastHelper/toastHelper";
 
 export function* addProduct(payload) {
   const { product, userName } = payload.payload;
@@ -46,7 +47,11 @@ export function* addProduct(payload) {
     });
 
     const data = result.data;
-    yield put(addProductSuccess(data));
+    console.log('data: ', result)
+    if(result.status === 201) {
+      yield put(addProductSuccess(data));
+      toastSuccess(data.message);
+    }
   } catch (error) {
     yield put(fetchFailure(error));
   }

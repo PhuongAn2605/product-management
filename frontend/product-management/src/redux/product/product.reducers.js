@@ -17,6 +17,11 @@ const INITIAL_STATE = {
 
 const productReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case ProductTypes.ADD_PRODUCT_START:
+      return {
+        ...state,
+        error: null
+      }
     case ProductTypes.ADD_PRODUCT_SUCCESS:
       return {
         ...state,
@@ -25,14 +30,22 @@ const productReducer = (state = INITIAL_STATE, action) => {
         products: [...state.products, { ...action.payload.product }],
         message: "Add Successfully!",
       };
-
+    case ProductTypes.FETCH_PRODUCTS_START:
+      return {
+        ...state,
+        error: null
+      }
     case ProductTypes.FETCH_PRODUCTS_SUCCESS:
       return {
         ...state,
         products: action.payload,
         error: null,
       };
-
+    case ProductTypes.EDIT_PRODUCT_START:
+      return {
+        ...state,
+        error: null
+      }
     case ProductTypes.EDIT_PRODUCT_SUCCESS:
       return {
         ...state,
@@ -40,7 +53,11 @@ const productReducer = (state = INITIAL_STATE, action) => {
         message: "Edit Successfully!",
         products: editProducts(state.products, action.payload.product),
       };
-
+    case ProductTypes.DELETE_PRODUCT_START:
+      return {
+        ...state,
+        error: null
+      }
     case ProductTypes.DELETE_PRODUCT_SUCCESS:
       console.log(action.payload)
       return {
@@ -77,7 +94,12 @@ const productReducer = (state = INITIAL_STATE, action) => {
         isSearched: false,
         searchedProducts: [],
       };
-
+    case ProductTypes.SEARCH_PRODUCT_BY_LOCATION_START:
+    case ProductTypes.SEARCH_PRODUCT_BY_NAME_START:
+      return {
+        ...state,
+        error: null
+      }
     case ProductTypes.SEARCH_PRODUCT_BY_LOCATION_SUCCESS:
     case ProductTypes.SEARCH_PRODUCT_BY_NAME_SUCCESS:
       return {
@@ -96,7 +118,11 @@ const productReducer = (state = INITIAL_STATE, action) => {
         ...state,
         products: action.payload,
       };
-
+    case ProductTypes.GET_PRODUCT_BY_ID_START:
+      return {
+        ...state,
+        error: null
+      }
     case ProductTypes.GET_PRODUCT_BY_ID_SUCCESS:
       return {
         ...state,

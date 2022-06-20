@@ -92,12 +92,12 @@ let DialogEditComment = ({
       editReplyComment(commentId, contentValue);
     }
     if (!isEmpty(errorFromState) && isEmpty(message)) {
-      setNoti("Editing failed!");
+      setNoti("Update failed!");
       setOpenAlertFailure(true);
       setOpenAlertFailure(false);
       handleDialogClose();
     } else {
-      setNoti("Edit successfully!");
+      setNoti("Update successfully!");
       setOpenAlertSuccess(true);
       setOpenAlertFailure(false);
       handleDialogClose();
@@ -166,7 +166,7 @@ let DialogEditComment = ({
       </BootstrapDialog>
       <Snackbar
         open={openAlertEditSuccess}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={handleCloseEditAlert}
       >
         <Alert
@@ -180,7 +180,7 @@ let DialogEditComment = ({
       </Snackbar>
       <Snackbar
         open={openAlertEditFailure}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={handleCloseEditAlert}
       >
         <Alert

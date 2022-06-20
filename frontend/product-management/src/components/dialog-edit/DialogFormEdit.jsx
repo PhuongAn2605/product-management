@@ -56,6 +56,7 @@ const BootstrapDialogTitle = (props) => {
             position: "absolute",
             color: (theme) => theme.palette.grey[500],
           }}
+          style={{ marginLeft: "auto"}}
         >
           <CloseIcon />
         </IconButton>
@@ -148,12 +149,12 @@ let DialogFormEdit = ({
     editProduct(product);
 
     if (!isEmpty(errorFromState)) {
-      setNoti("Editing failed!");
+      setNoti("Update failed!");
       setOpenAlertFailure(true);
       setOpenAlertFailure(false);
       handleDialogClose();
     } else if (isEmpty(errorFromState) && !isEmpty(message)) {
-      setNoti("Edit successfully!");
+      setNoti("Update successfully!");
       setOpenAlertSuccess(true);
       setOpenAlertFailure(false);
       handleDialogClose();
@@ -178,6 +179,8 @@ let DialogFormEdit = ({
         aria-labelledby="customized-dialog-title"
         open={open}
         scroll="body"
+        fullWidth
+        maxWidth="xl"
       >
         <BootstrapDialogTitle
           id="customized-dialog-title"
@@ -312,7 +315,7 @@ let DialogFormEdit = ({
       </BootstrapDialog>
       <Snackbar
         open={openAlertEditSuccess}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={handleCloseEditAlert}
       >
         <Alert
@@ -326,7 +329,7 @@ let DialogFormEdit = ({
       </Snackbar>
       <Snackbar
         open={openAlertEditFailure}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={handleCloseEditAlert}
       >
         <Alert

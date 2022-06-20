@@ -20,6 +20,11 @@ const INITIAL_STATE = {
 
 const authReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case AuthTypes.SIGN_UP_START:
+      return {
+        ...state,
+        error: null
+      }
     case AuthTypes.SIGN_UP_SUCCESS:
       const { userName, token } = action.payload;
 
@@ -38,7 +43,11 @@ const authReducer = (state = INITIAL_STATE, action) => {
         isLoggedIn: false,
         error: action.payload,
       };
-
+    case AuthTypes.LOGIN_START:
+      return {
+        ...state,
+        error: null
+      }
     case AuthTypes.LOGIN_SUCCESS:
       return {
         ...state,
@@ -67,7 +76,11 @@ const authReducer = (state = INITIAL_STATE, action) => {
         isLoggedIn: false,
         error: action.payload,
       };
-
+    case AuthTypes.LOGOUT_START:
+      return {
+        ...state,
+        error: null
+      }
     case AuthTypes.LOGOUT_SUCCESS:
       localStorage.removeItem("userData");
       return {
@@ -96,7 +109,11 @@ const authReducer = (state = INITIAL_STATE, action) => {
         isSignupMode: true,
         isLogInMode: false,
       };
-
+    case AuthTypes.CHECK_PASSWORD_START:
+      return {
+        ...state,
+        error: null
+      }
     case AuthTypes.CHECK_PASSWORD_SUCCESS:
       return {
         ...state,
