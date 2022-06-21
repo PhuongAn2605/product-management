@@ -15,10 +15,8 @@ export const formProductValidation = values => {
     if(!values.expiration){
         error.expiration = REQUIRE;
     }
-    console.log('kkk: ', !moment(values.expiration).startOf('day').isSame(moment().startOf('day')));
-    console.log('values.expiration: ', values.expiration);
-    console.log('haha: ', moment(values.expiration).isBefore(moment()))
-    if(values.expiration && (moment(values.expiration).isBefore(moment()))){
+    if(values.expiration && (moment(values.expiration).isBefore(moment()) 
+    && moment(values.expiration).format('YYYY-MM-DD') !== (moment().format('YYYY-MM-DD')))){
       error.expiration = "Expiration date can not be before the current date!";
     }
     // if(!values.description){

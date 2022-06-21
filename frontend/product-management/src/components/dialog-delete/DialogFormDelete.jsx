@@ -75,7 +75,6 @@ const DialogFormDelete = ({ id, products, deleteProduct, errorFromState, message
   };
 
   const deleteProductHander = (e) => {
-    console.log(id);
     if (!isEmpty(id)) {
       setTimeout(() => {
         deleteProduct(id);

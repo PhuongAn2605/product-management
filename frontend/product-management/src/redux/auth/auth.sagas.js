@@ -1,7 +1,7 @@
 import { put, all, takeLatest, call } from "@redux-saga/core/effects";
 import isEmpty from "is-empty";
 import Http from "../../utils/http";
-import { fetchProductSuccess } from "../product/product.actions";
+import { fetchProductStart, fetchProductSuccess } from "../product/product.actions";
 import {
   fetchLoginFailure,
   fetchLoginSuccess,
@@ -45,7 +45,8 @@ export function* fetchLogin(payload) {
     const data = result.data;
     if (!isEmpty(data)) {
       yield put(fetchLoginSuccess(data));
-      yield put(fetchProductSuccess(data.products));
+      console.log('fetchLoginSuccess: ', data);
+      yield put(fetchProductStart({ userName: data.userName }));
     } else {
       yield put(fetchLoginFailure("error"));
     }

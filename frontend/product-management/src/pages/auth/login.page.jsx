@@ -42,8 +42,6 @@ let Login = ({ login, errorFormState }) => {
 
   const loginHandler = (userName, password, e) => {
     e.preventDefault();
-    console.log(e.currentTarget.value);
-
     if(userName && password){
       setTimeout(() => {
         login(userName, password);

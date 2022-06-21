@@ -1,3 +1,4 @@
+import AuthTypes from "../auth/auth.types";
 import { deleteProductSuccess } from "./product.actions";
 import ProductTypes from "./product.types";
 import { deleteProduct, editProducts } from "./product.utils";
@@ -17,6 +18,12 @@ const INITIAL_STATE = {
 
 const productReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case AuthTypes.LOGOUT_START:
+      return {
+        ...state,
+        error: null,
+        products: []
+      }
     case ProductTypes.ADD_PRODUCT_START:
       return {
         ...state,
@@ -59,7 +66,6 @@ const productReducer = (state = INITIAL_STATE, action) => {
         error: null
       }
     case ProductTypes.DELETE_PRODUCT_SUCCESS:
-      console.log(action.payload)
       return {
         ...state,
         error: null,

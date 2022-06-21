@@ -47,7 +47,6 @@ export function* addProduct(payload) {
     });
 
     const data = result.data;
-    console.log('data: ', result)
     if(result.status === 201) {
       yield put(addProductSuccess(data));
       toastSuccess(data.message);
@@ -61,9 +60,10 @@ export function* addProductWatcher() {
   yield takeLatest(ProductTypes.ADD_PRODUCT_START, addProduct);
 }
 
-export function* fetchProduct() {
+export function* fetchProduct(payload) {
+  const userName  = payload.payload;
   try {
-    const result = yield Http.get("/product");
+    const result = yield Http.get("/product/user/" + userName);
     const data = result.data;
     yield put(fetchProductSuccess(data.products));
   } catch (err) {

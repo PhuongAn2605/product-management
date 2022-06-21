@@ -4,7 +4,7 @@ import isEmpty from "is-empty";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
+// import Select from "@mui/material/Select";
 import Box from "@mui/material/Box";
 import { Alert, Snackbar, Typography } from "@mui/material";
 
@@ -32,6 +32,7 @@ import { Field, formValueSelector, reduxForm } from "redux-form";
 import { formProductValidation } from "../utils/formValidation.js";
 import SelectField from "../input/SelectField.jsx";
 import moment from "moment";
+import Select from 'react-select';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -46,8 +47,6 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 const BootstrapDialogTitle = (props) => {
   const { children, onClose, pristine, reset, submitting, ...others } = props;
   
-  console.log('props: ', pristine)
-
   return (
     <DialogTitle sx={{ m: 0, p: 2 }} {...others}>
       {children}
@@ -77,6 +76,11 @@ BootstrapDialogTitle.propTypes = {
 // const initialValues = {
 //   expiration: moment(),
 // }
+const options = [
+  { value: 'sit', label: 'Ngồi' },
+  { value: 'decorate', label: 'Trang trí' },
+  { value: 'Contain', label: 'Để đồ' }
+]
 let DialogFormAdd = (props) => {
   const {addProduct, userName, productImage, errorFromState, initialValues, message} = props;
   const [open, setOpen] = useState(false);
@@ -84,8 +88,8 @@ let DialogFormAdd = (props) => {
   const [proName, setProName] = useState("");
   const [shortName, setShortName] = useState("");
   const [location, setLocation] = useState("");
-  const [expiration, setExpiration] = useState("");
-  const [functions, setFunctions] = useState("");
+  const [expiration, setExpiration] = useState(initialValues.expiration);
+  const [functions, setFunctions] = useState(initialValues.functions);
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(productImage);
 
@@ -94,11 +98,9 @@ let DialogFormAdd = (props) => {
   const [validExpiration, setValidExpiration] = useState(false);
   const [invalid, setInValid] = useState(true);
 
-  console.log('initialValues: ', initialValues)
-
   useEffect(() => {
     props.initialize(initialValues);
-  }, []);
+  }, [open]);
 
   useEffect(() => {
     if(!isEmpty(proName) && !isEmpty(shortName) && !isEmpty(location) && !isEmpty(expiration) && validExpiration) {
@@ -113,6 +115,13 @@ let DialogFormAdd = (props) => {
   };
   const handleClose = () => {
     setOpen(false);
+    setProName("");
+    setShortName("");
+    setLocation("");
+    setExpiration("");
+    setFunctions("");
+    setDescription("");
+    setImage(null);
   };
 
   const inputHandler = (pickedFile) => {
@@ -135,14 +144,19 @@ let DialogFormAdd = (props) => {
       userName,
     };
 
-      // setTimeout(() => {
-      //   addProduct(data);
-      // }, 2000);
-      addProduct(data);
+      setTimeout(() => {
+        addProduct(data);
+      }, 2000);
+      // addProduct(data);
 
       handleClose();
-
-      console.log(errorFromState);
+      setProName("");
+      setShortName("");
+      setLocation("");
+      setExpiration("");
+      setFunctions("");
+      setDescription("");
+      setImage(null);
 
     if (!isEmpty(errorFromState)) {
       setNoti("Adding failed!");
@@ -156,13 +170,7 @@ let DialogFormAdd = (props) => {
       // handleClose();
     }
 
-    setProName("");
-    setShortName("");
-    setLocation("");
-    setExpiration("");
-    setFunctions("");
-    setDescription("");
-    setImage(null);
+   
   };
 
   const handleCloseAlert = (event, reason) => {
@@ -173,15 +181,14 @@ let DialogFormAdd = (props) => {
     setOpenAlertFailure(false);
   };
 
-  const handleChangeExpiration = (e) => {
-    if(!isEmpty(expiration) && moment(expiration).isBefore(moment()) ){
+  useEffect(() => {
+    if(!isEmpty(expiration) && (moment(expiration).isBefore(moment())) 
+    && (moment(expiration).format('YYYY-MM-DD') !== (moment().format('YYYY-MM-DD'))) ){
       setValidExpiration(false);
     } else if(!isEmpty(expiration)){
-      console.log('e.currentTarget.value: ', e.currentTarget.value)
       setValidExpiration(true);
     }
-    setExpiration(e.currentTarget.value);
-  }
+  }, [expiration]);
 
   return (
     <DialogStyle>
@@ -254,11 +261,19 @@ let DialogFormAdd = (props) => {
                 component={InputForm}
                 type="date"
                 value={expiration}
-                onChange={(e) => handleChangeExpiration(e)}
+                onChange={(e) => setExpiration(e.currentTarget.value)}
               />
             </Typography>
             <Typography gutterBottom>
-              <Box sx={{ maxWidth: 200 }} >
+              <Select 
+                options={options}
+                defaultValue={options[0]}
+                className="basic-single"
+                classNamePrefix="select"
+                name="functions"
+                id="functions"
+              />
+              {/* <Box sx={{ maxWidth: 200 }} >
                 <FormControl style={{ minWidth: 420 }} size="large">
                   <InputLabel id="demo-simple-select-label">
                     Chọn chức năng
@@ -280,7 +295,7 @@ let DialogFormAdd = (props) => {
                     <MenuItem value="Đựng đồ">Đựng đồ</MenuItem>
                   </Select>
                 </FormControl>
-              </Box>
+              </Box> */}
             </Typography>
 
             <Typography gutterBottom>
@@ -305,7 +320,6 @@ let DialogFormAdd = (props) => {
           <Button autoFocus onClick={handleClose}>
             Cancel
           </Button>
-          {console.log('invalid: ', invalid)}
           <Button autoFocus onClick={(e) => addProductHandler(e)} disabled={invalid}>
             Add Product
           </Button>

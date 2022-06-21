@@ -19,8 +19,9 @@ export const addProductImage = (url) => ({
     payload: url
 });
 
-export const fetchProductStart = () => ({
+export const fetchProductStart = ( { userName } ) => ({
     type: ProductTypes.FETCH_PRODUCTS_START,
+    payload: userName
 });
 
 export const fetchProductSuccess = (result) => ({

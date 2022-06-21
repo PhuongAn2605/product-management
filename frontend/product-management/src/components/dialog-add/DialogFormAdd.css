@@ -72,3 +72,8 @@
   background-color: #eee;
   color: black;
 }
+
+.basic-single {
+  width: 80%;
+  margin: 1rem auto;
+}

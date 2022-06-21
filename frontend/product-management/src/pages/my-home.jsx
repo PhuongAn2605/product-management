@@ -249,7 +249,8 @@ const MyHome = ({
   };
 
   const initialValues = {
-    expiration: moment().format('mm/dd/yyyy')
+    expiration: moment().format('YYYY-MM-DD'),
+    functions: 'sit'
   }
 
   return (
