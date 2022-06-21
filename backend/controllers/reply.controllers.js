@@ -90,7 +90,6 @@ const deleteReply = async (req, res) => {
   const replyId = req.params.rid;
   let reply;
 
-  console.log(await Reply.findById(replyId));
 
   try{
     reply = await Reply.findById(replyId).populate("commentId");

@@ -14,17 +14,23 @@ const regExpSearch = (string = "") => {
 };
 
 const getProducts = async (req, res, next) => {
-  let products;
+  const userName = req.params.userName;
+  const user = await User.findOne({ userName: userName });
 
+  const userId = user._id;
+  const houseOfUser = await House.findOne({ userId: userId });
+  const houseId = houseOfUser._id;
+  let products;
   try {
-    products = await Product.find({});
+    products = await Product.find({houseId: houseId});
   } catch (err) {
     const error = new HttpError("Fetching users failed", 500);
     return next(error);
   }
 
   res.json({
-    products: products.map((product) => product.toObject({ getters: true })),
+    products,
+    // products: products.map((product) => product.toObject({ getters: true })),
     message: "Get product successfully!"
   });
 };

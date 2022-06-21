@@ -7,6 +7,7 @@ const productControllers = require("../controllers/product.controllers");
 const router = express.Router();
 
 router.get("/", productControllers.getProducts);
+router.get("/user/:userName", productControllers.getProducts);
 
 router.get("/:pid", productControllers.getProductById);
 

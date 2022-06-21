@@ -112,7 +112,6 @@ const deleteComment = async (req, res, next) => {
   const commentId = req.params.cid;
   let comment;
 
-  console.log(await Comment.findById(commentId))
   try{
     comment = await Comment.findById(commentId).populate("houseId");
     if(isEmpty(comment)){
