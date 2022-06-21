@@ -45,13 +45,11 @@ export function* fetchLogin(payload) {
     const data = result.data;
     if (!isEmpty(data)) {
       yield put(fetchLoginSuccess(data));
-      console.log('fetchLoginSuccess: ', data);
       yield put(fetchProductStart({ userName: data.userName }));
     } else {
       yield put(fetchLoginFailure("error"));
     }
   } catch (error) {
-    console.log("error: ", error);
     yield put(fetchLoginFailure(error));
   }
 }

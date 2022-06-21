@@ -131,7 +131,6 @@ export function* likeComment(payload) {
     const data = result.data;
     yield put(likeCommentSuccess(data));
   } catch (error) {
-    console.log("error: ", error);
     yield put(fetchFailure(error));
   }
 }

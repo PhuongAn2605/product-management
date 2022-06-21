@@ -40,7 +40,6 @@ const SearchBarForm = ({
       if(!isEmpty(searchValue)){
         const normalizeSearchValue = searchValue.toLowerCase();
         const searchedHouses = friendHouses.filter(h => h.name.toLowerCase().includes(normalizeSearchValue));
-        console.log(searchedHouses)
         setSearchedHouses(searchedHouses);
       }else{
         setSearchedHouses(friendHouses);
